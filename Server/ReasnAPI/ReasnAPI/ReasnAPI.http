@@ -1,0 +1,6 @@
+@ReasnAPI_HostAddress = http://localhost:5272
+
+GET {{ReasnAPI_HostAddress}}/
+Accept: application/json
+
+###
