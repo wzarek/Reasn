@@ -1,0 +1,44 @@
+﻿name: unit tests
+
+on: [push]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Determine ReasnAPI solution
+        run: echo SOLUTION_FILE=$(realpath ./Server/ReasnAPI/ReasnAPI.sln) >> $GITHUB_ENV
+      
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          
+      - name: Install coverlet
+        run: dotnet tool install -g coverlet.console
+      
+      - name: Install dependencies
+        run: dotnet restore ${{ env.SOLUTION_FILE }}
+        
+      - name: Build solution
+        run: dotnet build ${{ env.SOLUTION_FILE }} --no-restore
+        
+      - name: Test with dotnet
+        run: |
+          RESULTS_FILENAME=results-$(date +"%Y-%m-%d_%H_%M_%S")
+          dotnet test ${{ env.SOLUTION_FILE }} --logger "trx;logfilename=$RESULTS_FILENAME.trx" --logger "html;logfilename=$RESULTS_FILENAME.html" --no-build --results-directory "TestResults-${{ github.sha }}"
+          
+      - name: Run coverlet
+        run: |
+          TEST_ASSEMBLY=$(find ./Server/ReasnAPI/ReasnAPI.Tests/bin/ -name "ReasnAPI.Tests.dll")
+          coverlet "$TEST_ASSEMBLY" --target "dotnet" --targetargs "test ${{ env.SOLUTION_FILE }} --no-build"
+        
+      - name: Upload dotnet test results
+        uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        with:
+          name: dotnet-results-${{ github.sha }}
+          path: TestResults-${{ github.sha }}
+          retention-days: 14 
+          
