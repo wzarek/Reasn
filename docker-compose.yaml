@@ -6,6 +6,7 @@ services:
     networks:
       - reasn-network
     volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres-data:/var/lib/postgresql/data
     env_file:
       - .env
