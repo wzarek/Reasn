@@ -1,11 +1,3 @@
-CREATE ROLE admin_user WITH LOGIN PASSWORD 'admin_password' SUPERUSER;
-
-CREATE ROLE readonly_user WITH LOGIN PASSWORD 'readonly_password';
-
-GRANT CONNECT ON DATABASE reasn TO readonly_user;
-GRANT USAGE ON SCHEMA public TO readonly_user;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO readonly_user;
-
 CREATE TABLE IF NOT EXISTS "event" (
   "id" integer PRIMARY KEY,
   "name" varchar,
@@ -114,10 +106,7 @@ CREATE TABLE IF NOT EXISTS "interest" (
   "level" integer
 );
  
-CREATE TABLE IF NOT EXISTS "xddd" (
-  "id" integer  
-);
- 
+
 ALTER TABLE "user" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id");
  
 ALTER TABLE "event" ADD FOREIGN KEY ("address_id") REFERENCES "address" ("id");
@@ -158,6 +147,7 @@ ALTER TABLE "event" ADD FOREIGN KEY ("status_id") REFERENCES "status" ("id");
  
 ALTER TABLE "user_interest" ADD FOREIGN KEY ("interest_id") REFERENCES "interest" ("id");
  
+
 INSERT INTO "role" ("id", "role") VALUES
 (1, 'System Analyst'),
 (2, 'Project Manager');
@@ -182,10 +172,7 @@ INSERT INTO "event" ("id", "name", "address_id", "description", "organizer_id", 
 (1, 'Tech Conference', 1, 'Annual tech conference', 1, '2023-10-01 09:00:00', '2023-10-02 17:00:00', '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'tech-conference', 1),
 (2, 'Health Symposium', 2, 'Health and wellness symposium', 2, '2023-11-05 09:00:00', '2023-11-06 17:00:00', '2023-10-05 08:00:00', '2023-10-05 08:00:00', 'health-symposium', 2);
  
- 
-INSERT INTO "participant" ("id", "event_id", "user_id", "status_id") VALUES
-(1, 1, 1, 1),
-(2, 2, 2, 2);
+
  
  
 -- Insert data into "tag"
@@ -194,25 +181,5 @@ INSERT INTO "tag" ("id", "name") VALUES
 (2, 'Health');
  
 INSERT INTO "event_tag" ("event_id", "tag_id") VALUES
-(1, 1),
-(2, 2);
- 
-INSERT INTO "parameter" ("id", "key", "value") VALUES
-(1, 'Location', 'Virtual'),
-(2, 'SpeakerCount', '5');
- 
-INSERT INTO "event_parameter" ("parameter_id", "event_id") VALUES
-(1, 1),
-(2, 2);
- 
-INSERT INTO "comment" ("id", "event_id", "content", "created_at", "user_id") VALUES
-(1, 1, 'Looking forward to this!', '2023-09-10', 1),
-(2, 2, 'Cant wait to attend!', '2023-10-15', 2);
- 
-INSERT INTO "interest" ("id", "name", "level") VALUES
-(1, 'Programming', 5),
-(2, 'Reading', 4);
- 
-INSERT INTO "user_interest" ("user_id", "interest_id") VALUES
 (1, 1),
 (2, 2);
