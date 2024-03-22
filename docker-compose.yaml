@@ -6,12 +6,13 @@ services:
     networks:
       - reasn-network
     volumes:
-      - ./initusers.sql:/docker-entrypoint-initdb.d/02_init.sql
-      - ./init.sql:/docker-entrypoint-initdb.d/01_init.sql
-      - ./initdata.sql:/docker-entrypoint-initdb.d/03_init.sql
-      - postgres-data:/var/lib/postgresql/data
+      - ./Database/init-db-values.sql:/docker-entrypoint-initdb.d/init-db-values.sql
+      - postgres-data:/db-users.sh/postgresql/data
+      - ./Database/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
     env_file:
       - .env
+      - .env.sample
+     
 
   pgadmin:
     image: dpage/pgadmin4:8.0
@@ -33,5 +34,7 @@ networks:
 volumes:
   postgres-data:
   pgadmin-data:
+
+
 
 
