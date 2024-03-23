@@ -7,6 +7,8 @@ services:
 
     volumes:
       - ./database/init-dev-data.sql:/docker-entrypoint-initdb.d/init-dev-data.sql
-  
+
+
+   
 
 

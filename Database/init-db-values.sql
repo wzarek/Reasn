@@ -1,4 +1,9 @@
-CREATE TABLE IF NOT EXISTS "events" (
+CREATE SCHEMA events_schema;
+CREATE SCHEMA users_schema;
+CREATE SCHEMA general_schema;
+
+
+CREATE TABLE IF NOT EXISTS events_schema.event (
   "id" SERIAL PRIMARY KEY,
   "name" varchar,
   "address_id" integer,
@@ -12,30 +17,30 @@ CREATE TABLE IF NOT EXISTS "events" (
   "status_id" integer
 );
  
-CREATE TABLE IF NOT EXISTS "participants" (
+CREATE TABLE IF NOT EXISTS events_schema.participant (
   "id" SERIAL PRIMARY KEY,
   "event_id" integer,
   "user_id" integer,
   "status_id" int
 );
  
-CREATE TABLE IF NOT EXISTS "statuses" (
+CREATE TABLE IF NOT EXISTS general_schema.status (
   "id" SERIAL PRIMARY KEY,
   "name" varchar(255),
   "object_type_id" integer
 );
  
-CREATE TABLE IF NOT EXISTS "tags" (
+CREATE TABLE IF NOT EXISTS events_schema.tag (
   "id" SERIAL PRIMARY KEY,
   "name" varchar(255)
 );
  
-CREATE TABLE IF NOT EXISTS "event_tags" (
+CREATE TABLE IF NOT EXISTS events_schema.event_tag (
   "event_id" integer,
   "tag_id" integer
 );
  
-CREATE TABLE IF NOT EXISTS "users" (
+CREATE TABLE IF NOT EXISTS users_schema.user (
   "id" SERIAL PRIMARY KEY,
   "name" varchar(255),
   "surname" varchar(255),
@@ -50,23 +55,23 @@ CREATE TABLE IF NOT EXISTS "users" (
   "phone" varchar(255)
 );
  
-CREATE TABLE IF NOT EXISTS "parameters" (
+CREATE TABLE IF NOT EXISTS events_schema.parameter (
   "id" SERIAL PRIMARY KEY,
   "key" varchar(255),
   "value" varchar(255)
 );
  
-CREATE TABLE IF NOT EXISTS "event_parameters" (
+CREATE TABLE IF NOT EXISTS events_schema.event_parameter (
   "parameter_id" integer,
   "event_id" integer
 );
  
-CREATE TABLE IF NOT EXISTS "roles" (
+CREATE TABLE IF NOT EXISTS users_schema.role (
   "id" SERIAL PRIMARY KEY,
   "role" varchar(255)
 );
  
-CREATE TABLE IF NOT EXISTS "comments" (
+CREATE TABLE IF NOT EXISTS users_schema.comment (
   "id" SERIAL PRIMARY KEY,
   "event_id" integer,
   "content" varchar(255),
@@ -74,7 +79,7 @@ CREATE TABLE IF NOT EXISTS "comments" (
   "user_id" integer
 );
  
-CREATE TABLE IF NOT EXISTS "addresses" (
+CREATE TABLE IF NOT EXISTS users_schema.address (
   "id" SERIAL PRIMARY KEY,
   "city" varchar(255),
   "country" varchar(255),
@@ -83,85 +88,86 @@ CREATE TABLE IF NOT EXISTS "addresses" (
   "zip_code" varchar(255)
 );
  
-CREATE TABLE IF NOT EXISTS "images" (
+CREATE TABLE IF NOT EXISTS general_schema.image (
   "id" SERIAL PRIMARY KEY,
   "image_data" bytea,
   "object_type_id" integer,
   "object_id" integer
 );
  
-CREATE TABLE IF NOT EXISTS "object_types" (
+CREATE TABLE IF NOT EXISTS general_schema.object_type (
   "id" SERIAL PRIMARY KEY,
   "name" varchar(255)
 );
  
-CREATE TABLE IF NOT EXISTS "user_interests" (
+CREATE TABLE IF NOT EXISTS users_schema.user_interest (
   "user_id" integer,
   "interest_id" integer
 );
  
-CREATE TABLE IF NOT EXISTS "interests" (
+CREATE TABLE IF NOT EXISTS users_schema.interest (
   "id" SERIAL PRIMARY KEY,
   "name" varchar(255),
   "level" integer
 );
  
 
-ALTER TABLE "users" ADD FOREIGN KEY ("role_id") REFERENCES "roles" ("id");
+ALTER TABLE users_schema.user ADD FOREIGN KEY ("role_id") REFERENCES users_schema.role ("id");
  
-ALTER TABLE "events" ADD FOREIGN KEY ("address_id") REFERENCES "addresses" ("id");
+ALTER TABLE events_schema.event ADD FOREIGN KEY ("address_id") REFERENCES users_schema.address ("id");
  
-ALTER TABLE "comments" ADD FOREIGN KEY ("event_id") REFERENCES "events" ("id");
+ALTER TABLE users_schema.comment ADD FOREIGN KEY ("event_id") REFERENCES events_schema.event ("id");
  
-ALTER TABLE "events" ADD FOREIGN KEY ("organizer_id") REFERENCES "users" ("id");
+ALTER TABLE events_schema.event ADD FOREIGN KEY ("organizer_id") REFERENCES users_schema.user ("id");
  
-ALTER TABLE "participants" ADD FOREIGN KEY ("event_id") REFERENCES "events" ("id");
+ALTER TABLE events_schema.participant ADD FOREIGN KEY ("event_id") REFERENCES events_schema.event ("id");
  
-ALTER TABLE "participants" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE events_schema.participant ADD FOREIGN KEY ("user_id") REFERENCES users_schema.user ("id");
  
-ALTER TABLE "comments" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE users_schema.comment ADD FOREIGN KEY ("user_id") REFERENCES users_schema.user ("id");
  
-ALTER TABLE "images" ADD FOREIGN KEY ("object_type_id") REFERENCES "object_types" ("id");
+ALTER TABLE general_schema.image ADD FOREIGN KEY ("object_type_id") REFERENCES general_schema.object_type ("id");
  
-ALTER TABLE "user_interests" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE users_schema.user_interest ADD FOREIGN KEY ("user_id") REFERENCES users_schema.user ("id");
  
-ALTER TABLE "users" ADD FOREIGN KEY ("address_id") REFERENCES "addresses" ("id");
+ALTER TABLE users_schema.user ADD FOREIGN KEY ("address_id") REFERENCES users_schema.address ("id");
  
-ALTER TABLE "images" ADD FOREIGN KEY ("object_id") REFERENCES "events" ("id");
+ALTER TABLE general_schema.image ADD CONSTRAINT image_object_id_fkey_event FOREIGN KEY ("object_id") REFERENCES events_schema.event ("id"); 
+
+ALTER TABLE general_schema.image ADD CONSTRAINT image_object_id_fkey_user FOREIGN KEY ("object_id") REFERENCES users_schema.user ("id"); 
  
-ALTER TABLE "images" ADD FOREIGN KEY ("object_id") REFERENCES "users" ("id");
+ALTER TABLE events_schema.participant ADD FOREIGN KEY ("status_id") REFERENCES general_schema.status ("id");
  
-ALTER TABLE "participants" ADD FOREIGN KEY ("status_id") REFERENCES "statuses" ("id");
+ALTER TABLE events_schema.event_parameter ADD FOREIGN KEY ("parameter_id") REFERENCES events_schema.parameter ("id");
  
-ALTER TABLE "event_parameters" ADD FOREIGN KEY ("parameter_id") REFERENCES "parameters" ("id");
+ALTER TABLE events_schema.event_parameter ADD FOREIGN KEY ("event_id") REFERENCES events_schema.event ("id");
  
-ALTER TABLE "event_parameters" ADD FOREIGN KEY ("event_id") REFERENCES "events" ("id");
+ALTER TABLE events_schema.event_tag ADD FOREIGN KEY ("tag_id") REFERENCES events_schema.tag ("id");
  
-ALTER TABLE "event_tags" ADD FOREIGN KEY ("tag_id") REFERENCES "tags" ("id");
+ALTER TABLE events_schema.event_tag ADD FOREIGN KEY ("event_id") REFERENCES events_schema.event ("id");
  
-ALTER TABLE "event_tags" ADD FOREIGN KEY ("event_id") REFERENCES "events" ("id");
+ALTER TABLE general_schema.status ADD FOREIGN KEY ("object_type_id") REFERENCES general_schema.object_type ("id");
  
-ALTER TABLE "statuses" ADD FOREIGN KEY ("object_type_id") REFERENCES "object_types" ("id");
+ALTER TABLE events_schema.event ADD FOREIGN KEY ("status_id") REFERENCES general_schema.status ("id");
  
-ALTER TABLE "events" ADD FOREIGN KEY ("status_id") REFERENCES "statuses" ("id");
- 
-ALTER TABLE "user_interests" ADD FOREIGN KEY ("interest_id") REFERENCES "interests" ("id");
+ALTER TABLE users_schema.user_interest ADD FOREIGN KEY ("interest_id") REFERENCES users_schema.interest ("id");
  
 
-INSERT INTO "roles" ("id", "role") VALUES
-(1, 'System Analyst'),
-(2, 'Project Manager');
+INSERT INTO users_schema.role ("id", "role") VALUES
+(1, 'User'),
+(2, 'Organizer'),
+(3, 'Admin');
  
-INSERT INTO "object_types" ("id", "name") VALUES (1, 'Event'),
+INSERT INTO general_schema.object_type ("id", "name") VALUES (1, 'Event'),
 (2, 'User');
  
-INSERT INTO "statuses" ("id", "name", "object_type_id") VALUES
-(1, 'Interested', 1),
+INSERT INTO general_schema.status ("id", "name", "object_type_id") VALUES
+(1, 'Interested', 2),
 (2, 'Participants', 2),
-(3, 'Archived', 3),
-(4, 'In progress', 4);
+(3, 'Archived', 1),
+(4, 'In progress', 1);
  
-INSERT INTO "tags" ("id", "name") VALUES
+INSERT INTO events_schema.tag ("id", "name") VALUES
 (1, 'Technology'),
 (2, 'Health');
  
