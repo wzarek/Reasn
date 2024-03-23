@@ -40,3 +40,7 @@ INSERT INTO users_schema.user_interest ("user_id", "interest_id") VALUES
 (1, 1),
 (2, 2);
 
+INSERT INTO general_schema.image (image_data, object_type_id, object_id)
+VALUES
+(('path to image'), 1, 1),
+(('path to image2'), 2, 2);

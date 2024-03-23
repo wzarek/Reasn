@@ -132,10 +132,6 @@ ALTER TABLE users_schema.user_interest ADD FOREIGN KEY ("user_id") REFERENCES us
  
 ALTER TABLE users_schema.user ADD FOREIGN KEY ("address_id") REFERENCES users_schema.address ("id");
  
-ALTER TABLE general_schema.image ADD CONSTRAINT image_object_id_fkey_event FOREIGN KEY ("object_id") REFERENCES events_schema.event ("id"); 
-
-ALTER TABLE general_schema.image ADD CONSTRAINT image_object_id_fkey_user FOREIGN KEY ("object_id") REFERENCES users_schema.user ("id"); 
- 
 ALTER TABLE events_schema.participant ADD FOREIGN KEY ("status_id") REFERENCES general_schema.status ("id");
  
 ALTER TABLE events_schema.event_parameter ADD FOREIGN KEY ("parameter_id") REFERENCES events_schema.parameter ("id");
@@ -152,6 +148,22 @@ ALTER TABLE events_schema.event ADD FOREIGN KEY ("status_id") REFERENCES general
  
 ALTER TABLE users_schema.user_interest ADD FOREIGN KEY ("interest_id") REFERENCES users_schema.interest ("id");
  
+CREATE OR REPLACE FUNCTION
+general_schema.check_fk_exists(object_id INT, object_type_id INT)
+RETURNS BOOLEAN AS $$
+BEGIN
+	IF object_type_id = 1 THEN
+	RETURN EXISTS (SELECT 1 FROM users_schema.user WHERE "id" = object_id);
+	ELSIF object_type_id = 2 THEN RETURN EXISTS (SELECT 1 FROM events_schema.event WHERE "id" = object_id);
+	ELSE RETURN FALSE;
+	END IF;
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+ALTER TABLE general_schema.image ADD CONSTRAINT chech_object_fk
+CHECK (general_schema.check_fk_exists(object_id, object_type_id));	
+		
+
 
 INSERT INTO users_schema.role ("id", "role") VALUES
 (1, 'User'),
@@ -163,7 +175,7 @@ INSERT INTO general_schema.object_type ("id", "name") VALUES (1, 'Event'),
  
 INSERT INTO general_schema.status ("id", "name", "object_type_id") VALUES
 (1, 'Interested', 2),
-(2, 'Participants', 2),
+(2, 'Participant', 2),
 (3, 'Archived', 1),
 (4, 'In progress', 1);
  
