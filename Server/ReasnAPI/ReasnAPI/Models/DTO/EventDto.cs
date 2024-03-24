@@ -8,6 +8,8 @@ namespace ReasnAPI.Models.DTO {
         public int OrganizerId { get; set; }
         public DateTime StartAt { get; set; }
         public DateTime EndAt { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
         public string? Slug { get; set; }
         public int StatusId { get; set; }
     }

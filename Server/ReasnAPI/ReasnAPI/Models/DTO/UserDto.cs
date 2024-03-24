@@ -8,6 +8,7 @@ namespace ReasnAPI.Models.DTO {
         public string Email { get; set; } = null!;
         public string? Phone { get; set; }
         public int RoleId { get; set; }
-        public AddressDto? Address { get; set; }
+        public int AddressId { get; set; }
+        public List<IntrestDto>? Intrests { get; set; }
     }
 }
