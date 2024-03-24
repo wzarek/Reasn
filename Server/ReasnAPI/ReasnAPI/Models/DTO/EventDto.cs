@@ -12,5 +12,6 @@ namespace ReasnAPI.Models.DTO {
         public DateTime UpdatedAt { get; set; }
         public string? Slug { get; set; }
         public int StatusId { get; set; }
+        public List<TagDto>? Tags { get; set; }
     }
 }
