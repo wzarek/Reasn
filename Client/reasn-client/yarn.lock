@@ -3604,9 +3604,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@my/config@npm:0.0.1, @my/config@workspace:packages/config":
+"@my/config@npm:0.0.1, @my/config@workspace:shared/config":
   version: 0.0.0-use.local
-  resolution: "@my/config@workspace:packages/config"
+  resolution: "@my/config@workspace:shared/config"
   dependencies:
     "@tamagui/animations-react-native": "npm:^1.91.4"
     "@tamagui/build": "npm:^1.91.4"
@@ -3618,9 +3618,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@my/ui@npm:0.0.1, @my/ui@workspace:packages/ui":
+"@my/ui@npm:0.0.1, @my/ui@workspace:shared/ui":
   version: 0.0.0-use.local
-  resolution: "@my/ui@workspace:packages/ui"
+  resolution: "@my/ui@workspace:shared/ui"
   dependencies:
     "@my/config": "npm:0.0.1"
     "@tamagui/build": "npm:^1.91.4"
@@ -6970,9 +6970,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"app@npm:0.0.0, app@workspace:packages/app":
+"app@npm:0.0.0, app@workspace:shared/app":
   version: 0.0.0-use.local
-  resolution: "app@workspace:packages/app"
+  resolution: "app@workspace:shared/app"
   dependencies:
     "@my/ui": "npm:0.0.1"
     "@tamagui/animations-react-native": "npm:^1.91.4"

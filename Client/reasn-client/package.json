@@ -3,7 +3,7 @@
   "private": true,
   "workspaces": [
     "./apps/*",
-    "./packages/*"
+    "./shared/*"
   ],
   "scripts": {
     "native": "cd apps/expo && yarn start",
