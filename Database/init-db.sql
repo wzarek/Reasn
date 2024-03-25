@@ -110,7 +110,6 @@ CREATE TABLE IF NOT EXISTS users.interest (
   "level" integer NOT NULL
 );
  
-
 ALTER TABLE users.user ADD FOREIGN KEY ("role_id") REFERENCES users.role ("id");
  
 ALTER TABLE events.event ADD FOREIGN KEY ("address_id") REFERENCES common.address ("id");
@@ -147,7 +146,6 @@ ALTER TABLE events.event ADD FOREIGN KEY ("status_id") REFERENCES common.status 
  
 ALTER TABLE users.user_interest ADD FOREIGN KEY ("interest_id") REFERENCES users.interest ("id");
  
-
 INSERT INTO users.role ("id", "role") VALUES
 (1, 'Użytkownik'),
 (2, 'Organizator'),
@@ -173,5 +171,3 @@ INSERT INTO events.tag ("id", "name") VALUES
 (8, 'Esport'),
 (9, 'League of Legends'),
 (10, 'Zdrowie');
- 
-

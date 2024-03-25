@@ -121,16 +121,3 @@ INSERT INTO users.user_interest ("user_id", "interest_id") VALUES
 (8, 8),
 (9, 9),
 (10, 10);
-
-INSERT INTO common.image (image_data, object_type_id, object_id)
-VALUES
-(('path to image'), 1, 1),
-(('path to image2'), 2, 2),
-(('path to image3'), 1, 3),
-(('path to image4'), 2, 4),
-(('path to image5'), 1, 5),
-(('path to image6'), 2, 6),
-(('path to image7'), 1, 7),
-(('path to image8'), 2, 8),
-(('path to image9'), 1, 9),
-(('path to image10'), 2, 10);
