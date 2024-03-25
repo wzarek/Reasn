@@ -1,6 +1,6 @@
 using System;
 
-namespace ReasnAPI.Models.DTO {
+namespace ReasnAPI.Models.DTOs {
     public class EventDto {
         public string Name { get; set; } = null!;
         public int AddressId { get; set; }

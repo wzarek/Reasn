@@ -1,6 +1,6 @@
 using System;
 
-namespace ReasnAPI.Models.DTO {
+namespace ReasnAPI.Models.DTOs {
     public class AddressDto {
         public string Country { get; set; } = null!;
         public string City { get; set; } = null!;

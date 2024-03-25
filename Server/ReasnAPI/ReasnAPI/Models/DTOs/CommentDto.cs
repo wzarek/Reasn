@@ -1,6 +1,6 @@
 using System;
 
-namespace ReasnAPI.Models.DTO {
+namespace ReasnAPI.Models.DTOs {
     public class CommentDto {
         public int EventId { get; set; }
         public string Content { get; set; } = null!;

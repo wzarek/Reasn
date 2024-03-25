@@ -1,6 +1,6 @@
 using System;
 
-namespace ReasnAPI.Models.DTO {
+namespace ReasnAPI.Models.DTOs {
     public class UserDto {
         public string Username { get; set; } = null!;
         public string Name { get; set; } = null!;
