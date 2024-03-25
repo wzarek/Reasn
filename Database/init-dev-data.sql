@@ -1,4 +1,4 @@
-INSERT INTO users_schema.address ("id", "city", "country", "street", "state", "zip_code") VALUES
+INSERT INTO common.address ("id", "city", "country", "street", "state", "zip_code") VALUES
 (1, 'Stawiszyn', 'Polska', 'Pleszewska 2', 'Wielkopolskie', '62-820'),
 (2, 'Kalisz', 'Polska', 'Stawiszyńska 4', 'Wielkopolskie', '62-800'),
 (3, 'Bydgoszcz', 'Polska', 'Jagielońska 12', 'Kujawsko-Pomorskie', '85-097'),
@@ -10,20 +10,20 @@ INSERT INTO users_schema.address ("id", "city", "country", "street", "state", "z
 (9, 'Gdańsk', 'Polska', 'ul. Długa 69', 'Pomorskie', '80-001'),
 (10, 'Wrocław', 'Polska', 'Legnicka 420', 'Dolnośląskie', '51-702');
 
-INSERT INTO users_schema.user ("id", "name", "surname", "username", "password", "created_at", "updated_at", "role_id", "email", "is_active", "address_id", "phone") VALUES
-(1, 'Kamil', 'Owczarski', 'bilimigus', 'password', '2023-03-20 08:00:00', '2023-03-20 08:00:00', 1, 'bilimigus@example.com', B'1', 1, '123456789'),
-(2, 'Kamil', 'Owczarzyński', 'bilililimigosu', '12345', '2023-03-21 09:00:00', '2023-03-21 09:00:00', 2, 'bilililimigosu@example.com', B'1', 2, '696969691'),
-(3, 'Jan', 'Kowalski', 'jkowalski', 'hasło123', '2022-03-21 16:00:00', '2023-1-21 09:21:14', 1, 'jan.kowalski@example.com', B'0', 1, '123456789'),
-(4, 'Adam', 'Nowak', 'anowak', 'haslo123', '2022-01-05 10:30:00', '2022-02-15 14:20:45', 2, 'adam.nowak@example.com', B'0', 2, '987654321'),
-(5, 'Ewa', 'Kowalska', 'ekowalska', 'tajnehaslo', '2022-02-10 08:15:00', '2022-03-25 12:45:30', 1, 'ewa.kowalska@example.com', B'0', 3, '654321987'),
-(6, 'Piotr', 'Wiśniewski', 'pwiśniewski', 'password123', '2022-03-15 11:45:00', '2022-04-30 16:10:20', 3, 'piotr.wisniewski@example.com', B'0', 4, '321654987'),
-(7, 'Anna', 'Lis', 'alis', '123456', '2022-04-20 13:20:00', '2022-05-10 09:55:15', 2, 'anna.lis@example.com', B'1', 5, '789456123'),
-(8, 'Tomasz', 'Zieliński', 'tzielinski', 'qwerty', '2022-05-25 15:00:00', '2022-06-20 11:30:10', 1, 'tomasz.zielinski@example.com', B'1', 6, '456123789'),
-(9, 'Magdalena', 'Kowalczyk', 'mkowalczyk', 'mojehaslo', '2022-06-30 17:10:00', '2022-07-15 13:15:25', 3, 'magdalena.kowalczyk@example.com', B'1', 7, '987654123'),
-(10, 'Marcin', 'Szymański', 'mszymanski', 'password', '2022-07-05 09:00:00', '2022-08-05 08:20:35', 2, 'marcin.szymanski@example.com', B'1', 8, '321789654');
+INSERT INTO users.user ("id", "name", "surname", "username", "password", "created_at", "updated_at", "role_id", "email", "is_active", "address_id", "phone") VALUES
+(1, 'Kamil', 'Owczarski', 'bilimigus', 'password', '2023-03-20 08:00:00', '2023-03-20 08:00:00', 1, 'bilimigus@example.com', true, 1, '123456789'),
+(2, 'Kamil', 'Owczarzyński', 'bilililimigosu', '12345', '2023-03-21 09:00:00', '2023-03-21 09:00:00', 2, 'bilililimigosu@example.com', true, 2, '696969691'),
+(3, 'Jan', 'Kowalski', 'jkowalski', 'hasło123', '2022-03-21 16:00:00', '2023-1-21 09:21:14', 1, 'jan.kowalski@example.com', false, 1, '123456789'),
+(4, 'Adam', 'Nowak', 'anowak', 'haslo123', '2022-01-05 10:30:00', '2022-02-15 14:20:45', 2, 'adam.nowak@example.com', false, 2, '987654321'),
+(5, 'Ewa', 'Kowalska', 'ekowalska', 'tajnehaslo', '2022-02-10 08:15:00', '2022-03-25 12:45:30', 1, 'ewa.kowalska@example.com', false, 3, '654321987'),
+(6, 'Piotr', 'Wiśniewski', 'pwiśniewski', 'password123', '2022-03-15 11:45:00', '2022-04-30 16:10:20', 3, 'piotr.wisniewski@example.com', false, 4, '321654987'),
+(7, 'Anna', 'Lis', 'alis', '123456', '2022-04-20 13:20:00', '2022-05-10 09:55:15', 2, 'anna.lis@example.com', true, 5, '789456123'),
+(8, 'Tomasz', 'Zieliński', 'tzielinski', 'qwerty', '2022-05-25 15:00:00', '2022-06-20 11:30:10', 1, 'tomasz.zielinski@example.com', true, 6, '456123789'),
+(9, 'Magdalena', 'Kowalczyk', 'mkowalczyk', 'mojehaslo', '2022-06-30 17:10:00', '2022-07-15 13:15:25', 3, 'magdalena.kowalczyk@example.com', true, 7, '987654123'),
+(10, 'Marcin', 'Szymański', 'mszymanski', 'password', '2022-07-05 09:00:00', '2022-08-05 08:20:35', 2, 'marcin.szymanski@example.com', true, 8, '321789654');
   
 
-INSERT INTO events_schema.event ("id", "name", "address_id", "description", "organizer_id", "start_at", "end_at", "created_at", "updated_at", "slug", "status_id") VALUES
+INSERT INTO events.event ("id", "name", "address_id", "description", "organizer_id", "start_at", "end_at", "created_at", "updated_at", "slug", "status_id") VALUES
 (1, 'Tech Conference', 1, 'Annual tech conference', 1, '2023-10-01 09:00:00', '2023-10-02 17:00:00', '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'tech-conference', 1),
 (2, 'Health Symposium', 2, 'Health and wellness symposium', 2, '2023-11-05 09:00:00', '2023-11-06 17:00:00', '2023-10-05 08:00:00', '2023-10-05 08:00:00', 'health-symposium', 2),
 (3, 'Koncert Rockowy', 3, 'Występ ulubionych zespołów rockowych', 2, CURRENT_TIMESTAMP - '1 day'::INTERVAL, CURRENT_TIMESTAMP + '4 hours'::INTERVAL, '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'koncert-rockowy', 1),
@@ -35,8 +35,7 @@ INSERT INTO events_schema.event ("id", "name", "address_id", "description", "org
 (9, 'Koncert Klasyczny', 9, 'Muzyka klasyczna w wykonaniu renomowanych artystów', 10, CURRENT_TIMESTAMP + '1 day'::INTERVAL, CURRENT_TIMESTAMP + '1 day'::INTERVAL + '3 hours'::INTERVAL, '2023-01-01 15:00:00', '2023-02-01 08:00:00', 'koncert-klasyczny', 1),
 (10, 'Turniej w League of Legends', 10, 'Turniej LAN dla miłośnikow esportu i gry League of Legends', 10, CURRENT_TIMESTAMP - '1 day'::INTERVAL, CURRENT_TIMESTAMP - '3 hours'::INTERVAL, '2023-01-01 15:00:00', '2023-02-01 08:00:00', 'turniej-lol', 1);
 
-
-INSERT INTO events_schema.event_tag ("event_id", "tag_id") VALUES
+INSERT INTO events.event_tag ("event_id", "tag_id") VALUES
 (1, 1),
 (2, 10),
 (3, 5),
@@ -51,8 +50,7 @@ INSERT INTO events_schema.event_tag ("event_id", "tag_id") VALUES
 (10, 8),
 (10, 9);
 
-
-INSERT INTO events_schema.participant ("id", "event_id", "user_id", "status_id") VALUES
+INSERT INTO events.participant ("id", "event_id", "user_id", "status_id") VALUES
 (1, 1, 1, 2),
 (2, 2, 2, 2),
 (3, 3, 3, 2),
@@ -64,7 +62,7 @@ INSERT INTO events_schema.participant ("id", "event_id", "user_id", "status_id")
 (9, 9, 9, 2),
 (10, 10, 10, 2);
 
-INSERT INTO events_schema.parameter ("id", "key", "value") VALUES
+INSERT INTO events.parameter ("id", "key", "value") VALUES
 (1, 'Liczba Uczestników', '1000'),
 (2, 'Długość Trasy', '10 km'),
 (3, 'Temperatura', '25°C'),
@@ -76,7 +74,7 @@ INSERT INTO events_schema.parameter ("id", "key", "value") VALUES
 (9, 'Czas Trwania', '10 dni'),
 (10, 'Miejsce Wydarzenia', 'Plenerowe');
  
-INSERT INTO events_schema.event_parameter ("parameter_id", "event_id") VALUES
+INSERT INTO events.event_parameter ("parameter_id", "event_id") VALUES
 (1, 1),
 (2, 2),
 (3, 3),
@@ -88,7 +86,7 @@ INSERT INTO events_schema.event_parameter ("parameter_id", "event_id") VALUES
 (9, 9),
 (10, 10);
  
-INSERT INTO users_schema.comment ("id", "event_id", "content", "created_at", "user_id") VALUES
+INSERT INTO events.comment ("id", "event_id", "content", "created_at", "user_id") VALUES
 (1, 1, 'Nie mogę się doczekać!', '2023-09-10', 1),
 (2, 2, 'Trochę nudne...', '2023-10-15', 2),
 (3, 3, 'Super wydarzenie!', '2023-11-20', 3),
@@ -100,7 +98,7 @@ INSERT INTO users_schema.comment ("id", "event_id", "content", "created_at", "us
 (9, 9, 'To będzie świetna zabawa!', '2024-05-18', 9),
 (10, 10, 'jd orka', '2024-06-25', 10);
  
-INSERT INTO users_schema.interest ("id", "name", "level") VALUES
+INSERT INTO users.interest ("id", "name", "level") VALUES
 (1, 'Programowanie', 5),
 (2, 'Sport', 4),
 (3, 'Muzyka', 3),
@@ -112,7 +110,7 @@ INSERT INTO users_schema.interest ("id", "name", "level") VALUES
 (9, 'Podróże', 4),
 (10, 'Gry komputerowe', 5);
  
-INSERT INTO users_schema.user_interest ("user_id", "interest_id") VALUES
+INSERT INTO users.user_interest ("user_id", "interest_id") VALUES
 (1, 1),
 (2, 2),
 (3, 3),
@@ -124,7 +122,7 @@ INSERT INTO users_schema.user_interest ("user_id", "interest_id") VALUES
 (9, 9),
 (10, 10);
 
-INSERT INTO general_schema.image (image_data, object_type_id, object_id)
+INSERT INTO common.image (image_data, object_type_id, object_id)
 VALUES
 (('path to image'), 1, 1),
 (('path to image2'), 2, 2),
