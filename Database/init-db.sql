@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS events.event (
 );
  
 CREATE TABLE IF NOT EXISTS events.participant (
-  "id" SERIAL PRIMARY KEY NOT NULL,
+  "id" SERIAL PRIMARY KEY,
   "event_id" integer NOT NULL,
   "user_id" integer NOT NULL,
   "status_id" integer NOT NULL
@@ -66,15 +66,15 @@ CREATE TABLE IF NOT EXISTS events.event_parameter (
 );
  
 CREATE TABLE IF NOT EXISTS users.role (
-  "id" SERIAL PRIMARY KEY NOT NULL,
-  "role" varchar(255) NOT NULL
+  "id" SERIAL PRIMARY KEY,
+  "name" varchar(255) NOT NULL
 );
  
 CREATE TABLE IF NOT EXISTS events.comment (
   "id" SERIAL PRIMARY KEY,
   "event_id" integer NOT NULL,
   "content" varchar(255) NOT NULL,
-  "created_at" date NOT NULL,
+  "created_at" timestamptz NOT NULL,
   "user_id" integer NOT NULL
 );
  
@@ -146,7 +146,7 @@ ALTER TABLE events.event ADD FOREIGN KEY ("status_id") REFERENCES common.status 
  
 ALTER TABLE users.user_interest ADD FOREIGN KEY ("interest_id") REFERENCES users.interest ("id");
  
-INSERT INTO users.role ("id", "role") VALUES
+INSERT INTO users.role ("id", "name") VALUES
 (1, 'Użytkownik'),
 (2, 'Organizator'),
 (3, 'Admin');

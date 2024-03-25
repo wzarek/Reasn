@@ -6,9 +6,4 @@ services:
       - "5432:5432"
 
     volumes:
-      - ./database/init-dev-data.sql:/docker-entrypoint-initdb.d/init-dev-data.sql
-
-
-   
-
-
+      - ./Database/init-dev-data.sql:/docker-entrypoint-initdb.d/04_init-dev-data.sql
