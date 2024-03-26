@@ -4,3 +4,6 @@ services:
   postgres:
     ports:
       - "5432:5432"
+
+    volumes:
+      - ./Database/init-dev-data.sql:/docker-entrypoint-initdb.d/04_init-dev-data.sql
