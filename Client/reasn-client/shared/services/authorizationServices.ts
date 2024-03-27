@@ -1,10 +1,11 @@
-interface AuthData {
-    token: string;
-    role: string;
-}
+import { AuthData } from "../interfaces/AuthData";
 
-const AUTH_DATA_KEY : string = 'REASN__AUTH_DATA'
+const AUTH_DATA_KEY = "REASN_AUTH_DATA"
 
+/**
+ * Retrieves the authentication data from the session storage.
+ * @returns The authentication data if found, otherwise null.
+ */
 export const getAuthDataFromSessionStorage = (): AuthData | null => {
     const data = sessionStorage.getItem(AUTH_DATA_KEY)
 
@@ -21,15 +22,22 @@ export const getAuthDataFromSessionStorage = (): AuthData | null => {
     }
 }
 
+/**
+ * Sets the authentication data in the session storage.
+ * @param authData - The authentication data to be set.
+ */
 export const setAuthDataInSessionStorage = (authData: AuthData): void => {
     if (!authData) {
         console.error("Cannot set an empty auth data in session storage.")
-        return;
+        return
     }
 
     sessionStorage.setItem(AUTH_DATA_KEY, JSON.stringify(authData))
 };
 
+/**
+ * Clears the authentication data from the session storage.
+ */
 export const clearAuthDataInSessionStorage = (): void => {
     sessionStorage.removeItem(AUTH_DATA_KEY)
 };
