@@ -18,3 +18,5 @@ class ApiConnectionError extends Error {
         this.name = 'ApiConnectionError'
     }
 }
+
+export default ApiConnectionError

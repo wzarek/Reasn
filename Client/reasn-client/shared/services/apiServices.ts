@@ -1,5 +1,7 @@
-import { getAuthDataFromSessionStorage } from './authorizationServices'
-import { HttpMethods } from '../enums/servicesEnums'
+import { getAuthDataFromSessionStorage } from '@reasn-services/authorizationServices'
+import { HttpMethods } from '@reasn-enums/servicesEnums'
+import ApiConnectionError from '@reasn-errors/ApiConnectionError'
+import fetch from "cross-fetch"
 
 /**
  * Sends an HTTP request to the specified URL.
@@ -11,7 +13,7 @@ import { HttpMethods } from '../enums/servicesEnums'
  * @returns A promise that resolves to the response data of type T.
  * @throws {ApiConnectionError} If the response status is not ok.
  */
-export const sendRequest = async<T>(url: string, httpMethod: HttpMethods, bodyData: Object, authRequired: boolean = false): Promise<T> => {
+export const sendRequest = async<T>(url: string, httpMethod: HttpMethods, bodyData: Object = {}, authRequired: boolean = false): Promise<T> => {
     try {
         let headers = {}
         if (authRequired){
@@ -20,19 +22,19 @@ export const sendRequest = async<T>(url: string, httpMethod: HttpMethods, bodyDa
             headers['Authorization'] = `Bearer ${token}`
         }
 
-        const fetchOptions: RequestInit = {
+        const fetchOptions = {
             method: httpMethod, 
             headers: headers,
         }
 
         if (httpMethod === HttpMethods.POST || httpMethod === HttpMethods.PUT) {
-            fetchOptions.body = JSON.stringify(bodyData)
+            fetchOptions["body"] = JSON.stringify(bodyData)
         }
         
         const response = await fetch(url, fetchOptions)
 
         if (!response.ok) {
-            const errorData = await response.json();
+            const errorData = await response.json() as {message:string};
             console.error(`[HTTP ${response.status}]: ${errorData.message ?? 'No message provided'}`)
             throw new ApiConnectionError(response.status, `${errorData.message ?? 'No message provided'}`)
         }
