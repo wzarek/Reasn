@@ -94,9 +94,9 @@ namespace ReasnAPI.Services {
             return parameterDtos;
         }
 
-        public List<ParameterDto> GetParametersByFilter(string key, string value)
+        public List<ParameterDto> GetParametersByFilter(string filter)
         {
-            var parameters = _context.Parameters.Where(r => r.Key == key && r.Value == value).ToList();
+            var parameters = _context.Parameters.Where(r => r.Key.Contains(filter)).ToList();
             var parameterDtos = new List<ParameterDto>();
 
             foreach(var parameter in parameters)

@@ -7,12 +7,12 @@ namespace ReasnAPI.Services {
         private readonly ReasnContext _context = context;
 
         /* TODO: Create following functions for this class
-         * create (if one eventtag failed stoped the process)
-         * update
-         * delete
-         * get by ID
-         * get list by filter
-         * get all
+         * create (if one eventtag failed stoped the process) 
+         * update (with eventtags)
+         * delete   (with eventtags) 
+         * get by ID (with eventtags) 
+         * get list by filter (with eventtags) 
+         * get all (with eventtags) 
          */
 
         public EventDto CreateEvent(EventDto eventDto)
@@ -32,11 +32,12 @@ namespace ReasnAPI.Services {
                 StatusId = eventDto.StatusId,
                
             };
+
             _context.Events.Add(newEvent);
             _context.SaveChanges();
             var tempEvent = _context.Events.FirstOrDefault(r => r.Slug == eventDto.Slug);
             int eventId = tempEvent.Id;
-
+            if(eventDto.Tags != null)
             foreach (var tag in eventDto.Tags)
             {
                 var tempTag = _context.Tags.FirstOrDefault(r => r.Name == tag.Name);
@@ -56,6 +57,7 @@ namespace ReasnAPI.Services {
                     EventId = eventId,
                     TagId = tempTag.Id
                 };
+
                 _context.EventTags.Add(eventTag);
                 _context.SaveChanges();
             }
@@ -87,7 +89,7 @@ namespace ReasnAPI.Services {
             _context.SaveChanges();
 
 
-            var existingTags = _context.EventTags.Where(et => et.EventId == eventId).ToList();
+            var existingTags = _context.EventTags.Where(r => r.EventId == eventId).ToList();
 
             var newTags = eventDto.Tags.Select(tagDto => new EventTag
             {
@@ -99,7 +101,7 @@ namespace ReasnAPI.Services {
 
             foreach (var existingTag in existingTags)
             {
-                if (!newTags.Any(t => t.Tag == existingTag.Tag))
+                if (!newTags.Any(r => r.TagId == existingTag.TagId))
                 {
                     _context.EventTags.Remove(existingTag);
                 }
@@ -107,16 +109,134 @@ namespace ReasnAPI.Services {
 
             foreach (var newTag in newTags)
             {
-                if (!existingTags.Any(t => t.Tag == newTag.Tag))
+                if (!existingTags.Any(r => r.TagId == newTag.TagId))
                 {
-                    _context.EventTags.Add(new EventTag { EventId = eventId, Tag = newTag.Tag });
+                    _context.EventTags.Add(new EventTag { EventId = eventId, TagId = newTag.TagId });
                 }
             }
 
             return eventDto;
         }
+        
+        public bool DeleteEvent(int eventId)
+        {
+            var eventToDelete = _context.Events.FirstOrDefault(r => r.Id == eventId);
+            if(eventToDelete == null)
+            {
+                return false;
+            }
 
+            _context.EventTags.RemoveRange(_context.EventTags.Where(r => r.EventId == eventId));
+            _context.Events.Remove(eventToDelete);
 
+            _context.SaveChanges();
+            return true;
+        }
+
+        public EventDto GetEventById(int eventId)
+        {
+            var eventToReturn = _context.Events.FirstOrDefault(r => r.Id == eventId);
+            if(eventToReturn == null)
+            {
+                return null;
+            }
+
+            var eventTags = _context.EventTags.Where(r => r.EventId == eventId).ToList();
+            var tags = new List<TagDto>();
+            foreach (var eventTag in eventTags)
+            {
+                var tag = _context.Tags.FirstOrDefault(r => r.Id == eventTag.TagId);
+                tags.Add(new TagDto { Name = tag.Name });
+            }
+
+            var eventDto = new EventDto
+            {
+                Name = eventToReturn.Name,
+                AddressId = eventToReturn.AddressId,
+                Description = eventToReturn.Description,
+                OrganizerId = eventToReturn.OrganizerId,
+                StartAt = eventToReturn.StartAt,
+                EndAt = eventToReturn.EndAt,
+                CreatedAt = eventToReturn.CreatedAt,
+                UpdatedAt = eventToReturn.UpdatedAt,
+                Slug = eventToReturn.Slug,
+                StatusId = eventToReturn.StatusId,
+                Tags = tags
+            };
+
+            return eventDto;
+        }
+
+        public List<EventDto> GetEventsByFilter(string filter)
+        {
+            var events = _context.Events.Where(r => r.Name.Contains(filter)).ToList();
+            var eventDtos = new List<EventDto>();
+            foreach (var eventToReturn in events)
+            {
+                var eventTags = _context.EventTags.Where(r => r.EventId == eventToReturn.Id).ToList();
+                var tags = new List<TagDto>();
+                foreach (var eventTag in eventTags)
+                {
+                    var tag = _context.Tags.FirstOrDefault(r => r.Id == eventTag.TagId);
+                    tags.Add(new TagDto { Name = tag.Name });
+                }
+
+                var eventDto = new EventDto
+                {
+                    Name = eventToReturn.Name,
+                    AddressId = eventToReturn.AddressId,
+                    Description = eventToReturn.Description,
+                    OrganizerId = eventToReturn.OrganizerId,
+                    StartAt = eventToReturn.StartAt,
+                    EndAt = eventToReturn.EndAt,
+                    CreatedAt = eventToReturn.CreatedAt,
+                    UpdatedAt = eventToReturn.UpdatedAt,
+                    Slug = eventToReturn.Slug,
+                    StatusId = eventToReturn.StatusId,
+                    Tags = tags
+                };
+
+                eventDtos.Add(eventDto);
+            }
+
+            return eventDtos;
+        }
+
+        public List<EventDto> GetAllEvents()
+        {
+            var events = _context.Events.ToList();
+            var eventDtos = new List<EventDto>();
+            foreach (var eventToReturn in events)
+            {
+                var eventTags = _context.EventTags.Where(r => r.EventId == eventToReturn.Id).ToList();
+                var tags = new List<TagDto>();
+                foreach (var eventTag in eventTags)
+                {
+                    var tag = _context.Tags.FirstOrDefault(r => r.Id == eventTag.TagId);
+                    tags.Add(new TagDto { Name = tag.Name });
+                }
+
+                var eventDto = new EventDto
+                {
+                    Name = eventToReturn.Name,
+                    AddressId = eventToReturn.AddressId,
+                    Description = eventToReturn.Description,
+                    OrganizerId = eventToReturn.OrganizerId,
+                    StartAt = eventToReturn.StartAt,
+                    EndAt = eventToReturn.EndAt,
+                    CreatedAt = eventToReturn.CreatedAt,
+                    UpdatedAt = eventToReturn.UpdatedAt,
+                    Slug = eventToReturn.Slug,
+                    StatusId = eventToReturn.StatusId,
+                    Tags = tags
+                };
+
+                eventDtos.Add(eventDto);
+            }
+
+            return eventDtos;
+        }
+        
 
 
     }
