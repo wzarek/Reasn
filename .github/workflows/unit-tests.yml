@@ -1,15 +1,18 @@
 ﻿name: unit tests
 
 on: [push]
-
+env:
+  DOTNET_MINIMUM_TEST_COVERAGE: 0
+  
 jobs:
-  tests:
+  dotnet-tests:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Server/ReasnAPI
     steps:
       - uses: actions/checkout@v4
-      - name: Determine ReasnAPI solution
-        run: echo SOLUTION_FILE=$(realpath ./Server/ReasnAPI/ReasnAPI.sln) >> $GITHUB_ENV
-      
+        
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
@@ -19,26 +22,31 @@ jobs:
         run: dotnet tool install -g coverlet.console
       
       - name: Install dependencies
-        run: dotnet restore ${{ env.SOLUTION_FILE }}
+        run: dotnet restore
         
       - name: Build solution
-        run: dotnet build ${{ env.SOLUTION_FILE }} --no-restore
+        run: dotnet build --no-restore
         
       - name: Test with dotnet
-        run: |
-          RESULTS_FILENAME=results-$(date +"%Y-%m-%d_%H_%M_%S")
-          dotnet test ${{ env.SOLUTION_FILE }} --logger "trx;logfilename=$RESULTS_FILENAME.trx" --logger "html;logfilename=$RESULTS_FILENAME.html" --no-build --results-directory "TestResults-${{ github.sha }}"
+        run: >
+          dotnet test
+          --no-build
+          --verbosity normal
+          --logger "trx;logfilename=commit-${{ github.sha }}.trx"
+          --results-directory "TestResults-commit-${{ github.sha }}"
           
       - name: Run coverlet
-        run: |
-          TEST_ASSEMBLY=$(find ./Server/ReasnAPI/ReasnAPI.Tests/bin/ -name "ReasnAPI.Tests.dll")
-          coverlet "$TEST_ASSEMBLY" --target "dotnet" --targetargs "test ${{ env.SOLUTION_FILE }} --no-build"
+        run: >
+          coverlet .
+          --target "dotnet"
+          --targetargs "test --no-build"
+          --threshold ${{ env.DOTNET_MINIMUM_TEST_COVERAGE }}
         
       - name: Upload dotnet test results
         uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         with:
-          name: dotnet-results-${{ github.sha }}
-          path: TestResults-${{ github.sha }}
+          name: dotnet-results-commit-${{ github.sha }}
+          path: TestResults-commit-${{ github.sha }}
           retention-days: 14 
           
