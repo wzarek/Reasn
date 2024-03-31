@@ -6,7 +6,10 @@ env:
   
 jobs:
   dotnet-tests:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         working-directory: ./Server/ReasnAPI
@@ -32,8 +35,8 @@ jobs:
           dotnet test
           --no-build
           --verbosity normal
-          --logger "trx;logfilename=commit-${{ github.sha }}.trx"
-          --results-directory "TestResults-commit-${{ github.sha }}"
+          --logger "trx;logfilename=${{ matrix.os }}-commit-${{ github.sha }}.trx"
+          --results-directory "TestResults-${{ matrix.os }}-commit-${{ github.sha }}"
           
       - name: Run coverlet
         run: >
@@ -46,7 +49,31 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         with:
-          name: dotnet-results-commit-${{ github.sha }}
-          path: TestResults-commit-${{ github.sha }}
-          retention-days: 14 
-          
+          name: dotnet-results-${{ matrix.os }}-commit-${{ github.sha }}
+          path: TestResults-${{ matrix.os }}-commit-${{ github.sha }}
+          retention-days: 14
+
+  client-tests:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./Client/reasn-client
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21.7.x'
+
+      - name: Set yarn version
+        run: yarn set version 4.1
+      
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Test with jest
+        run: yarn test --coverage --ci
