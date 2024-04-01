@@ -3,10 +3,15 @@
     "strictNullChecks": true,
     "noUncheckedIndexedAccess": true,
     "paths": {
-      "app/*": ["./packages/app/*"],
-      "@my/ui/*": ["./packages/ui/*"]
+      "app/*": ["./shared/app/*"],
+      "@my/ui/*": ["./shared/ui/*"],
+      "@reasn-services/*": ["./shared/services/*"],
+      "@reasn-types/*": ["./shared/types/*"],
+      "@reasn-interfaces/*": ["./shared/interfaces/*"],
+      "@reasn-errors/*": ["./shared/errors/*"],
+      "@reasn-enums*": ["./shared/enums/*"],
     }
   },
-  "extends": "tsconfig.base",
+  "extends": "./tsconfig.base.json",
   "exclude": ["**/node_modules", "**/dist", "**/types", "apps/next/out", "apps/next/.next", "apps/next/.tamagui"]
 }
