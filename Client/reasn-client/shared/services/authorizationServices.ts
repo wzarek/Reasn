@@ -1,4 +1,5 @@
-import { AuthData } from "../interfaces/AuthData";
+import { UserRole } from "@reasn-enums/servicesEnums";
+import { AuthData } from "@reasn-interfaces/AuthData";
 
 const AUTH_DATA_KEY = "REASN_AUTH_DATA"
 
@@ -14,7 +15,7 @@ export const getAuthDataFromSessionStorage = (): AuthData | null => {
         return null
     }
 
-    let dataObj: { token: string; role: string } = JSON.parse(data)
+    let dataObj: { token: string; role: UserRole } = JSON.parse(data)
 
     return {
         token: dataObj.token,

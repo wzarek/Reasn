@@ -1,7 +1,8 @@
 import { getAuthDataFromSessionStorage } from '@reasn-services/authorizationServices'
-import { HttpMethods } from '@reasn-enums/servicesEnums'
+import { HttpMethod } from '@reasn-enums/servicesEnums'
 import ApiConnectionError from '@reasn-errors/ApiConnectionError'
 import fetch from "cross-fetch"
+import ApiAuthorizationError from '@reasn-errors/ApiAuthorizationError'
 
 /**
  * Sends an HTTP request to the specified URL.
@@ -13,13 +14,15 @@ import fetch from "cross-fetch"
  * @returns A promise that resolves to the response data of type T.
  * @throws {ApiConnectionError} If the response status is not ok.
  */
-export const sendRequest = async<T>(url: string, httpMethod: HttpMethods, bodyData: Object = {}, authRequired: boolean = false): Promise<T> => {
+export const sendRequest = async<T>(url: string, httpMethod: HttpMethod, bodyData: Object = {}, authRequired: boolean = false): Promise<T> => {
     try {
         let headers = {}
         if (authRequired){
             const authData = getAuthDataFromSessionStorage()
-            const token = authData?.token ?? 'no-token'
-            headers['Authorization'] = `Bearer ${token}`
+            if (!authData) {
+                throw new ApiAuthorizationError('Unauthorized access. No auth data found in session storage')
+            }
+            headers['Authorization'] = `Bearer ${authData?.token}`
         }
 
         const fetchOptions = {
@@ -27,7 +30,7 @@ export const sendRequest = async<T>(url: string, httpMethod: HttpMethods, bodyDa
             headers: headers,
         }
 
-        if (httpMethod === HttpMethods.POST || httpMethod === HttpMethods.PUT) {
+        if (httpMethod === HttpMethod.POST || httpMethod === HttpMethod.PUT) {
             fetchOptions["body"] = JSON.stringify(bodyData)
         }
         
