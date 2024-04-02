@@ -42,17 +42,13 @@ namespace ReasnAPI.Services {
             return intrestDto;
         }
 
-        public bool DeleteIntrest(int id)
+        public void DeleteIntrest(int id)
         {
             var intrest = _context.Interests.Find(id);
-            if (intrest == null)
-            {
-                return false;
-            }
-
+        
             _context.Interests.Remove(intrest);
             _context.SaveChanges();
-            return true;
+          
         }
 
         public IntrestDto GetIntrestById(int intrestId)
