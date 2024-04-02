@@ -1,10 +1,26 @@
 services:
+  web:
+    build:
+      context: Client
+      dockerfile: web.Dockerfile
+    restart: unless-stopped
+    networks:
+      - reasn-network
+    ports:
+      - "${WEB_LISTEN_PORT:-5273}:3000"
+    env_file:
+      - .env
+    depends_on:
+      - server
+
   server:
     build:
       context: Server
       dockerfile: server.Dockerfile
       target: production
+    restart: unless-stopped
     networks:
+      - reasn-isolated-network
       - reasn-network
     ports:
       - "${SERVER_LISTEN_PORT:-5272}:8080"
@@ -18,7 +34,7 @@ services:
     image: postgres:16
     restart: unless-stopped
     networks:
-      - reasn-network
+      - reasn-isolated-network
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./Database/init-db.sql:/docker-entrypoint-initdb.d/01-init-db.sql
@@ -34,8 +50,9 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:8.0
+    restart: unless-stopped
     networks:
-      - reasn-network
+      - reasn-isolated-network
     ports:
       - "${PGADMIN_LISTEN_PORT:-5050}:${PGADMIN_LISTEN_PORT:-80}"
     volumes:
@@ -47,6 +64,8 @@ services:
         condition: service_healthy
 
 networks:
+  reasn-isolated-network:
+    driver: bridge
   reasn-network:
     driver: bridge
 
