@@ -118,19 +118,16 @@ namespace ReasnAPI.Services {
             return eventDto;
         }
         
-        public bool DeleteEvent(int eventId)
+        public void DeleteEvent(int eventId)
         {
             var eventToDelete = _context.Events.FirstOrDefault(r => r.Id == eventId);
-            if(eventToDelete == null)
-            {
-                return false;
-            }
+           
 
             _context.EventTags.RemoveRange(_context.EventTags.Where(r => r.EventId == eventId));
             _context.Events.Remove(eventToDelete);
 
             _context.SaveChanges();
-            return true;
+          
         }
 
         public EventDto GetEventById(int eventId)

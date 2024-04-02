@@ -46,18 +46,16 @@ namespace ReasnAPI.Services {
             return parameterDto;
         }
 
-        public bool DeleteParameter(int parameterId)
+        public void DeleteParameter(int parameterId)
         {
             var parameter = _context.Parameters.FirstOrDefault(r => r.Id == parameterId);
-            if(parameter == null)
-            {
-                return false;
-            }
+           
+      
 
             _context.Parameters.Remove(parameter);
             _context.SaveChanges();
 
-            return true;
+           
         }
 
         public ParameterDto GetParameterById(int parameterId)

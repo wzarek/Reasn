@@ -45,17 +45,13 @@ namespace ReasnAPI.Services {
             return imageDto;
         }
 
-        public bool DeleteImage(int id)
+        public void DeleteImage(int id)
         {
             var image = _context.Images.Find(id);
-            if (image == null)
-            {
-                return false;
-            }
-
+       
             _context.Images.Remove(image);
             _context.SaveChanges();
-            return true;
+         
         }
 
         public ImageDto GetImageById(int id)

@@ -48,18 +48,15 @@ namespace ReasnAPI.Services {
             return tagDto;
         }   
 
-        public bool DeleteTag(int tagId)
+        public void DeleteTag(int tagId)
         {
             var tag = _context.Tags.FirstOrDefault(r => r.Id == tagId);
-            if(tag == null)
-            {
-                return false;
-            }
+            
 
             _context.Tags.Remove(tag);
             _context.SaveChanges();
 
-            return true;
+            
         }
 
         public TagDto GetTagById(int tagId)

@@ -43,18 +43,14 @@ namespace ReasnAPI.Services {
             return statusDto;
         }
 
-        public bool DeleteStatus(int statusId)
+        public void DeleteStatus(int statusId)
         {
             var status = _context.Statuses.FirstOrDefault(r => r.Id == statusId);
-            if(status == null)
-            {
-                return false;
-            }
+           
 
             _context.Statuses.Remove(status);
             _context.SaveChanges();
 
-            return true;
         }
 
         public StatusDto GetStatusById(int statusId)
