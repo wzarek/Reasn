@@ -28,5 +28,7 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+**/coverage.json
+**/TestResults
 LICENSE
 README.md
