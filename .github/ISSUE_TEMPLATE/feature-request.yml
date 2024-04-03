@@ -1,0 +1,19 @@
+name: ✨ Feature request
+description: Suggest an idea to improve our solution.
+title: "<title>"
+labels: ["type: feature request"]
+body:
+  - type: textarea
+    attributes:
+      label: What new thing should be implemented?
+      description: A concise description of what you're expecting.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: What is your acceptance criteria?
+      description: Necessary functionalities to meet your requirements.
+    validations:
+      required: true
+
