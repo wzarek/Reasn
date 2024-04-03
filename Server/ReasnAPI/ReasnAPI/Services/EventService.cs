@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
+using System.Linq.Expressions;
 
 namespace ReasnAPI.Services {
     public class EventService (ReasnContext context) {
@@ -164,9 +165,9 @@ namespace ReasnAPI.Services {
             return eventDto;
         }
 
-        public List<EventDto> GetEventsByFilter(string filter)
+        public List<EventDto> GetEventsByFilter(Expression<Func<Event, bool>> filter)
         {
-            var events = _context.Events.Where(r => r.Name.Contains(filter)).ToList();
+            var events = _context.Events.Where(filter).ToList();
             var eventDtos = new List<EventDto>();
             foreach (var eventToReturn in events)
             {

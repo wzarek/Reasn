@@ -1,5 +1,6 @@
 ﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
+using System.Linq.Expressions;
 
 namespace ReasnAPI.Services {
     public class IntrestService (ReasnContext context) {
@@ -67,25 +68,6 @@ namespace ReasnAPI.Services {
             return intrestDto;
         }
 
-        public List<IntrestDto> GetIntrestsByFilter(string filter)
-        {
-            var intrests = _context.Interests.Where(r => r.Name.Contains(filter)).ToList();
-            if (intrests == null)
-            {
-                return null;
-            }
-
-            var intrestDtos = new List<IntrestDto>();
-            foreach (var intrest in intrests)
-            {
-                intrestDtos.Add(new IntrestDto
-                {
-                    Name = intrest.Name
-                });
-            }
-
-            return intrestDtos;
-        }
 
         public List<IntrestDto> GetAllIntrests()
         {
@@ -102,10 +84,26 @@ namespace ReasnAPI.Services {
             return intrestDtos;
         }
 
+        public List<IntrestDto> GetIntrestsByFilter(Expression<Func<Interest, bool>> filter)
+        {
+            var intrests = _context.Interests.Where(filter).ToList();
+            if (intrests == null)
+            {
+                return null;
+            }
+
+            var intrestDtos = intrests.Select(intrest => new IntrestDto
+            {
+                Name = intrest.Name
+            }).ToList();
+
+            return intrestDtos;
+        }
+        
+       
+
 
     }
-
-
 
 
 }

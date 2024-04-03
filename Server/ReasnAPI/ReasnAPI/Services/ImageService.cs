@@ -1,5 +1,6 @@
 ﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
+using System.Linq.Expressions;
 
 namespace ReasnAPI.Services {
     public class ImageService (ReasnContext context) {
@@ -72,9 +73,12 @@ namespace ReasnAPI.Services {
             return imageDto;
         }
 
-        public List<ImageDto> GetImagesByFilter(int objectTypeId, int objectId)
+       
+        
+
+        public List<ImageDto> GetAllImages()
         {
-            var images = _context.Images.Where(r => r.ObjectTypeId == objectTypeId && r.ObjectId == objectId).ToList();
+            var images = _context.Images.ToList();
             if (images == null)
             {
                 return null;
@@ -90,9 +94,9 @@ namespace ReasnAPI.Services {
             return imageDtos;
         }
 
-        public List<ImageDto> GetAllImages()
+        public List<ImageDto> GetImagesByFilter(Expression<Func<Image, bool>> filter)
         {
-            var images = _context.Images.ToList();
+            var images = _context.Images.Where(filter).ToList();
             if (images == null)
             {
                 return null;

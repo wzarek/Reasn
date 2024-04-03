@@ -1,5 +1,7 @@
 ﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace ReasnAPI.Services {
     public class TagService (ReasnContext context) {
@@ -88,19 +90,19 @@ namespace ReasnAPI.Services {
             return tagDtos;
         }
 
-        public List<TagDto> GetTagsByFilter(string filter)
+        public List<TagDto> GetTagsByFilter(Expression<Func<Tag, bool>> filter)
         {
-            var tags = _context.Tags.Where(r => r.Name.Contains(filter)).ToList();
-            var tagDtos = new List<TagDto>();
-            foreach(var tag in tags)
+            var tags = _context.Tags.Where(filter).ToList();
+            var tagsDtos = new List<TagDto>();
+            foreach (var tag in tags)
             {
-                tagDtos.Add(new TagDto
+                tagsDtos.Add(new TagDto
                 {
                     Name = tag.Name
                 });
             }
 
-            return tagDtos;
+            return tagsDtos;
         }
 
     }

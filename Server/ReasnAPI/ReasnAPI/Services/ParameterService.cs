@@ -1,5 +1,6 @@
 ﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
+using System.Linq.Expressions;
 
 namespace ReasnAPI.Services {
     public class ParameterService (ReasnContext context){
@@ -92,9 +93,10 @@ namespace ReasnAPI.Services {
             return parameterDtos;
         }
 
-        public List<ParameterDto> GetParametersByFilter(string filter)
+        
+       public List<ParameterDto> GetParametersByFilter(Expression<Func<Parameter, bool>> filter)
         {
-            var parameters = _context.Parameters.Where(r => r.Key.Contains(filter)).ToList();
+            var parameters = _context.Parameters.Where(filter).ToList();
             var parameterDtos = new List<ParameterDto>();
 
             foreach(var parameter in parameters)
@@ -107,8 +109,8 @@ namespace ReasnAPI.Services {
             }
 
             return parameterDtos;
-        }
 
+        }
 
     }
 }
