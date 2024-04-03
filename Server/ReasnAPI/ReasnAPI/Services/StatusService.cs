@@ -1,5 +1,6 @@
 ﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
+using System.Linq.Expressions;
 
 namespace ReasnAPI.Services {
     public class StatusService (ReasnContext context) {
@@ -82,9 +83,9 @@ namespace ReasnAPI.Services {
             return statusDtos;
         }
 
-        public List<StatusDto> GetStatusesByFilter(string filter)
+        public List<StatusDto> GetStatusesByFilter(Expression<Func<Status, bool>> filter)
         {
-            var statuses = _context.Statuses.Where(r => r.Name.Contains(filter)).ToList();
+            var statuses = _context.Statuses.Where(filter).ToList();
             var statusDtos = new List<StatusDto>();
             foreach(var status in statuses)
             {
@@ -95,6 +96,9 @@ namespace ReasnAPI.Services {
             }
 
             return statusDtos;
+
+
+
         }
 
     }
