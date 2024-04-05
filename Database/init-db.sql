@@ -21,53 +21,57 @@ CREATE TABLE IF NOT EXISTS events.participant (
   "event_id" integer NOT NULL,
   "user_id" integer NOT NULL,
   "status_id" integer NOT NULL
+  UNIQUE ("event_id", "user_id")
 );
 
 CREATE TABLE IF NOT EXISTS common.status (
   "id" SERIAL PRIMARY KEY,
-  "name" text NOT NULL CONSTRAINT common_status_name_maxlength CHECK (LENGTH("name") <= 32),
+  "name" text NOT NULL CONSTRAINT common_status_name_maxlength CHECK (LENGTH("name") <= 32) UNIQUE,
   "object_type_id" integer NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS events.tag (
   "id" SERIAL PRIMARY KEY,
-  "name" text NOT NULL CONSTRAINT events_tag_name_maxlength CHECK (LENGTH("name") <= 64)
+  "name" text NOT NULL CONSTRAINT events_tag_name_maxlength CHECK (LENGTH("name") <= 64) UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS events.event_tag (
   "event_id" integer NOT NULL,
-  "tag_id" integer NOT NULL
+  "tag_id" integer NOT NULL,
+  PRIMARY KEY (event_id, tag_id) 
 );
 
 CREATE TABLE IF NOT EXISTS users.user (
   "id" SERIAL PRIMARY KEY,
   "name" text NOT NULL CONSTRAINT users_user_name_maxlength CHECK (LENGTH(name) <= 64),
   "surname" text NOT NULL  CONSTRAINT users_user_surname_maxlength CHECK (LENGTH("surname") <= 64),
-  "username" text NOT NULL  CONSTRAINT users_user_username_maxlength CHECK (LENGTH("username") <= 64),
+  "username" text NOT NULL  CONSTRAINT users_user_username_maxlength CHECK (LENGTH("username") <= 64) UNIQUE,
   "password" text NOT NULL,
   "created_at" timestamptz NOT NULL,
   "updated_at" timestamptz NOT NULL,
   "role_id" integer NOT NULL,
-  "email" text NOT NULL  CONSTRAINT users_user_email_maxlength CHECK (LENGTH("email") <= 255),
+  "email" text NOT NULL  CONSTRAINT users_user_email_maxlength CHECK (LENGTH("email") <= 255) UNIQUE,
   "is_active" boolean NOT NULL,
   "address_id" integer NOT NULL,
-  "phone" text  CONSTRAINT users_user_phone_maxlength CHECK (LENGTH("phone") <= 16)
+  "phone" text  CONSTRAINT users_user_phone_maxlength CHECK (LENGTH("phone") <= 16) UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS events.parameter (
   "id" SERIAL PRIMARY KEY,
   "key" text NOT NULL CONSTRAINT events_patameter_key_maxlength CHECK (LENGTH("key") <= 32),
   "value" text NOT NULL CONSTRAINT events_patameter_value_maxlength CHECK (LENGTH("value") <= 64)
+  UNIQUE("key", "value")
 );
 
 CREATE TABLE IF NOT EXISTS events.event_parameter (
   "parameter_id" integer NOT NULL,
   "event_id" integer NOT NULL
+  PRIMARY KEY (parameter_id, event_id)
 );
 
 CREATE TABLE IF NOT EXISTS users.role (
   "id" SERIAL PRIMARY KEY,
-  "name" text NOT NULL CHECK (LENGTH("name") <= 32)
+  "name" text NOT NULL CHECK (LENGTH("name") <= 32) UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS events.comment (
@@ -96,18 +100,19 @@ CREATE TABLE IF NOT EXISTS common.image (
 
 CREATE TABLE IF NOT EXISTS common.object_type (
   "id" SERIAL PRIMARY KEY,
-  "name" text NOT NULL CONSTRAINT common_object_type_name_maxlength CHECK (LENGTH("name") <= 32)
+  "name" text NOT NULL CONSTRAINT common_object_type_name_maxlength CHECK (LENGTH("name") <= 32) UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS users.user_interest (
   "user_id" integer NOT NULL,
   "interest_id" integer NOT NULL,
   "level" integer NOT NULL
+  PRIMARY KEY (user_id, interest_id)
 );
 
 CREATE TABLE IF NOT EXISTS users.interest (
   "id" SERIAL PRIMARY KEY,
-  "name" text NOT NULL CONSTRAINT users_interest_name_maxlength CHECK (LENGTH("name") <= 32)
+  "name" text NOT NULL CONSTRAINT users_interest_name_maxlength CHECK (LENGTH("name") <= 32) UNIQUE
 );
 
 ALTER TABLE users.user ADD FOREIGN KEY ("role_id") REFERENCES users.role ("id");
@@ -155,11 +160,12 @@ INSERT INTO common.object_type ("id", "name") VALUES (1, 'Event'),
 (2, 'User');
  
 INSERT INTO common.status ("id", "name", "object_type_id") VALUES
-(1, 'Zainteresoway', 2),
-(2, 'Wezmę udział', 2),
-(3, 'Zrealizowano', 1),
-(4, 'W trakcie realizacji', 1);
-
+(1, 'Interested', 2),
+(2, 'Participating', 2),
+(3, 'Completed', 1),
+(4, 'In progress', 1),
+(5, 'Waiting for approval', 1);
+ 
 INSERT INTO events.tag ("id", "name") VALUES
 (1, 'Technologia'),
 (2, 'Sport'),
@@ -167,7 +173,7 @@ INSERT INTO events.tag ("id", "name") VALUES
 (4, 'Muzyka'),
 (5, 'Rock'),
 (6, 'Koszykówka'),
-(7, 'Hip-Hop'),
+(7, 'Hip Hop'),
 (8, 'Esport'),
 (9, 'League of Legends'),
 (10, 'Zdrowie');
