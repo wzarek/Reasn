@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS events.event (
   "name" varchar NOT NULL,
   "address_id" integer NOT NULL,
   "description" text NOT NULL,
-  "organizer_id" integer NOT NULL,
+  "organiser_id" integer NOT NULL,
   "start_at" timestamptz NOT NULL,
   "end_at" timestamptz NOT NULL,
   "created_at" timestamptz NOT NULL,
@@ -99,12 +99,12 @@ CREATE TABLE IF NOT EXISTS common.object_type (
   "name" varchar(255) NOT NULL
 );
  
-CREATE TABLE IF NOT EXISTS users.user_interest (
+CREATE TABLE IF NOT EXISTS users.user_intrest (
   "user_id" integer NOT NULL,
-  "interest_id" integer NOT NULL
+  "intrest_id" integer NOT NULL
 );
  
-CREATE TABLE IF NOT EXISTS users.interest (
+CREATE TABLE IF NOT EXISTS users.intrest (
   "id" SERIAL PRIMARY KEY,
   "name" varchar(255) NOT NULL,
   "level" integer NOT NULL
@@ -116,7 +116,7 @@ ALTER TABLE events.event ADD FOREIGN KEY ("address_id") REFERENCES common.addres
  
 ALTER TABLE events.comment ADD FOREIGN KEY ("event_id") REFERENCES events.event ("id");
  
-ALTER TABLE events.event ADD FOREIGN KEY ("organizer_id") REFERENCES users.user ("id");
+ALTER TABLE events.event ADD FOREIGN KEY ("organiser_id") REFERENCES users.user ("id");
  
 ALTER TABLE events.participant ADD FOREIGN KEY ("event_id") REFERENCES events.event ("id");
  
@@ -126,7 +126,7 @@ ALTER TABLE events.comment ADD FOREIGN KEY ("user_id") REFERENCES users.user ("i
  
 ALTER TABLE common.image ADD FOREIGN KEY ("object_type_id") REFERENCES common.object_type ("id");
  
-ALTER TABLE users.user_interest ADD FOREIGN KEY ("user_id") REFERENCES users.user ("id");
+ALTER TABLE users.user_intrest ADD FOREIGN KEY ("user_id") REFERENCES users.user ("id");
  
 ALTER TABLE users.user ADD FOREIGN KEY ("address_id") REFERENCES common.address ("id");
  
@@ -144,21 +144,21 @@ ALTER TABLE common.status ADD FOREIGN KEY ("object_type_id") REFERENCES common.o
  
 ALTER TABLE events.event ADD FOREIGN KEY ("status_id") REFERENCES common.status ("id");
  
-ALTER TABLE users.user_interest ADD FOREIGN KEY ("interest_id") REFERENCES users.interest ("id");
+ALTER TABLE users.user_intrest ADD FOREIGN KEY ("intrest_id") REFERENCES users.intrest ("id");
  
 INSERT INTO users.role ("id", "name") VALUES
-(1, 'Użytkownik'),
-(2, 'Organizator'),
+(1, 'User'),
+(2, 'Organiser'),
 (3, 'Admin');
  
-INSERT INTO common.object_type ("id", "name") VALUES (1, 'Wydarzenie'),
-(2, 'Użytkownik');
+INSERT INTO common.object_type ("id", "name") VALUES (1, 'Event'),
+(2, 'User');
  
 INSERT INTO common.status ("id", "name", "object_type_id") VALUES
-(1, 'Zainteresoway', 2),
-(2, 'Wezmę udział', 2),
-(3, 'Zrealizowano', 1),
-(4, 'W trakcie realizacji', 1);
+(1, 'Interested', 2),
+(2, 'Participating', 2),
+(3, 'Completed', 1),
+(4, 'In progress', 1);
  
 INSERT INTO events.tag ("id", "name") VALUES
 (1, 'Technologia'),
@@ -167,7 +167,7 @@ INSERT INTO events.tag ("id", "name") VALUES
 (4, 'Muzyka'),
 (5, 'Rock'),
 (6, 'Koszykówka'),
-(7, 'Hip-Hop'),
+(7, 'Hip Hop'),
 (8, 'Esport'),
 (9, 'League of Legends'),
 (10, 'Zdrowie');

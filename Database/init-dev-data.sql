@@ -3,11 +3,11 @@ INSERT INTO common.address ("id", "city", "country", "street", "state", "zip_cod
 (2, 'Kalisz', 'Polska', 'Stawiszyńska 4', 'Wielkopolskie', '62-800'),
 (3, 'Bydgoszcz', 'Polska', 'Jagielońska 12', 'Kujawsko-Pomorskie', '85-097'),
 (4, 'Poznań', 'Polska', 'Bułgarska 17', 'Wielkopolskie', '60-320'),
-(5, 'Koźminek', 'Polska', 'Mikołaja Kopernika', 'Wielkopolskie', '62-840'),
+(5, 'Koźminek', 'Polska', 'Mikołaja Kopernika 15', 'Wielkopolskie', '62-840'),
 (6, 'Kalisz', 'Polska', 'Górnośląska 2', 'Wielkopolskie', '62-800'),
-(7, 'Warszawa', 'Polska', 'Aleje Jerozolimskie', 'Mazowieckie', '00-001'),
-(8, 'Kraków', 'Polska', 'ul. Floriańska 7', 'Małopolskie', '30-001'),
-(9, 'Gdańsk', 'Polska', 'ul. Długa 69', 'Pomorskie', '80-001'),
+(7, 'Warszawa', 'Polska', 'Aleje Jerozolimskie 69', 'Mazowieckie', '00-001'),
+(8, 'Kraków', 'Polska', 'Floriańska 7', 'Małopolskie', '30-001'),
+(9, 'Gdańsk', 'Polska', 'Długa 69', 'Pomorskie', '80-001'),
 (10, 'Wrocław', 'Polska', 'Legnicka 420', 'Dolnośląskie', '51-702');
 
 INSERT INTO users.user ("id", "name", "surname", "username", "password", "created_at", "updated_at", "role_id", "email", "is_active", "address_id", "phone") VALUES
@@ -23,7 +23,7 @@ INSERT INTO users.user ("id", "name", "surname", "username", "password", "create
 (10, 'Marcin', 'Szymański', 'mszymanski', 'password', '2022-07-05 09:00:00', '2022-08-05 08:20:35', 2, 'marcin.szymanski@example.com', true, 8, '321789654');
   
 
-INSERT INTO events.event ("id", "name", "address_id", "description", "organizer_id", "start_at", "end_at", "created_at", "updated_at", "slug", "status_id") VALUES
+INSERT INTO events.event ("id", "name", "address_id", "description", "organiser_id", "start_at", "end_at", "created_at", "updated_at", "slug", "status_id") VALUES
 (1, 'Tech Conference', 1, 'Annual tech conference', 1, '2023-10-01 09:00:00', '2023-10-02 17:00:00', '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'tech-conference', 1),
 (2, 'Health Symposium', 2, 'Health and wellness symposium', 2, '2023-11-05 09:00:00', '2023-11-06 17:00:00', '2023-10-05 08:00:00', '2023-10-05 08:00:00', 'health-symposium', 2),
 (3, 'Koncert Rockowy', 3, 'Występ ulubionych zespołów rockowych', 2, CURRENT_TIMESTAMP - '1 day'::INTERVAL, CURRENT_TIMESTAMP + '4 hours'::INTERVAL, '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'koncert-rockowy', 1),
@@ -65,7 +65,7 @@ INSERT INTO events.participant ("id", "event_id", "user_id", "status_id") VALUES
 INSERT INTO events.parameter ("id", "key", "value") VALUES
 (1, 'Liczba Uczestników', '1000'),
 (2, 'Długość Trasy', '10 km'),
-(3, 'Temperatura', '25°C'),
+(3, 'Temperatura', '25 C'),
 (4, 'Czas Trwania', '2 godziny'),
 (5, 'Poziom Trudności', 'Średni'),
 (6, 'Rozdawane Nagrody', '500 USD'),
@@ -98,7 +98,7 @@ INSERT INTO events.comment ("id", "event_id", "content", "created_at", "user_id"
 (9, 9, 'To będzie świetna zabawa!', '2024-05-18', 9),
 (10, 10, 'jd orka', '2024-06-25', 10);
  
-INSERT INTO users.interest ("id", "name", "level") VALUES
+INSERT INTO users.intrest ("id", "name", "level") VALUES
 (1, 'Programowanie', 5),
 (2, 'Sport', 4),
 (3, 'Muzyka', 3),
@@ -110,7 +110,7 @@ INSERT INTO users.interest ("id", "name", "level") VALUES
 (9, 'Podróże', 4),
 (10, 'Gry komputerowe', 5);
  
-INSERT INTO users.user_interest ("user_id", "interest_id") VALUES
+INSERT INTO users.user_intrest ("user_id", "intrest_id") VALUES
 (1, 1),
 (2, 2),
 (3, 3),
