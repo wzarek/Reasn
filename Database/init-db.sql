@@ -153,7 +153,7 @@ ALTER TABLE users.user_interest ADD FOREIGN KEY ("interest_id") REFERENCES users
 
 INSERT INTO users.role ("id", "name") VALUES
 (1, 'User'),
-(2, 'Organiser'),
+(2, 'Organizer'),
 (3, 'Admin');
  
 INSERT INTO common.object_type ("id", "name") VALUES (1, 'Event'),
