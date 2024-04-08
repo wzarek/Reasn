@@ -33,7 +33,7 @@ ALTER TABLE users.user ADD CONSTRAINT chk_user_surname CHECK (surname ~ '^[a-zA-
 
 ALTER TABLE users.user ADD CONSTRAINT chk_user_username CHECK (username ~ '^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻàáâäãåčćèéêëėįìíîïńòôöõøùúûüųūÿýñçčšžÀÁÂÄÃÅČĖÈÉÊËÌÍÎÏĮÒÔÖÕØÙÚÛÜŲŪŸÝÑßÇŒÆČŠŽ∂ð 0-9 ]+$');
 
-ALTER TABLE users.intrest ADD CONSTRAINT chk_intrest_name CHECK (name ~ '^[A-ZĄĆĘŁŃÓŚŹŻa-ząćęłńóśźż ]+$');
+ALTER TABLE users.interest ADD CONSTRAINT chk_interest_name CHECK (name ~ '^[A-ZĄĆĘŁŃÓŚŹŻa-ząćęłńóśźż ]+$');
 
 ALTER TABLE events.event ADD CONSTRAINT chk_event_slug CHECK (slug ~ '^[a-z0-9]+(?:-[a-z0-9]+)*$');
 
@@ -47,7 +47,7 @@ ALTER TABLE events.parameter ADD CONSTRAINT chk_parameter_key CHECK (key ~ '^([A
 
 ALTER TABLE users.role ADD CONSTRAINT chk_three_roles CHECK (id <= 3);
 
-ALTER TABLE users.role ADD CONSTRAINT chk_role_name CHECK (name ~ '^(Organiser|Admin|User)$');
+ALTER TABLE users.role ADD CONSTRAINT chk_role_name CHECK (name ~ '^(Organizer|Admin|User)$');
 
 ALTER TABLE common.status ADD CONSTRAINT chk_four_statuses CHECK (id <= 4);
 

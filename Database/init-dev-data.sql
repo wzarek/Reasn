@@ -23,7 +23,7 @@ INSERT INTO users.user ("id", "name", "surname", "username", "password", "create
 (10, 'Marcin', 'Szymański', 'mszymanski', 'password', '2022-07-05 09:00:00', '2022-08-05 08:20:35', 2, 'marcin.szymanski@example.com', true, 8, '321789654');
   
 
-INSERT INTO events.event ("id", "name", "address_id", "description", "organiser_id", "start_at", "end_at", "created_at", "updated_at", "slug", "status_id") VALUES
+INSERT INTO events.event ("id", "name", "address_id", "description", "organizer_id", "start_at", "end_at", "created_at", "updated_at", "slug", "status_id") VALUES
 (1, 'Tech Conference', 1, 'Annual tech conference', 1, '2023-10-01 09:00:00', '2023-10-02 17:00:00', '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'tech-conference', 1),
 (2, 'Health Symposium', 2, 'Health and wellness symposium', 2, '2023-11-05 09:00:00', '2023-11-06 17:00:00', '2023-10-05 08:00:00', '2023-10-05 08:00:00', 'health-symposium', 2),
 (3, 'Koncert Rockowy', 3, 'Występ ulubionych zespołów rockowych', 2, CURRENT_TIMESTAMP - '1 day'::INTERVAL, CURRENT_TIMESTAMP + '4 hours'::INTERVAL, '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'koncert-rockowy', 1),
@@ -98,7 +98,7 @@ INSERT INTO events.comment ("id", "event_id", "content", "created_at", "user_id"
 (9, 9, 'To będzie świetna zabawa!', '2024-05-18', 9),
 (10, 10, 'jd orka', '2024-06-25', 10);
  
-INSERT INTO users.intrest ("id", "name", "level") VALUES
+INSERT INTO users.interest ("id", "name", "level") VALUES
 (1, 'Programowanie', 5),
 (2, 'Sport', 4),
 (3, 'Muzyka', 3),
@@ -110,7 +110,7 @@ INSERT INTO users.intrest ("id", "name", "level") VALUES
 (9, 'Podróże', 4),
 (10, 'Gry komputerowe', 5);
  
-INSERT INTO users.user_intrest ("user_id", "intrest_id") VALUES
+INSERT INTO users.user_interest ("user_id", "interest_id") VALUES
 (1, 1),
 (2, 2),
 (3, 3),
