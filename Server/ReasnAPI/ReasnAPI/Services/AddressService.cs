@@ -6,7 +6,10 @@ namespace ReasnAPI.Services {
     public class AddressService (ReasnContext context) {
         private readonly ReasnContext _context = context;
 
-        public AddressDto CreateAddress(AddressDto addressDto) {
+        public AddressDto? CreateAddress(AddressDto addressDto) {
+            if (addressDto is null)
+                return null;
+
             var address = new Address {
                 City = addressDto.City,
                 Country = addressDto.Country,
@@ -21,12 +24,14 @@ namespace ReasnAPI.Services {
             return addressDto;
         }
 
-        public AddressDto UpdateAddress(int addressId, AddressDto addressDto) {
+        public AddressDto? UpdateAddress(int addressId, AddressDto addressDto) {
+            if (addressDto is null)
+                return null;
+
             var address = _context.Addresses.FirstOrDefault(r => r.Id == addressId);
 
-            if (address == null) {
+            if (address is null)
                 return null;
-            }
 
             address.City = addressDto.City;
             address.Country = addressDto.Country;
@@ -42,25 +47,33 @@ namespace ReasnAPI.Services {
         public void DeleteAddress(int addressId) {
             var address = _context.Addresses.FirstOrDefault(r => r.Id == addressId);
 
-            if (address != null) {
+            if (address is not null) {
                 _context.Addresses.Remove(address);
                 _context.SaveChanges();
             }
         }
 
-        public AddressDto GetAddressById(int adrressId) {
+        public AddressDto? GetAddressById(int adrressId) {
             return MapToAddressDto(_context.Addresses.FirstOrDefault(r => r.Id == adrressId));
         }
 
-        public List<AddressDto> GetAddressesByFilter(Expression<Func<Address, bool>> filter) {
-            return _context.Addresses.Where(filter).Select(address => MapToAddressDto(address)).ToList(); 
+        public IEnumerable<AddressDto?> GetAddressesByFilter(Expression<Func<Address, bool>> filter) {
+            return _context.Addresses
+                           .Where(filter)
+                           .Select(address => MapToAddressDto(address))
+                           .ToList(); 
         }
 
-        public List<AddressDto> GetAllAddresses() {
-            return _context.Addresses.Select(address => MapToAddressDto(address)).ToList();
+        public IEnumerable<AddressDto?> GetAllAddresses() {
+            return _context.Addresses
+                           .Select(address => MapToAddressDto(address))
+                           .ToList();
         }
 
-        private static AddressDto MapToAddressDto(Address address) {
+        private static AddressDto? MapToAddressDto(Address address) {
+            if (address is null)
+                return null;
+
             return new AddressDto {
                 Country = address.Country,
                 City = address.City,
