@@ -6,9 +6,10 @@ namespace ReasnAPI.Services {
     public class CommentService (ReasnContext context) {
         private readonly ReasnContext _context = context;
 
-        // TODO: add method - get given number of comments for given event
+        public CommentDto? CreateComment(CommentDto commentDto) {
+            if (commentDto is null)
+                return null;
 
-        public CommentDto CreateComment(CommentDto commentDto) {
             var comment = new Comment() {
                 EventId = commentDto.EventId,
                 Content = commentDto.Content,
@@ -23,12 +24,14 @@ namespace ReasnAPI.Services {
             return commentDto;
         }
 
-        public CommentDto UpdateComment(int commentId, CommentDto commentDto) {
+        public CommentDto? UpdateComment(int commentId, CommentDto commentDto) {
+            if (commentDto is null)
+                return null;
+
             var comment = _context.Comments.FirstOrDefault(r => r.Id == commentId);
 
-            if (comment == null) {
+            if (comment is null)
                 return null;
-            }
 
             comment.Content = commentDto.Content;
 
@@ -40,25 +43,48 @@ namespace ReasnAPI.Services {
         public void DeleteComment(int commentId) {
             var comment = _context.Comments.FirstOrDefault(r => r.Id == commentId);
 
-            if (comment != null) {
+            if (comment is not null) {
                 _context.Comments.Remove(comment);
                 _context.SaveChanges();
             }
         }
 
-        public CommentDto GetCommentById(int commentId) {
+        public CommentDto? GetCommentById(int commentId) {
             return MapToCommentDto(_context.Comments.FirstOrDefault(r => r.Id == commentId));
         }
 
-        public List<CommentDto> GetCommentsByFilter(Expression<Func<Comment, bool>> filter) {
-            return _context.Comments.Where(filter).Select(comment => MapToCommentDto(comment)).ToList();
+        public IEnumerable<CommentDto?> GetCommentsByFilter(Expression<Func<Comment, bool>> filter) {
+            return _context.Comments
+                           .Where(filter)
+                           .Select(comment => MapToCommentDto(comment))
+                           .ToList();
         }
 
-        public List<CommentDto> GetAllComments() {
-            return _context.Comments.Select(comment => MapToCommentDto(comment)).ToList();
+        public IEnumerable<CommentDto?> GetAllComments() {
+            return _context.Comments
+                           .Select(comment => MapToCommentDto(comment))
+                           .ToList();
         }
 
-        private static CommentDto MapToCommentDto(Comment comment) {
+        public IEnumerable<CommentDto?> GetGivenNumberOfComments(int commentNumber) {
+            return _context.Comments
+                           .Select(comment => MapToCommentDto(comment))
+                           .Take(commentNumber)
+                           .ToList();
+        }
+
+        public IEnumerable<CommentDto?> GetGivenNumberOfCommentsForEvent(int eventId, int numberOfComments) {
+            return _context.Comments
+                           .Where(comment => comment.EventId == eventId)
+                           .Take(numberOfComments)
+                           .Select(comment => MapToCommentDto(comment))
+                           .ToList(); 
+        }
+
+        private static CommentDto? MapToCommentDto(Comment comment) {
+            if (comment is null) 
+                return null;
+            
             return new CommentDto {
                 EventId = comment.EventId,
                 Content = comment.Content,
