@@ -6,30 +6,20 @@ using System.Linq.Expressions;
 namespace ReasnAPI.Services {
     public class TagService (ReasnContext context) {
         private readonly ReasnContext _context = context;
-
-        /* TODO: Create following functions for this class
-         * create (cheacking if already exist if not add)
-         * update
-         * delete
-         * get by ID
-         * get list by filter
-         * get all
-         */
-
+        
         public TagDto CreateTag(TagDto tagDto)
         {
             var tag = _context.Tags.FirstOrDefault(r => r.Name == tagDto.Name);
-            if (tag == null)
-            {
-                var newTag = new Tag
-                {
-                    Name = tagDto.Name
-                };
+            if (tag != null) return tagDto;
 
-                _context.Tags.Add(newTag);
-                _context.SaveChanges();
-            }
-            
+            var newTag = new Tag
+            {
+                Name = tagDto.Name
+            };
+
+            _context.Tags.Add(newTag);
+            _context.SaveChanges();
+
 
             return tagDto;
         }
@@ -53,12 +43,12 @@ namespace ReasnAPI.Services {
         public void DeleteTag(int tagId)
         {
             var tag = _context.Tags.FirstOrDefault(r => r.Id == tagId);
-            
-
+            if (tag == null)
+            {
+                return;
+            }
             _context.Tags.Remove(tag);
             _context.SaveChanges();
-
-            
         }
 
         public TagDto GetTagById(int tagId)
