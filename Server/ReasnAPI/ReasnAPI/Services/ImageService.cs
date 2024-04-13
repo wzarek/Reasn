@@ -6,15 +6,6 @@ namespace ReasnAPI.Services {
     public class ImageService (ReasnContext context) {
         private readonly ReasnContext _context = context;
 
-        /* TODO: Create following functions for this class
-         * create
-         * update
-         * delete
-         * get by ID
-         * get list by filter
-         * get all
-         */
-
         public ImageDto CreateImage(ImageDto imageDto)
         {
             var newImage = new Image
@@ -49,7 +40,7 @@ namespace ReasnAPI.Services {
         public void DeleteImage(int id)
         {
             var image = _context.Images.Find(id);
-       
+            if (image == null) { return;}
             _context.Images.Remove(image);
             _context.SaveChanges();
          
@@ -73,17 +64,10 @@ namespace ReasnAPI.Services {
             return imageDto;
         }
 
-       
-        
-
         public List<ImageDto> GetAllImages()
         {
             var images = _context.Images.ToList();
-            if (images == null)
-            {
-                return null;
-            }
-
+            
             var imageDtos = images.Select(image => new ImageDto
             {
                 ImageData = image.ImageData,
@@ -97,10 +81,6 @@ namespace ReasnAPI.Services {
         public List<ImageDto> GetImagesByFilter(Expression<Func<Image, bool>> filter)
         {
             var images = _context.Images.Where(filter).ToList();
-            if (images == null)
-            {
-                return null;
-            }
 
             var imageDtos = images.Select(image => new ImageDto
             {
@@ -111,9 +91,5 @@ namespace ReasnAPI.Services {
 
             return imageDtos;
         }
-
-
-
-
     }
 }
