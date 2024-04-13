@@ -16,14 +16,10 @@ namespace ReasnAPI.Services {
             {
                 Name = tagDto.Name
             };
-
             _context.Tags.Add(newTag);
             _context.SaveChanges();
-
-
             return tagDto;
         }
-        
 
         public TagDto UpdateTag(int tagId,TagDto tagDto)
         {
@@ -33,10 +29,8 @@ namespace ReasnAPI.Services {
                 return null;
             }
             tag.Name = tagDto.Name;
-
             _context.Tags.Update(tag);
             _context.SaveChanges();
-
             return tagDto;
         }   
 
@@ -65,34 +59,18 @@ namespace ReasnAPI.Services {
             };
         }
 
-        public List<TagDto> GetAllTags()
+        public IEnumerable<TagDto> GetAllTags()
         {
             var tags = _context.Tags.ToList();
-            var tagDtos = new List<TagDto>();
-            foreach(var tag in tags)
-            {
-                tagDtos.Add(new TagDto
-                {
-                    Name = tag.Name
-                });
-            }
 
-            return tagDtos;
+            return tags.Select(tag => new TagDto { Name = tag.Name }).ToList();
         }
 
-        public List<TagDto> GetTagsByFilter(Expression<Func<Tag, bool>> filter)
+        public IEnumerable<TagDto> GetTagsByFilter(Expression<Func<Tag, bool>> filter)
         {
             var tags = _context.Tags.Where(filter).ToList();
-            var tagsDtos = new List<TagDto>();
-            foreach (var tag in tags)
-            {
-                tagsDtos.Add(new TagDto
-                {
-                    Name = tag.Name
-                });
-            }
 
-            return tagsDtos;
+            return tags.Select(tag => new TagDto { Name = tag.Name }).ToList();
         }
 
     }

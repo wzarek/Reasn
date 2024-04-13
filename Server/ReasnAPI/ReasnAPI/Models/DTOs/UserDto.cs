@@ -9,6 +9,6 @@ namespace ReasnAPI.Models.DTOs {
         public string? Phone { get; set; }
         public int RoleId { get; set; }
         public int AddressId { get; set; }
-        public List<IntrestDto>? Intrests { get; set; }
+        public List<InterestDto>? Interests { get; set; }
     }
 }

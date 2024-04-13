@@ -38,8 +38,11 @@ namespace ReasnAPI.Services {
         public void DeleteStatus(int statusId)
         {
             var status = _context.Statuses.FirstOrDefault(r => r.Id == statusId);
-           
 
+            if (status == null)
+            {
+                return;
+            }
             _context.Statuses.Remove(status);
             _context.SaveChanges();
 
@@ -59,34 +62,18 @@ namespace ReasnAPI.Services {
             };
         }
 
-        public List<StatusDto> GetAllStatuses()
+        public IEnumerable<StatusDto> GetAllStatuses()
         {
             var statuses = _context.Statuses.ToList();
-            var statusDtos = new List<StatusDto>();
-            foreach(var status in statuses)
-            {
-                statusDtos.Add(new StatusDto
-                {
-                    Name = status.Name
-                });
-            }
 
-            return statusDtos;
+            return statuses.Select(status => new StatusDto { Name = status.Name }).ToList();
         }
 
-        public List<StatusDto> GetStatusesByFilter(Expression<Func<Status, bool>> filter)
+        public IEnumerable<StatusDto> GetStatusesByFilter(Expression<Func<Status, bool>> filter)
         {
             var statuses = _context.Statuses.Where(filter).ToList();
-            var statusDtos = new List<StatusDto>();
-            foreach(var status in statuses)
-            {
-                statusDtos.Add(new StatusDto
-                {
-                    Name = status.Name
-                });
-            }
 
-            return statusDtos;
+            return statuses.Select(status => new StatusDto { Name = status.Name }).ToList();
 
 
 

@@ -64,7 +64,7 @@ namespace ReasnAPI.Services {
             return imageDto;
         }
 
-        public List<ImageDto> GetAllImages()
+        public IEnumerable<ImageDto> GetAllImages()
         {
             var images = _context.Images.ToList();
             
@@ -78,7 +78,7 @@ namespace ReasnAPI.Services {
             return imageDtos;
         }
 
-        public List<ImageDto> GetImagesByFilter(Expression<Func<Image, bool>> filter)
+        public IEnumerable<ImageDto> GetImagesByFilter(Expression<Func<Image, bool>> filter)
         {
             var images = _context.Images.Where(filter).ToList();
 
