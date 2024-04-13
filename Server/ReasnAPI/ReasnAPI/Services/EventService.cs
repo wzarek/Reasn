@@ -2,64 +2,60 @@
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
+using System.Linq;
 
 namespace ReasnAPI.Services {
     public class EventService (ReasnContext context) {
         private readonly ReasnContext _context = context;
         public EventDto CreateEvent(EventDto eventDto)
         {
-            if (eventDto.Slug != null)
+            if (eventDto.Slug == null) return null;
+            
+            var newEvent = new Event
             {
-                var newEvent = new Event
-                {
-                    Name = eventDto.Name,
-                    AddressId = eventDto.AddressId,                
-                    Description = eventDto.Description,
-                    OrganizerId = eventDto.OrganizerId,
-                    StartAt = eventDto.StartAt,
-                    EndAt = eventDto.EndAt,
-                    CreatedAt = eventDto.CreatedAt,
-                    UpdatedAt = eventDto.UpdatedAt,
-                    Slug = eventDto.Slug,
-                    StatusId = eventDto.StatusId,
-                };
+                Name = eventDto.Name,
+                AddressId = eventDto.AddressId,                
+                Description = eventDto.Description,
+                OrganizerId = eventDto.OrganizerId,
+                StartAt = eventDto.StartAt,
+                EndAt = eventDto.EndAt,
+                CreatedAt = eventDto.CreatedAt,
+                UpdatedAt = eventDto.UpdatedAt,
+                Slug = eventDto.Slug,
+                StatusId = eventDto.StatusId,
+            };
 
-                _context.Events.Add(newEvent);
-            }
-
+            _context.Events.Add(newEvent);
             _context.SaveChanges();
             var tempEvent = _context.Events.FirstOrDefault(r => r.Slug == eventDto.Slug);
             if (tempEvent == null) return eventDto;
+            
+            var eventId = tempEvent.Id;
+            if (eventDto.Tags == null) {return eventDto;}
+
+            foreach (var (tag, tempTag) in from tag in eventDto.Tags
+                                           let tempTag = _context.Tags.FirstOrDefault(r => r.Name == tag.Name)
+                                           select (tag, tempTag))
             {
-                var eventId = tempEvent.Id;
-                if (eventDto.Tags == null) return eventDto;
-                foreach (var tag in eventDto.Tags)
+                if (tempTag == null)
                 {
-                    var tempTag = _context.Tags.FirstOrDefault(r => r.Name == tag.Name);
-                    if(tempTag == null)
-                    {
-                        var newTag = new Tag
-                        {
-                            Name = tag.Name
-                        };
-                        _context.Tags.Add(newTag);
-                        _context.SaveChanges();
-                        tempTag = _context.Tags.FirstOrDefault(r => r.Name == tag.Name);
-                    }
-
-                    var eventTag = new EventTag
-                    {
-                        EventId = eventId,
-                        TagId = tempTag.Id
-                    };
-
-                    _context.EventTags.Add(eventTag);
-                    _context.SaveChanges();
+                    return null;
                 }
+
+                var newTag = new Tag {Name = tag.Name };
+                _context.Tags.Add(newTag);
+                _context.SaveChanges();
+                
+                var eventTag = new EventTag
+                {
+                    EventId = eventId,
+                    TagId = tempTag.Id
+                };
+                _context.EventTags.Add(eventTag);
+                _context.SaveChanges();
             }
 
             return eventDto;
-
         }
 
         public EventDto UpdateEvent(int eventId, EventDto eventDto)
@@ -84,7 +80,6 @@ namespace ReasnAPI.Services {
             _context.Events.Update(eventToUpdate);
             _context.SaveChanges();
 
-
             var existingTags = _context.EventTags.Where(r => r.EventId == eventId).ToList();
 
             var newTags = eventDto.Tags.Select(tagDto => new EventTag
@@ -97,7 +92,7 @@ namespace ReasnAPI.Services {
 
             foreach (var existingTag in existingTags)
             {
-                if (newTags.All(r => r.TagId != existingTag.TagId))
+                if (!newTags.Any(r => r.TagId == existingTag.TagId))
                 {
                     _context.EventTags.Remove(existingTag);
                 }
@@ -105,8 +100,9 @@ namespace ReasnAPI.Services {
 
             foreach (var newTag in newTags)
             {
-                if (existingTags.All(r => r.TagId != newTag.TagId))
+                if (!existingTags.Any(r => r.TagId == newTag.TagId))
                 {
+
                     _context.EventTags.Add(new EventTag { EventId = eventId, TagId = newTag.TagId });
                 }
             }
@@ -160,7 +156,7 @@ namespace ReasnAPI.Services {
             return eventDto;
         }
 
-        public List<EventDto> GetEventsByFilter(Expression<Func<Event, bool>> filter)
+        public IEnumerable<EventDto> GetEventsByFilter(Expression<Func<Event, bool>> filter)
         {
             var events = _context.Events.Where(filter).ToList();
             var eventDtos = new List<EventDto>();
@@ -195,7 +191,7 @@ namespace ReasnAPI.Services {
             return eventDtos;
         }
 
-        public List<EventDto> GetAllEvents()
+        public IEnumerable<EventDto> GetAllEvents()
         {
             var events = _context.Events.ToList();
             var eventDtos = new List<EventDto>();

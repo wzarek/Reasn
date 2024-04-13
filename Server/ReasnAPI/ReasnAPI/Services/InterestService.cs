@@ -36,7 +36,11 @@ namespace ReasnAPI.Services {
         public void DeleteInterest(int id)
         {
             var interest = _context.Interests.Find(id);
-        
+
+            if (interest == null)
+            {
+                return;
+            } 
             _context.Interests.Remove(interest);
             _context.SaveChanges();
           
@@ -55,25 +59,17 @@ namespace ReasnAPI.Services {
                 Name = interest.Name
             };
 
-            return intrestDto;
+            return interestDto;
         }
 
-        public List<InterestDto> GetAllInterests()
+        public IEnumerable<InterestDto> GetAllInterests()
         {
             var interests = _context.Interests.ToList();
-            var interestDtos = new List<InterestDto>();
-            foreach (var intrest in interests)
-            {
-                interestDtos.Add(new InterestDto
-                {
-                    Name = intrest.Name
-                });
-            }
 
-            return interestDtos;
+            return interests.Select(interest => new InterestDto { Name = interest.Name }).ToList();
         }
 
-        public List<InterestDto> GetInterestsByFilter(Expression<Func<Interest, bool>> filter)
+        public IEnumerable<InterestDto> GetInterestsByFilter(Expression<Func<Interest, bool>> filter)
         {
             var interests = _context.Interests.Where(filter).ToList();
             

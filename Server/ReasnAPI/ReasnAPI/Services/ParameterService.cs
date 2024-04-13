@@ -13,10 +13,8 @@ namespace ReasnAPI.Services {
                 Key = parameterDto.Key,
                 Value = parameterDto.Value
             };
-
             _context.Parameters.Add(parameter);
             _context.SaveChanges();
-
             return parameterDto;
         }
 
@@ -28,7 +26,6 @@ namespace ReasnAPI.Services {
             {
                 return null;
             }
-
             parameter.Key = parameterDto.Key;
             parameter.Value = parameterDto.Value;
             _context.Parameters.Update(parameter);
@@ -64,38 +61,18 @@ namespace ReasnAPI.Services {
             return parameterDto;
         }
 
-        public List<ParameterDto> GetAllParameters()
+        public IEnumerable<ParameterDto> GetAllParameters()
         {
             var parameters = _context.Parameters.ToList();
-            var parameterDtos = new List<ParameterDto>();
 
-            foreach(var parameter in parameters)
-            {
-                parameterDtos.Add(new ParameterDto
-                {
-                    Key = parameter.Key,
-                    Value = parameter.Value
-                });
-            }
-
-            return parameterDtos;
+            return parameters.Select(parameter => new ParameterDto { Key = parameter.Key, Value = parameter.Value }).ToList();
         }
 
-       public List<ParameterDto> GetParametersByFilter(Expression<Func<Parameter, bool>> filter)
+       public IEnumerable<ParameterDto> GetParametersByFilter(Expression<Func<Parameter, bool>> filter)
         {
             var parameters = _context.Parameters.Where(filter).ToList();
-            var parameterDtos = new List<ParameterDto>();
 
-            foreach(var parameter in parameters)
-            {
-                parameterDtos.Add(new ParameterDto
-                {
-                    Key = parameter.Key,
-                    Value = parameter.Value
-                });
-            }
-
-            return parameterDtos;
+            return parameters.Select(parameter => new ParameterDto { Key = parameter.Key, Value = parameter.Value }).ToList();
 
         }
 
