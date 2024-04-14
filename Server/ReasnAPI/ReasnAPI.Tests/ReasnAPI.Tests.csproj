@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ReasnAPI\ReasnAPI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Microsoft.Playwright.MSTest" />
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
     <Using Include="System.Text.RegularExpressions" />
