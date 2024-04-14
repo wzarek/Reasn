@@ -2,79 +2,78 @@
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 
-namespace ReasnAPI.Services {
-    public class ParameterService (ReasnContext context){
-        private readonly ReasnContext _context = context;
-
-        public ParameterDto CreateParameter(ParameterDto parameterDto)
+namespace ReasnAPI.Services;
+public class ParameterService (ReasnContext context)
+{
+    public ParameterDto CreateParameter(ParameterDto parameterDto)
+    {
+        var parameter = new Parameter
         {
-            var parameter = new Parameter
-            {
-                Key = parameterDto.Key,
-                Value = parameterDto.Value
-            };
-            _context.Parameters.Add(parameter);
-            _context.SaveChanges();
-            return parameterDto;
+            Key = parameterDto.Key,
+            Value = parameterDto.Value
+        };
+        context.Parameters.Add(parameter);
+        context.SaveChanges();
+        return parameterDto;
+    }
+
+    public ParameterDto UpdateParameter(int parameterId,ParameterDto parameterDto)
+    {
+        var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
+        
+        if(parameter == null)
+        {
+            return null;
+        }
+        parameter.Key = parameterDto.Key;
+        parameter.Value = parameterDto.Value;
+        context.Parameters.Update(parameter);
+        context.SaveChanges();
+        return parameterDto;
+    }
+
+    public void DeleteParameter(int parameterId)
+    {
+        var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
+        if (parameter == null)
+        {
+            return;
+        }
+        context.Parameters.Remove(parameter);
+        context.SaveChanges();
+    }
+
+    public ParameterDto GetParameterById(int parameterId)
+    {
+        var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
+        if(parameter == null)
+        {
+            return null;
         }
 
-        public ParameterDto UpdateParameter(int parameterId,ParameterDto parameterDto)
+        var parameterDto = new ParameterDto
         {
-            var parameter = _context.Parameters.FirstOrDefault(r => r.Id == parameterId);
-            
-            if(parameter == null)
-            {
-                return null;
-            }
-            parameter.Key = parameterDto.Key;
-            parameter.Value = parameterDto.Value;
-            _context.Parameters.Update(parameter);
-            _context.SaveChanges();
-            return parameterDto;
-        }
+            Key = parameter.Key,
+            Value = parameter.Value
+        };
 
-        public void DeleteParameter(int parameterId)
-        {
-            var parameter = _context.Parameters.FirstOrDefault(r => r.Id == parameterId);
-            if (parameter == null)
-            {
-                return;
-            }
-            _context.Parameters.Remove(parameter);
-            _context.SaveChanges();
-        }
+        return parameterDto;
+    }
 
-        public ParameterDto GetParameterById(int parameterId)
-        {
-            var parameter = _context.Parameters.FirstOrDefault(r => r.Id == parameterId);
-            if(parameter == null)
-            {
-                return null;
-            }
+    public IEnumerable<ParameterDto> GetAllParameters()
+    {
+        var parameters = context.Parameters.ToList();
 
-            var parameterDto = new ParameterDto
-            {
-                Key = parameter.Key,
-                Value = parameter.Value
-            };
+        return parameters.Select(parameter => new ParameterDto { Key = parameter.Key, Value = parameter.Value }).ToList();
+    }
 
-            return parameterDto;
-        }
+   public IEnumerable<ParameterDto> GetParametersByFilter(Expression<Func<Parameter, bool>> filter)
+    {
+        var parameters = context.Parameters.Where(filter).ToList();
 
-        public IEnumerable<ParameterDto> GetAllParameters()
-        {
-            var parameters = _context.Parameters.ToList();
-
-            return parameters.Select(parameter => new ParameterDto { Key = parameter.Key, Value = parameter.Value }).ToList();
-        }
-
-       public IEnumerable<ParameterDto> GetParametersByFilter(Expression<Func<Parameter, bool>> filter)
-        {
-            var parameters = _context.Parameters.Where(filter).ToList();
-
-            return parameters.Select(parameter => new ParameterDto { Key = parameter.Key, Value = parameter.Value }).ToList();
-
-        }
+        return parameters.Select(parameter => new ParameterDto { Key = parameter.Key, Value = parameter.Value }).ToList();
 
     }
+
 }
+
