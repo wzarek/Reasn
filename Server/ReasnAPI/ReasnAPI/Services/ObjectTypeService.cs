@@ -25,7 +25,7 @@ namespace ReasnAPI.Services {
             if (objectType is null)
                 return null;
 
-            var objectTypeDb = _context.ObjectTypes.FirstOrDefault(r => r.Name == objectType.Name);
+            var objectTypeDb = _context.ObjectTypes.FirstOrDefault(r => r.Id == objectType.Id);
 
             if (objectTypeDb is null)
                 return null;
