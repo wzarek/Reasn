@@ -9,6 +9,12 @@ namespace ReasnAPI.Services {
             if (objectType is null)
                 return null;
 
+            // check if object type with the same name already exists
+            var objectTypeDb= _context.ObjectTypes.FirstOrDefault(r => r.Name == objectType.Name);
+
+            if (objectTypeDb is not null)
+                return null;
+
             _context.ObjectTypes.Add(objectType);
             _context.SaveChanges();
 
@@ -17,6 +23,11 @@ namespace ReasnAPI.Services {
 
         public ObjectType? UpdateObjectType(ObjectType objectType) {
             if (objectType is null)
+                return null;
+
+            var objectTypeDb = _context.ObjectTypes.FirstOrDefault(r => r.Name == objectType.Name);
+
+            if (objectTypeDb is null)
                 return null;
 
             _context.ObjectTypes.Update(objectType);

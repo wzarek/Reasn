@@ -64,13 +64,6 @@ namespace ReasnAPI.Services {
                            .ToList();
         }
 
-        public IEnumerable<ParticipantDto?> GetParticipantsAtEvent(int eventId) {
-            return _context.Participants
-                           .Where(r => r.EventId == eventId)
-                           .Select(participant => MapToParticipantDto(participant))
-                           .ToList();
-        }
-
         private static ParticipantDto? MapToParticipantDto(Participant participant) {
             if (participant is null)
                 return null;
