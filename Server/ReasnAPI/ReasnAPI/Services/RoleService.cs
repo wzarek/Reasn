@@ -10,6 +10,12 @@ namespace ReasnAPI.Services {
             if (roleDto is null)
                 return null;
 
+            // check if role with the same name already exists
+            var roleDb = _context.Roles.FirstOrDefault(r => r.Name == roleDto.Name);
+
+            if (roleDb is not null)
+                return null;
+
             var role = new Role() {
                 Name = roleDto.Name,
             };

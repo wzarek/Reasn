@@ -66,21 +66,6 @@ namespace ReasnAPI.Services {
                            .ToList();
         }
 
-        public IEnumerable<CommentDto?> GetGivenNumberOfComments(int commentNumber) {
-            return _context.Comments
-                           .Select(comment => MapToCommentDto(comment))
-                           .Take(commentNumber)
-                           .ToList();
-        }
-
-        public IEnumerable<CommentDto?> GetGivenNumberOfCommentsForEvent(int eventId, int numberOfComments) {
-            return _context.Comments
-                           .Where(comment => comment.EventId == eventId)
-                           .Take(numberOfComments)
-                           .Select(comment => MapToCommentDto(comment))
-                           .ToList(); 
-        }
-
         private static CommentDto? MapToCommentDto(Comment comment) {
             if (comment is null) 
                 return null;

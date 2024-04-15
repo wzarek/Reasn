@@ -12,6 +12,12 @@ namespace ReasnAPI.Services {
             if (userDto is null)
                 return null;
 
+            // check if user with the same username already exists
+            var userDb = _context.Users.FirstOrDefault(r => r.Username == userDto.Username);
+
+            if (userDb is not null)
+                return null;
+
             var user = new User() {
                 Name = userDto.Name,
                 Surname = userDto.Surname,
