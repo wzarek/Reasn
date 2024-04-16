@@ -101,13 +101,13 @@ CREATE TABLE IF NOT EXISTS common.object_type (
  
 CREATE TABLE IF NOT EXISTS users.user_interest (
   "user_id" integer NOT NULL,
-  "interest_id" integer NOT NULL
+  "interest_id" integer NOT NULL,
+  "level" integer NOT NULL
 );
  
 CREATE TABLE IF NOT EXISTS users.interest (
   "id" SERIAL PRIMARY KEY,
-  "name" varchar(255) NOT NULL,
-  "level" integer NOT NULL
+  "name" varchar(255) NOT NULL
 );
  
 ALTER TABLE users.user ADD FOREIGN KEY ("role_id") REFERENCES users.role ("id");
