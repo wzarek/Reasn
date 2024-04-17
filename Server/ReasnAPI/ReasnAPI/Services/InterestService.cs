@@ -8,6 +8,12 @@ public class InterestService (ReasnContext context)
 {
     public InterestDto CreateInterest(InterestDto interestDto)
     {
+        var interest = context.Interests.FirstOrDefault(r => r.Name == interestDto.Name);
+        if (interest != null)
+        {
+            return null;
+        }
+
         var newInterest = new Interest
         {
             Name = interestDto.Name
@@ -34,7 +40,7 @@ public class InterestService (ReasnContext context)
     }
     public void DeleteInterest(int id)
     {
-        var interest = context.Interests.Find(id);
+        var interest = context.Interests.FirstOrDefault(r => r.Id == id);
 
         if (interest == null)
         {
@@ -47,7 +53,7 @@ public class InterestService (ReasnContext context)
 
     public InterestDto GetInterestById(int interestId)
     {
-        var interest = context.Interests.Find(interestId);
+        var interest = context.Interests.FirstOrDefault(r => r.Id == interestId);
         if (interest == null)
         {
             return null;
