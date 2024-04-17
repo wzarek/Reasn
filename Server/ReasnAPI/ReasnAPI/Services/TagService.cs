@@ -9,7 +9,10 @@ public class TagService (ReasnContext context)
     public TagDto CreateTag(TagDto tagDto)
     {
         var tag = context.Tags.FirstOrDefault(r => r.Name == tagDto.Name);
-        if (tag != null) return tagDto;
+        if (tag != null)
+        {
+            return null;
+        }
 
         var newTag = new Tag
         {

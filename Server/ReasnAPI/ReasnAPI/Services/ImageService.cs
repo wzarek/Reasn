@@ -5,9 +5,14 @@ using System.Linq.Expressions;
 namespace ReasnAPI.Services;
 public class ImageService (ReasnContext context) 
 {
-
     public ImageDto CreateImage(ImageDto imageDto)
     {
+        var image = context.Images.FirstOrDefault(r => r.ObjectId == imageDto.ObjectId && r.ObjectTypeId == imageDto.ObjectTypeId);
+        if (image != null)
+        {
+            return null;
+        }
+
         var newImage = new Image
         {
             ImageData = imageDto.ImageData,

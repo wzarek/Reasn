@@ -7,12 +7,18 @@ public class ParameterService (ReasnContext context)
 {
     public ParameterDto CreateParameter(ParameterDto parameterDto)
     {
-        var parameter = new Parameter
+        var parameter = context.Parameters.FirstOrDefault(r => r.Key == parameterDto.Key);
+        if (parameter != null)
+        {
+            return null;
+        }
+
+        var newParameter = new Parameter
         {
             Key = parameterDto.Key,
             Value = parameterDto.Value
         };
-        context.Parameters.Add(parameter);
+        context.Parameters.Add(newParameter);
         context.SaveChanges();
         return parameterDto;
     }

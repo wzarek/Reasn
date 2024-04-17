@@ -7,18 +7,23 @@ public class StatusService (ReasnContext context)
 {
     public StatusDto CreateStatus(StatusDto statusDto)
     {
-        var status = new Status
+        var status = context.Statuses.FirstOrDefault(r => r.Name == statusDto.Name);
+        if (status != null)
+        {
+            return null;
+        }
+        var newStatus = new Status
         {
             Name = statusDto.Name
         };
 
-        context.Statuses.Add(status);
+        context.Statuses.Add(newStatus);
         context.SaveChanges();
 
         return statusDto;
     }
 
-    public StatusDto UpdateStatus(int statusId,StatusDto statusDto)
+    public StatusDto UpdateStatus(int statusId, StatusDto statusDto)
     {
         var status = context.Statuses.FirstOrDefault(r => r.Id == statusId);
         if(status == null)
@@ -73,9 +78,6 @@ public class StatusService (ReasnContext context)
         var statuses = context.Statuses.Where(filter).ToList();
 
         return statuses.Select(status => new StatusDto { Name = status.Name }).ToList();
-
-
-
     }
 
 }
