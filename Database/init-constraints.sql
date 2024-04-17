@@ -23,7 +23,7 @@ ALTER TABLE common.address ADD CONSTRAINT chk_address_state CHECK (state ~ '^[[:
 
 ALTER TABLE common.address ADD CONSTRAINT chk_address_country CHECK (country ~ '^[[:upper:]][[:lower:]]+(?:\s[[:upper:]][[:lower:]]+){0,1}$');
 
-ALTER TABLE users.user  ADD CONSTRAINT chk_user_email CHECK (email ~ '^[[:alnum:]._%+-]+@[[:alnum:].-]+\.[[:alpha:]]{2,6}$');
+ALTER TABLE users.user  ADD CONSTRAINT chk_user_email CHECK (email ~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$');
 
 ALTER TABLE users.user ADD CONSTRAINT chk_user_phone CHECK (phone ~ '^\+\d{1,3}\s\d{1,15}$');
 
