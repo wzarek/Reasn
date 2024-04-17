@@ -4,15 +4,15 @@ CREATE SCHEMA common;
 
 CREATE TABLE IF NOT EXISTS events.event (
   "id" SERIAL PRIMARY KEY,
-  "name" text NOT NULL Constraint events_event_name_maxlength CHECK (LENGTH("name") <= 64),
+  "name" text NOT NULL CONSTRAINT events_event_name_maxlength CHECK (LENGTH("name") <= 64),
   "address_id" integer NOT NULL,
-  "description" text NOT NULL Constraint events_event_description_maxlength CHECK (LENGTH("description") <= 4048),
+  "description" text NOT NULL CONSTRAINT events_event_description_maxlength CHECK (LENGTH("description") <= 4048),
   "organizer_id" integer NOT NULL,
   "start_at" timestamptz NOT NULL,
   "end_at" timestamptz NOT NULL,
   "created_at" timestamptz NOT NULL,
   "updated_at" timestamptz NOT NULL,
-  "slug" text NOT NULL Constraint events_event_slug_maxlength CHECK (LENGTH("slug") <= 128),
+  "slug" text NOT NULL CONSTRAINT events_event_slug_maxlength CHECK (LENGTH("slug") <= 128),
   "status_id" integer NOT NULL
 );
 
@@ -25,13 +25,13 @@ CREATE TABLE IF NOT EXISTS events.participant (
 
 CREATE TABLE IF NOT EXISTS common.status (
   "id" SERIAL PRIMARY KEY,
-  "name" text NOT NULL Constraint common_status_name_maxlength CHECK (LENGTH("name") <= 32),
+  "name" text NOT NULL CONSTRAINT common_status_name_maxlength CHECK (LENGTH("name") <= 32),
   "object_type_id" integer NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS events.tag (
   "id" SERIAL PRIMARY KEY,
-  "name" text NOT NULL Constraint events_tag_name_maxlength CHECK (LENGTH("name") <= 64)
+  "name" text NOT NULL CONSTRAINT events_tag_name_maxlength CHECK (LENGTH("name") <= 64)
 );
 
 CREATE TABLE IF NOT EXISTS events.event_tag (
@@ -41,23 +41,23 @@ CREATE TABLE IF NOT EXISTS events.event_tag (
 
 CREATE TABLE IF NOT EXISTS users.user (
   "id" SERIAL PRIMARY KEY,
-  "name" text NOT NULL Constraint users_user_name_maxlength CHECK (LENGTH(name) <= 64),
-  "surname" text NOT NULL  Constraint users_user_surname_maxlength CHECK (LENGTH("surname") <= 64),
-  "username" text NOT NULL  Constraint users_user_username_maxlength CHECK (LENGTH("username") <= 64),
+  "name" text NOT NULL CONSTRAINT users_user_name_maxlength CHECK (LENGTH(name) <= 64),
+  "surname" text NOT NULL  CONSTRAINT users_user_surname_maxlength CHECK (LENGTH("surname") <= 64),
+  "username" text NOT NULL  CONSTRAINT users_user_username_maxlength CHECK (LENGTH("username") <= 64),
   "password" text NOT NULL,
   "created_at" timestamptz NOT NULL,
   "updated_at" timestamptz NOT NULL,
   "role_id" integer NOT NULL,
-  "email" text NOT NULL  Constraint users_user_email_maxlength CHECK (LENGTH("email") <= 255),
+  "email" text NOT NULL  CONSTRAINT users_user_email_maxlength CHECK (LENGTH("email") <= 255),
   "is_active" boolean NOT NULL,
   "address_id" integer NOT NULL,
-  "phone" text  Constraint users_user_phone_maxlength CHECK (LENGTH("phone") <= 16)
+  "phone" text  CONSTRAINT users_user_phone_maxlength CHECK (LENGTH("phone") <= 16)
 );
 
 CREATE TABLE IF NOT EXISTS events.parameter (
   "id" SERIAL PRIMARY KEY,
-  "key" text NOT NULL Constraint events_patameter_key_maxlength CHECK (LENGTH("key") <= 32),
-  "value" text NOT NULL Constraint events_patameter_value_maxlength CHECK (LENGTH("value") <= 64)
+  "key" text NOT NULL CONSTRAINT events_patameter_key_maxlength CHECK (LENGTH("key") <= 32),
+  "value" text NOT NULL CONSTRAINT events_patameter_value_maxlength CHECK (LENGTH("value") <= 64)
 );
 
 CREATE TABLE IF NOT EXISTS events.event_parameter (
@@ -73,18 +73,18 @@ CREATE TABLE IF NOT EXISTS users.role (
 CREATE TABLE IF NOT EXISTS events.comment (
   "id" SERIAL PRIMARY KEY,
   "event_id" integer NOT NULL,
-  "content" text NOT NULL Constraint events_comment_content_maxlength CHECK (LENGTH("content") <= 1024),
+  "content" text NOT NULL CONSTRAINT events_comment_content_maxlength CHECK (LENGTH("content") <= 1024),
   "created_at" timestamptz NOT NULL,
   "user_id" integer NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS common.address (
   "id" SERIAL PRIMARY KEY,
-  "city" text NOT NULL Constraint common_address_city_maxlength CHECK (LENGTH("city") <= 64),
-  "country" text NOT NULL Constraint common_address_country_maxlength CHECK (LENGTH("country") <= 64),
-  "street" text NOT NULL Constraint common_address_street_maxlength CHECK (LENGTH("street") <= 64),
-  "state" text NOT NULL Constraint common_address_state_maxlength CHECK (LENGTH("state") <= 64),
-  "zip_code" text Constraint common_address_zip_code_maxlength CHECK (LENGTH("zip_code") <= 8)
+  "city" text NOT NULL CONSTRAINT common_address_city_maxlength CHECK (LENGTH("city") <= 64),
+  "country" text NOT NULL CONSTRAINT common_address_country_maxlength CHECK (LENGTH("country") <= 64),
+  "street" text NOT NULL CONSTRAINT common_address_street_maxlength CHECK (LENGTH("street") <= 64),
+  "state" text NOT NULL CONSTRAINT common_address_state_maxlength CHECK (LENGTH("state") <= 64),
+  "zip_code" text CONSTRAINT common_address_zip_code_maxlength CHECK (LENGTH("zip_code") <= 8)
 );
 
 CREATE TABLE IF NOT EXISTS common.image (
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS common.image (
 
 CREATE TABLE IF NOT EXISTS common.object_type (
   "id" SERIAL PRIMARY KEY,
-  "name" text NOT NULL Constraint common_object_type_name_maxlength CHECK (LENGTH("name") <= 32)
+  "name" text NOT NULL CONSTRAINT common_object_type_name_maxlength CHECK (LENGTH("name") <= 32)
 );
 
 CREATE TABLE IF NOT EXISTS users.user_interest (
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS users.user_interest (
 
 CREATE TABLE IF NOT EXISTS users.interest (
   "id" SERIAL PRIMARY KEY,
-  "name" text NOT NULL Constraint users_interest_name_maxlength CHECK (LENGTH("name") <= 32),
+  "name" text NOT NULL CONSTRAINT users_interest_name_maxlength CHECK (LENGTH("name") <= 32),
   "level" integer NOT NULL
 );
 
