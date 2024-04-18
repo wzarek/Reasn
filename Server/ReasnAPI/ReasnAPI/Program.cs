@@ -4,14 +4,20 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using System;
 using System.Text.Json.Serialization;
+using ReasnAPI.Models.DTOs;
+using ReasnAPI.Models.Database;
+using ReasnAPI.Services;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.Services.AddControllers();
 
 // todo: uncomment after creating DbContext and change context name and if needed - connection string localized in appsettings.json
-//builder.Services.AddDbContext<ReasnContext>(options =>
-//    options.UseNpgsql(builder.Configuration.GetConnectionString("Development"));
+
+builder.Services.AddDbContext<ReasnContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultValue ")));
+
+builder.Services.AddScoped<TagService>();
 
 builder.Services.AddSwaggerGen(options =>
 {
