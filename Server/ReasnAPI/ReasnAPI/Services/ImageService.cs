@@ -1,6 +1,8 @@
 ﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
+using static System.Net.Mime.MediaTypeNames;
+using Image = ReasnAPI.Models.Database.Image;
 
 namespace ReasnAPI.Services;
 public class ImageService (ReasnContext context) 
@@ -44,7 +46,7 @@ public class ImageService (ReasnContext context)
 
     public void DeleteImage(int id)
     {
-        var image = context.Images.Find(id);
+        var image = context.Images.FirstOrDefault(r => r.Id == id);
         if (image == null) { return;}
         context.Images.Remove(image);
         context.SaveChanges();
@@ -53,7 +55,7 @@ public class ImageService (ReasnContext context)
 
     public ImageDto GetImageById(int id)
     {
-        var image = context.Images.Find(id);
+        var image = context.Images.FirstOrDefault(r => r.Id == id);
         if (image == null)
         {
             return null;

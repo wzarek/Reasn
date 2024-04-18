@@ -1,11 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Npgsql;
-using ReasnAPI.Models.Enums;
 using Serilog;
 using System;
 using System.Text.Json.Serialization;
+using ReasnAPI.Models.DTOs;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Services;
 
