@@ -6,14 +6,27 @@ namespace ReasnAPI.Services {
     public class ParticipantService (ReasnContext context) {
         private readonly ReasnContext _context = context;
 
-        public ParticipantDto? CreateParticipant(ParticipantDto participantDto) {
+        public ParticipantDto? CreateParticipant(ParticipantDto? participantDto) {
             if (participantDto is null)
                 return null;
 
+            // check if participant already exists (same event and user)
+            var participantDb = _context.Participants.FirstOrDefault(r => r.Event.Id == participantDto.EventId && r.User.Id == participantDto.UserId);
+
+            if (participantDb is not null)
+                return null;
+
+            var userDb = _context.Users.FirstOrDefault(r => r.Id == participantDto.UserId);
+            var eventDb = _context.Events.FirstOrDefault(r => r.Id == participantDto.EventId);
+            var statusDb = _context.Statuses.FirstOrDefault(r => r.Id == participantDto.StatusId);
+
+            if (userDb is null || eventDb is null || statusDb is null)
+                return null;
+
             var participant = new Participant() {
-                EventId = participantDto.EventId,
-                UserId = participantDto.UserId,
-                StatusId = participantDto.StatusId
+                Event = eventDb,
+                User = userDb,
+                Status = statusDb
             };
 
             _context.Participants.Add(participant);
@@ -22,16 +35,19 @@ namespace ReasnAPI.Services {
             return MapToParticipantDto(participant);
         }
 
-        public ParticipantDto? UpdateParticipant(int participantId, ParticipantDto participantDto) {
+        public ParticipantDto? UpdateParticipant(int participantId, ParticipantDto? participantDto) {
             if (participantDto is null)
                 return null;
 
             var participant = _context.Participants.FirstOrDefault(r => r.Id == participantId);
-
             if (participant is null)
                 return null;
 
-            participant.StatusId = participantDto.StatusId;
+            var status = _context.Statuses.FirstOrDefault(r => r.Id == participantDto.StatusId);
+            if (status is null)
+                return null;
+
+            participant.Status = status;
 
             _context.SaveChanges();
 
@@ -64,14 +80,14 @@ namespace ReasnAPI.Services {
                            .ToList();
         }
 
-        private static ParticipantDto? MapToParticipantDto(Participant participant) {
+        private static ParticipantDto? MapToParticipantDto(Participant? participant) {
             if (participant is null)
                 return null;
 
             return new ParticipantDto {
-                EventId = participant.EventId,
-                UserId = participant.UserId,
-                StatusId = participant.StatusId
+                EventId = participant.Event.Id,
+                UserId = participant.User.Id,
+                StatusId = participant.Status.Id
             };
         }
     }

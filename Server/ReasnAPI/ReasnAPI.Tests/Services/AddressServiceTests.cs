@@ -10,9 +10,17 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void GetAddressById_AddressExists_AddressReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address> {
-                new() { Id = 1, City = "City", Country = "Country", State = "State", Street = "Street", ZipCode = "ZipCode" }
-            });
+
+            var address = new Address {
+                Id = 1,
+                City = "City",
+                Country = "Country",
+                State = "State",
+                Street = "Street",
+                ZipCode = "ZipCode"
+            };
+
+            mockContext.Setup(c => c.Addresses).ReturnsDbSet([ address ]);
 
             var addressService = new AddressService(mockContext.Object);
 
@@ -29,7 +37,7 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void GetAddressById_AddressDoesNotExist_NullReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address>());
+            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
             var addressService = new AddressService(mockContext.Object);
 
@@ -41,10 +49,26 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void GetAllAddresses_AddressesExist_AddressesReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address> {
-                new() { Id = 1, City = "City", Country = "Country", State = "State", Street = "Street", ZipCode = "ZipCode" },
-                new() { Id = 2, City = "City", Country = "Country", State = "State", Street = "Street", ZipCode = "ZipCode" }
-            });
+
+            var address1 = new Address {
+                Id = 1,
+                City = "City",
+                Country = "Country",
+                State = "State",
+                Street = "Street",
+                ZipCode = "ZipCode"
+            };
+
+            var address2 = new Address {
+                Id = 2,
+                City = "City",
+                Country = "Country",
+                State = "State",
+                Street = "Street",
+                ZipCode = "ZipCode"
+            };
+
+            mockContext.Setup(c => c.Addresses).ReturnsDbSet([ address1, address2 ]);
 
             var addressService = new AddressService(mockContext.Object);
 
@@ -57,7 +81,7 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void GetAllAddresses_NoAddresses_EmptyListReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address>());
+            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
             var addressService = new AddressService(mockContext.Object);
 
@@ -70,11 +94,26 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void GetAddressesByFilter_AddressesExist_AddressesReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address> {
-                new() { Id = 1, City = "City", Country = "Country", State = "State", Street = "Street", ZipCode = "ZipCode" },
-                new() { Id = 2, City = "City", Country = "Country", State = "State", Street = "Street", ZipCode = "ZipCode" }
-            });
 
+            var address1 = new Address {
+                Id = 1,
+                City = "City",
+                Country = "Country",
+                State = "State",
+                Street = "Street",
+                ZipCode = "ZipCode"
+            };
+
+            var address2 = new Address {
+                Id = 2,
+                City = "City",
+                Country = "Country",
+                State = "State",
+                Street = "Street",
+                ZipCode = "ZipCode"
+            };
+
+            mockContext.Setup(c => c.Addresses).ReturnsDbSet([address1, address2]);
             var addressService = new AddressService(mockContext.Object);
 
             var result = addressService.GetAddressesByFilter(r => r.Id == 1).ToList();
@@ -86,7 +125,7 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void GetAddressesByFilter_NoAddresses_EmptyListReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address>());
+            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
             var addressService = new AddressService(mockContext.Object);
 
@@ -99,17 +138,19 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void CreateAddress_AddressCreated_AddressReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address>());
+            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
             var addressService = new AddressService(mockContext.Object);
 
-            var result = addressService.CreateAddress(new AddressDto {
+            var addressDto = new AddressDto {
                 City = "City",
                 Country = "Country",
                 State = "State",
                 Street = "Street",
                 ZipCode = "ZipCode"
-            });
+            };
+
+            var result = addressService.CreateAddress(addressDto);
 
             Assert.IsNotNull(result);
             Assert.AreEqual("City", result.City);
@@ -122,7 +163,7 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void CreateAddress_AddressDtoIsNull_NullReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address>());
+            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
             var addressService = new AddressService(mockContext.Object);
 
@@ -134,19 +175,29 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void UpdateAddress_AddressUpdated_AddressReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address> {
-                new() { Id = 1, City = "City", Country = "Country", State = "State", Street = "Street", ZipCode = "ZipCode" }
-            });
+
+            var address = new Address {
+                Id = 1,
+                City = "City",
+                Country = "Country",
+                State = "State",
+                Street = "Street",
+                ZipCode = "ZipCode"
+            };
+
+            mockContext.Setup(c => c.Addresses).ReturnsDbSet([ address ]);
 
             var addressService = new AddressService(mockContext.Object);
 
-            var result = addressService.UpdateAddress(1, new AddressDto {
+            var addressDto = new AddressDto {
                 City = "City2",
                 Country = "Country2",
                 State = "State2",
                 Street = "Street2",
                 ZipCode = "ZipCode2"
-            });
+            };
+
+            var result = addressService.UpdateAddress(1, addressDto);
 
             Assert.IsNotNull(result);
             Assert.AreEqual("City2", result.City);
@@ -159,17 +210,19 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void UpdateAddress_AddressDoesNotExist_NullReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address>());
+            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
             var addressService = new AddressService(mockContext.Object);
 
-            var result = addressService.UpdateAddress(1, new AddressDto {
+            var addressDto = new AddressDto {
                 City = "City2",
                 Country = "Country2",
                 State = "State2",
                 Street = "Street2",
                 ZipCode = "ZipCode2"
-            });
+            };
+
+            var result = addressService.UpdateAddress(1, addressDto);
 
             Assert.IsNull(result);
         }
@@ -177,6 +230,7 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void UpdateAddress_AddressDtoIsNull_NullReturned() {
             var mockContext = new Mock<ReasnContext>();
+            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
             var addressService = new AddressService(mockContext.Object);
 
@@ -188,9 +242,17 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void DeleteAddress_AdddressExists_AddressDeleted() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address> {
-                new() { Id = 1, City = "City", Country = "Country", State = "State", Street = "Street", ZipCode = "ZipCode" }
-            });
+
+            var address = new Address {
+                Id = 1,
+                City = "City",
+                Country = "Country",
+                State = "State",
+                Street = "Street",
+                ZipCode = "ZipCode"
+            };
+
+            mockContext.Setup(c => c.Addresses).ReturnsDbSet([ address ]);
 
             var addressService = new AddressService(mockContext.Object);
 
@@ -202,7 +264,7 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void DeleteAddress_AddressDoesNotExist_NothingHappens() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address>());
+            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
             var addressService = new AddressService(mockContext.Object);
 

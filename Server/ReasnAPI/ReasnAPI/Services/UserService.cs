@@ -8,7 +8,7 @@ namespace ReasnAPI.Services {
 
         // TODO: create, update, delete user's interests
 
-        public UserDto? CreateUser(UserDto userDto) {
+        public UserDto? CreateUser(UserDto? userDto) {
             if (userDto is null)
                 return null;
 
@@ -37,7 +37,7 @@ namespace ReasnAPI.Services {
             return userDto;
         }
 
-        public UserDto? UpdateUser(int userId, UserDto userDto) {
+        public UserDto? UpdateUser(int userId, UserDto? userDto) {
             if (userDto is null)
                 return null;
 
@@ -87,19 +87,22 @@ namespace ReasnAPI.Services {
                            .ToList();
         }
 
-        private UserDto? MapToUserDto(User user) {
+        private static UserDto? MapToUserDto(User? user) {
             if (user is null)
                 return null;
 
-            return new UserDto {
-                Username = user.Username,
-                Name = user.Name,
-                Surname = user.Surname,
-                Email = user.Email,
-                Phone = user.Phone,
-                RoleId = user.RoleId,
-                AddressId = user.AddressId,
-            };
+            var userDto = new UserDto();
+
+            userDto.Username = user.Username;
+            userDto.Name = user.Name;
+            userDto.Surname = user.Surname;
+            userDto.Email = user.Email;
+            userDto.Phone = user.Phone;
+            userDto.RoleId = user.Role.Id;
+            if (user.Address is not null)
+                userDto.AddressId = user.Address.Id;
+
+            return userDto;
         }
     }
 }
