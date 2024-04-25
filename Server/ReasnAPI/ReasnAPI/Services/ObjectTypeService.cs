@@ -5,7 +5,7 @@ namespace ReasnAPI.Services {
     public class ObjectTypeService(ReasnContext context) {
         private readonly ReasnContext _context = context;
 
-        public ObjectType? CreateObjectType(ObjectType objectType) {
+        public ObjectType? CreateObjectType(ObjectType? objectType) {
             if (objectType is null)
                 return null;
 
@@ -21,7 +21,7 @@ namespace ReasnAPI.Services {
             return objectType;
         }
 
-        public ObjectType? UpdateObjectType(ObjectType objectType) {
+        public ObjectType? UpdateObjectType(ObjectType? objectType) {
             if (objectType is null)
                 return null;
 

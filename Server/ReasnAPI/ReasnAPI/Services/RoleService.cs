@@ -1,4 +1,5 @@
-﻿using ReasnAPI.Models.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 
@@ -6,7 +7,7 @@ namespace ReasnAPI.Services {
     public class RoleService(ReasnContext context) {
         private readonly ReasnContext _context = context;
 
-        public RoleDto? CreateRole(RoleDto roleDto) {
+        public RoleDto? CreateRole(RoleDto? roleDto) {
             if (roleDto is null)
                 return null;
 
@@ -26,7 +27,7 @@ namespace ReasnAPI.Services {
             return roleDto;
         }
 
-        public RoleDto? UpdateRole(int roleId, RoleDto roleDto) {
+        public RoleDto? UpdateRole(int roleId, RoleDto? roleDto) {
             if (roleDto is null)
                 return null;
 
@@ -68,13 +69,17 @@ namespace ReasnAPI.Services {
                            .ToList();
         }
 
-        private static RoleDto? MapToRoleDto(Role role) {
+        private static RoleDto? MapToRoleDto(Role? role) {
             if (role is null)
                 return null;
 
             return new RoleDto {
                 Name = role.Name
             };
+        }
+
+        public bool DbExist() {
+            return context.Database.CanConnect();
         }
     }
 }

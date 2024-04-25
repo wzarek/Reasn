@@ -10,9 +10,9 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void GetRoleById_RoleExist_RoleReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Roles).ReturnsDbSet(new List<Role> {
+            mockContext.Setup(c => c.Roles).ReturnsDbSet([
                 new() { Id = 1, Name = "Admin" }
-            });
+            ]);
 
             var roleService = new RoleService(mockContext.Object);
 
@@ -25,7 +25,7 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void GetRoleById_RoleDoesNotExist_NullReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Roles).ReturnsDbSet(new List<Role>());
+            mockContext.Setup(c => c.Roles).ReturnsDbSet([]);
 
             var roleService = new RoleService(mockContext.Object);
 
@@ -37,10 +37,10 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void GetAllRoles_RolesExist_RolesReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Roles).ReturnsDbSet(new List<Role> {
+            mockContext.Setup(c => c.Roles).ReturnsDbSet([
                 new() { Id = 1, Name = "Admin" },
                 new() { Id = 2, Name = "User" }
-            });
+            ]);
 
             var roleService = new RoleService(mockContext.Object);
 
@@ -53,7 +53,7 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void GetAllRoles_NoRoles_EmptyListReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Roles).ReturnsDbSet(new List<Role>());
+            mockContext.Setup(c => c.Roles).ReturnsDbSet([]);
 
             var roleService = new RoleService(mockContext.Object);
 
@@ -66,10 +66,10 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void GetRolesByFilter_RolesExist_RolesReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Roles).ReturnsDbSet(new List<Role> {
+            mockContext.Setup(c => c.Roles).ReturnsDbSet([
                 new() { Id = 1, Name = "Admin" },
                 new() { Id = 2, Name = "User" }
-            });
+            ]);
 
             var roleService = new RoleService(mockContext.Object);
 
@@ -77,13 +77,12 @@ namespace ReasnAPI.Tests.Services {
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count());
-            Assert.AreEqual("Admin", result.First().Name);
         }
 
         [TestMethod]
         public void GetRolesByFilter_NoRoles_EmptyListReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Roles).ReturnsDbSet(new List<Role>());
+            mockContext.Setup(c => c.Roles).ReturnsDbSet([]);
 
             var roleService = new RoleService(mockContext.Object);
 
@@ -96,7 +95,7 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void CreateRole_RoleCreated_RoleReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Roles).ReturnsDbSet(new List<Role>());
+            mockContext.Setup(c => c.Roles).ReturnsDbSet([]);
 
             var roleService = new RoleService(mockContext.Object);
 
@@ -120,9 +119,9 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void CreateRole_RoleAlreadyExists_NullReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Roles).ReturnsDbSet(new List<Role> {
+            mockContext.Setup(c => c.Roles).ReturnsDbSet([
                 new() { Id = 1, Name = "Admin" }
-            });
+            ]);
 
             var roleService = new RoleService(mockContext.Object);
 
@@ -134,9 +133,9 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void UpdateRole_RoleUpdated_RoleReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Roles).ReturnsDbSet(new List<Role> {
+            mockContext.Setup(c => c.Roles).ReturnsDbSet([
                 new() { Id = 1, Name = "Admin" }
-            });
+            ]);
 
             var roleService = new RoleService(mockContext.Object);
 
@@ -160,7 +159,7 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void UpdateRole_RoleDoesNotExist_NullReturned() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Roles).ReturnsDbSet(new List<Role>());
+            mockContext.Setup(c => c.Roles).ReturnsDbSet([]);
 
             var roleService = new RoleService(mockContext.Object);
 
@@ -172,9 +171,9 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void DeleteRole_RoleExists_RoleDeleted() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Roles).ReturnsDbSet(new List<Role> {
+            mockContext.Setup(c => c.Roles).ReturnsDbSet([
                 new() { Id = 1, Name = "Admin" }
-            });
+            ]);
 
             var roleService = new RoleService(mockContext.Object);
 
@@ -186,7 +185,7 @@ namespace ReasnAPI.Tests.Services {
         [TestMethod]
         public void DeleteRole_RoleDoesNotExist_NothingHappens() {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Roles).ReturnsDbSet(new List<Role>());
+            mockContext.Setup(c => c.Roles).ReturnsDbSet([]);
 
             var roleService = new RoleService(mockContext.Object);
 

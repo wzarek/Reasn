@@ -6,7 +6,7 @@ namespace ReasnAPI.Services {
     public class AddressService (ReasnContext context) {
         private readonly ReasnContext _context = context;
 
-        public AddressDto? CreateAddress(AddressDto addressDto) {
+        public AddressDto? CreateAddress(AddressDto? addressDto) {
             if (addressDto is null)
                 return null;
 
@@ -24,7 +24,7 @@ namespace ReasnAPI.Services {
             return addressDto;
         }
 
-        public AddressDto? UpdateAddress(int addressId, AddressDto addressDto) {
+        public AddressDto? UpdateAddress(int addressId, AddressDto? addressDto) {
             if (addressDto is null)
                 return null;
 
@@ -70,7 +70,7 @@ namespace ReasnAPI.Services {
                            .ToList();
         }
 
-        private static AddressDto? MapToAddressDto(Address address) {
+        private static AddressDto? MapToAddressDto(Address? address) {
             if (address is null)
                 return null;
 

@@ -6,7 +6,7 @@ namespace ReasnAPI.Services {
     public class CommentService (ReasnContext context) {
         private readonly ReasnContext _context = context;
 
-        public CommentDto? CreateComment(CommentDto commentDto) {
+        public CommentDto? CreateComment(CommentDto? commentDto) {
             if (commentDto is null)
                 return null;
 
@@ -24,7 +24,7 @@ namespace ReasnAPI.Services {
             return commentDto;
         }
 
-        public CommentDto? UpdateComment(int commentId, CommentDto commentDto) {
+        public CommentDto? UpdateComment(int commentId, CommentDto? commentDto) {
             if (commentDto is null)
                 return null;
 
@@ -66,15 +66,15 @@ namespace ReasnAPI.Services {
                            .ToList();
         }
 
-        private static CommentDto? MapToCommentDto(Comment comment) {
+        private static CommentDto? MapToCommentDto(Comment? comment) {
             if (comment is null) 
                 return null;
             
             return new CommentDto {
-                EventId = comment.EventId,
+                EventId = comment.Event.Id,
+                UserId = comment.User.Id,
                 Content = comment.Content,
-                CreatedAt = comment.CreatedAt,
-                UserId = comment.UserId
+                CreatedAt = comment.CreatedAt
             };
         }
     }
