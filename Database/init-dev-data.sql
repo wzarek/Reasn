@@ -98,26 +98,26 @@ INSERT INTO events.comment ("id", "event_id", "content", "created_at", "user_id"
 (9, 9, 'To będzie świetna zabawa!', '2024-05-18', 9),
 (10, 10, 'jd orka', '2024-06-25', 10);
  
-INSERT INTO users.interest ("id", "name", "level") VALUES
-(1, 'Programowanie', 5),
-(2, 'Sport', 4),
-(3, 'Muzyka', 3),
-(4, 'Film', 3),
-(5, 'Taniec', 4),
-(6, 'Fitness', 3),
-(7, 'Sztuka', 4),
-(8, 'Kulinaria', 3),
-(9, 'Podróże', 4),
-(10, 'Gry komputerowe', 5);
+INSERT INTO users.interest ("id", "name") VALUES
+(1, 'Programowanie'),
+(2, 'Sport'),
+(3, 'Muzyka'),
+(4, 'Film'),
+(5, 'Taniec'),
+(6, 'Fitness'),
+(7, 'Sztuka'),
+(8, 'Kulinaria'),
+(9, 'Podróże'),
+(10, 'Gry komputerowe');
  
-INSERT INTO users.user_interest ("user_id", "interest_id") VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5),
-(6, 6),
-(7, 7),
-(8, 8),
-(9, 9),
-(10, 10);
+INSERT INTO users.user_interest ("user_id", "interest_id", "level") VALUES
+(1, 1, 3),
+(2, 2, 2),
+(3, 3, 5),
+(4, 4, 2),
+(5, 5, 3),
+(6, 6, 4),
+(7, 7, 6),
+(8, 8,3),
+(9, 9, 1),
+(10, 10, 5);

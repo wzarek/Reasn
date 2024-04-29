@@ -91,11 +91,10 @@ const config: JestConfigWithTsJest = {
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    '^app/(.*)$': '<rootDir>/shared/app$1',
-    "^@reasn-services/(.*)$": "<rootDir>/shared/services/$1",
-    "^@reasn-enums/(.*)$": "<rootDir>/shared/enums/$1",
-    "^@reasn-interfaces/(.*)$": "<rootDir>/shared/interfaces/$1",
-    "^@reasn-errors/(.*)$": "<rootDir>/shared/errors/$1",
+    "^@reasn/common/services/(.*)$": "<rootDir>/packages/common/services/$1",
+    "^@reasn/common/enums/(.*)$": "<rootDir>/packages/common/enums/$1",
+    "^@reasn/common/interfaces/(.*)$": "<rootDir>/packages/common/interfaces/$1",
+    "^@reasn/common/errors/(.*)$": "<rootDir>/packages/common/errors/$1",
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
