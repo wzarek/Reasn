@@ -64,6 +64,6 @@ CHECK (
     (name IN ('Completed', 'In progress', 'Waiting for approval') AND object_type_id = 1)
 );
 
-CREATE UNIQUE INDEX unique_image_per_object_type_and_object_id
+CREATE UNIQUE INDEX unique_image_for_user
 ON common.image ("object_type_id", "object_id")
 WHERE ("object_type_id" = 2);
