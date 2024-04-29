@@ -101,13 +101,13 @@ CREATE TABLE IF NOT EXISTS common.object_type (
  
 CREATE TABLE IF NOT EXISTS users.user_interest (
   "user_id" integer NOT NULL,
-  "interest_id" integer NOT NULL
+  "interest_id" integer NOT NULL,
+  "level" integer NOT NULL
 );
  
 CREATE TABLE IF NOT EXISTS users.interest (
   "id" SERIAL PRIMARY KEY,
-  "name" varchar(255) NOT NULL,
-  "level" integer NOT NULL
+  "name" varchar(255) NOT NULL
 );
  
 ALTER TABLE users.user ADD FOREIGN KEY ("role_id") REFERENCES users.role ("id");
@@ -147,12 +147,12 @@ ALTER TABLE events.event ADD FOREIGN KEY ("status_id") REFERENCES common.status 
 ALTER TABLE users.user_interest ADD FOREIGN KEY ("interest_id") REFERENCES users.interest ("id");
  
 INSERT INTO users.role ("id", "name") VALUES
-(1, 'Użytkownik'),
-(2, 'Organizator'),
+(1, 'User'),
+(2, 'Organiser'),
 (3, 'Admin');
  
-INSERT INTO common.object_type ("id", "name") VALUES (1, 'Wydarzenie'),
-(2, 'Użytkownik');
+INSERT INTO common.object_type ("id", "name") VALUES (1, 'Event'),
+(2, 'User');
  
 INSERT INTO common.status ("id", "name", "object_type_id") VALUES
 (1, 'Zainteresoway', 2),
