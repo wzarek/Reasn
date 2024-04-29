@@ -63,3 +63,7 @@ CHECK (
     (name IN ('Interested', 'Participating') AND object_type_id = 2) OR
     (name IN ('Completed', 'In progress', 'Waiting for approval') AND object_type_id = 1)
 );
+
+CREATE UNIQUE INDEX unique_image_per_object_type_and_object_id
+ON common.image ("object_type_id", "object_id")
+WHERE ("object_type_id" = 2);
