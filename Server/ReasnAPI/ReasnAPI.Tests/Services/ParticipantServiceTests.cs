@@ -31,9 +31,9 @@ namespace ReasnAPI.Tests.Services {
 
             var participant = new Participant {
                 Id = 1,
-                Event = event1,
-                User = user,
-                Status = status
+                EventId = event1.Id,
+                UserId = user.Id,
+                StatusId = status.Id
             };
 
             mockContext.Setup(c => c.Events).ReturnsDbSet([ event1 ]);
@@ -94,16 +94,16 @@ namespace ReasnAPI.Tests.Services {
 
             var participant1 = new Participant {
                 Id = 1,
-                Event = event1,
-                User = user1,
-                Status = status
+                EventId = event1.Id,
+                UserId = user1.Id,
+                StatusId = status.Id
             };
 
             var participant2 = new Participant {
                 Id = 2,
-                Event = event1,
-                User = user2,
-                Status = status
+                EventId = event1.Id,
+                UserId = user2.Id,
+                StatusId = status.Id
             };
 
             mockContext.Setup(c => c.Events).ReturnsDbSet([ event1 ]);
@@ -163,16 +163,16 @@ namespace ReasnAPI.Tests.Services {
 
             var participant1 = new Participant {
                 Id = 1,
-                Event = event1,
-                User = user1,
-                Status = status
+                EventId = event1.Id,
+                UserId = user1.Id,
+                StatusId = status.Id
             };
 
             var participant2 = new Participant {
                 Id = 2,
-                Event = event1,
-                User = user2,
-                Status = status
+                EventId = event1.Id,
+                UserId = user2.Id,
+                StatusId = status.Id
             };
 
             mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
@@ -182,7 +182,7 @@ namespace ReasnAPI.Tests.Services {
 
             var participantService = new ParticipantService(mockContext.Object);
 
-            var result = participantService.GetParticipantsByFilter(r => r.Event.Id == 1);
+            var result = participantService.GetParticipantsByFilter(r => r.EventId == 1);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.Count());
@@ -285,9 +285,9 @@ namespace ReasnAPI.Tests.Services {
 
             var participant = new Participant {
                 Id = 1,
-                Event = event1,
-                User = user,
-                Status = status1
+                EventId = event1.Id,
+                UserId = user.Id,
+                StatusId = status1.Id
             };
 
             mockContext.Setup(c => c.Events).ReturnsDbSet([ event1 ]);

@@ -24,9 +24,9 @@ namespace ReasnAPI.Services {
                 return null;
 
             var participant = new Participant() {
-                Event = eventDb,
-                User = userDb,
-                Status = statusDb
+                EventId = participantDto.EventId,
+                UserId = participantDto.UserId,
+                StatusId = participantDto.StatusId
             };
 
             _context.Participants.Add(participant);
@@ -47,7 +47,7 @@ namespace ReasnAPI.Services {
             if (status is null)
                 return null;
 
-            participant.Status = status;
+            participant.StatusId = participantDto.StatusId;
 
             _context.SaveChanges();
 
@@ -85,9 +85,9 @@ namespace ReasnAPI.Services {
                 return null;
 
             return new ParticipantDto {
-                EventId = participant.Event.Id,
-                UserId = participant.User.Id,
-                StatusId = participant.Status.Id
+                EventId = participant.EventId,
+                UserId = participant.UserId,
+                StatusId = participant.StatusId
             };
         }
     }

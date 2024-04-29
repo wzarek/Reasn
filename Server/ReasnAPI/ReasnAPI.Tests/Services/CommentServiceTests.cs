@@ -27,9 +27,8 @@ namespace ReasnAPI.Tests.Services {
             var comment = new Comment() {
                 Id = 1,
                 Content = "Content",
-                CreatedAt = DateTime.Now,
-                Event = event1,
-                User = user
+                EventId = event1.Id,
+                UserId = user.Id
             };
 
             mockContext.Setup(c => c.Users).ReturnsDbSet([ user ]);
@@ -78,17 +77,15 @@ namespace ReasnAPI.Tests.Services {
             var comment1 = new Comment() {
                 Id = 1,
                 Content = "Content",
-                CreatedAt = DateTime.Now,
-                Event = event1,
-                User = user
+                EventId = event1.Id,
+                UserId = user.Id
             };
 
             var comment2 = new Comment() {
                 Id = 2,
                 Content = "Content",
-                CreatedAt = DateTime.Now,
-                Event = event1,
-                User = user
+                EventId = event1.Id,
+                UserId = user.Id
             };
 
             mockContext.Setup(c => c.Users).ReturnsDbSet([ user ]);
@@ -136,19 +133,15 @@ namespace ReasnAPI.Tests.Services {
             var comment1 = new Comment() {
                 Id = 1,
                 Content = "Content",
-                CreatedAt = DateTime.Now,
-                Event = event1,
                 EventId = event1.Id,
-                User = user
+                UserId = user.Id
             };
 
             var comment2 = new Comment() {
                 Id = 2,
                 Content = "Content",
-                CreatedAt = DateTime.Now,
-                Event = event1,
                 EventId = event1.Id,
-                User = user
+                UserId = user.Id
             };
 
             mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
@@ -157,7 +150,7 @@ namespace ReasnAPI.Tests.Services {
 
             var commentService = new CommentService(mockContext.Object);
 
-            var result = commentService.GetCommentsByFilter(r => r.Event.Id == 1);
+            var result = commentService.GetCommentsByFilter(r => r.EventId == 1);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.Count());
@@ -245,9 +238,8 @@ namespace ReasnAPI.Tests.Services {
             var comment = new Comment() {
                 Id = 1,
                 Content = "Content",
-                CreatedAt = DateTime.Now,
-                Event = event1,
-                User = user
+                EventId = event1.Id,
+                UserId = user.Id
             };
 
             mockContext.Setup(c => c.Users).ReturnsDbSet([ user ]);
@@ -303,7 +295,6 @@ namespace ReasnAPI.Tests.Services {
             var comment = new Comment() {
                 Id = 1,
                 Content = "Content",
-                CreatedAt = DateTime.Now,
                 EventId = 1,
                 UserId = 1
             };

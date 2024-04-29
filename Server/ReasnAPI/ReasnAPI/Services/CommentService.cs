@@ -15,7 +15,7 @@ namespace ReasnAPI.Services {
                 Content = commentDto.Content,
                 UserId = commentDto.UserId,
 
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.UtcNow
             };
 
             _context.Comments.Add(comment);
@@ -69,10 +69,10 @@ namespace ReasnAPI.Services {
         private static CommentDto? MapToCommentDto(Comment? comment) {
             if (comment is null) 
                 return null;
-            
+
             return new CommentDto {
-                EventId = comment.Event.Id,
-                UserId = comment.User.Id,
+                EventId = comment.EventId,
+                UserId = comment.UserId,
                 Content = comment.Content,
                 CreatedAt = comment.CreatedAt
             };
