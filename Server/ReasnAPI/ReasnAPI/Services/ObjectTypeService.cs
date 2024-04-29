@@ -30,7 +30,7 @@ namespace ReasnAPI.Services {
             if (objectTypeDb is null)
                 return null;
 
-            _context.ObjectTypes.Update(objectType);
+            objectTypeDb.Name = objectType.Name;
             _context.SaveChanges();
 
             return objectType;

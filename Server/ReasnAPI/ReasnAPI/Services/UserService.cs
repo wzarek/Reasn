@@ -6,7 +6,9 @@ namespace ReasnAPI.Services {
     public class UserService (ReasnContext context) {
         private readonly ReasnContext _context = context;
 
-        // TODO: create, update, delete user's interests
+        // TODO:
+        // * create, update, delete user's interests
+        // * fix delete service
 
         public UserDto? CreateUser(UserDto? userDto) {
             if (userDto is null)
@@ -27,7 +29,7 @@ namespace ReasnAPI.Services {
                 RoleId = userDto.RoleId,
                 AddressId = userDto.AddressId,
 
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
                 IsActive = true
             };
 
@@ -54,7 +56,7 @@ namespace ReasnAPI.Services {
             user.RoleId = userDto.RoleId;
             user.AddressId = userDto.AddressId;
 
-            user.UpdatedAt = DateTime.Now;
+            user.UpdatedAt = DateTime.UtcNow;
 
             _context.SaveChanges();
 
@@ -91,16 +93,15 @@ namespace ReasnAPI.Services {
             if (user is null)
                 return null;
 
-            var userDto = new UserDto();
-
-            userDto.Username = user.Username;
-            userDto.Name = user.Name;
-            userDto.Surname = user.Surname;
-            userDto.Email = user.Email;
-            userDto.Phone = user.Phone;
-            userDto.RoleId = user.Role.Id;
-            if (user.Address is not null)
-                userDto.AddressId = user.Address.Id;
+            var userDto = new UserDto {
+                Username = user.Username,
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email,
+                Phone = user.Phone,
+                RoleId = user.RoleId,
+                AddressId = user.AddressId
+            };
 
             return userDto;
         }

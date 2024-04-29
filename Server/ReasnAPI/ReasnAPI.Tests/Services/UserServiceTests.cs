@@ -26,13 +26,13 @@ namespace ReasnAPI.Tests.Services {
             };
 
             var user = new User() {
-                Id = 1, 
+                Id = 1,
                 Name = "John",
                 Surname = "Doe",
                 Username = "Username",
                 Email = "Email",
-                Address = address,
-                Role = role
+                AddressId = address.Id,
+                RoleId = address.Id
             };
 
             mockContext.Setup(c => c.Addresses).ReturnsDbSet([ address ]);
@@ -78,7 +78,7 @@ namespace ReasnAPI.Tests.Services {
                 Surname = "Doe", 
                 Username = "Username", 
                 Email = "Email",
-                Role = role
+                RoleId = role.Id
             };
 
             var user2 = new User() {
@@ -87,7 +87,7 @@ namespace ReasnAPI.Tests.Services {
                 Surname = "Doe", 
                 Username = "Username", 
                 Email = "Email",
-                Role = role
+                RoleId = role.Id
             };
 
             mockContext.Setup(c => c.Users).ReturnsDbSet([ user1, user2 ]);
@@ -128,7 +128,7 @@ namespace ReasnAPI.Tests.Services {
                 Surname = "Doe", 
                 Username = "Username", 
                 Email = "Email",
-                Role = role
+                RoleId = role.Id
             };
 
             var user2 = new User() {
@@ -137,7 +137,7 @@ namespace ReasnAPI.Tests.Services {
                 Surname = "Doe", 
                 Username = "Username", 
                 Email = "Email",
-                Role = role
+                RoleId = role.Id
             };
 
             mockContext.Setup(c => c.Users).ReturnsDbSet([ user1, user2]);
@@ -193,8 +193,8 @@ namespace ReasnAPI.Tests.Services {
                 Username = "Username",
                 Email = "Email",
                 Phone = "Phone",
-                RoleId = 1,
-                AddressId = 1
+                RoleId = role.Id,
+                AddressId = address.Id
             };
 
             var result = userService.CreateUser(userDto);
@@ -276,8 +276,8 @@ namespace ReasnAPI.Tests.Services {
                 Surname = "Doe", 
                 Username = "Username", 
                 Email = "Email",
-                Address = address,
-                Role = role
+                AddressId = address.Id,
+                RoleId = role.Id
             };
 
             mockContext.Setup(c => c.Addresses).ReturnsDbSet([ address ]);
@@ -292,8 +292,8 @@ namespace ReasnAPI.Tests.Services {
                 Username = "Username",
                 Email = "Email",
                 Phone = "Phone",
-                RoleId = 1,
-                AddressId = 1
+                RoleId = role.Id,
+                AddressId = address.Id
             };
 
             var result = userService.UpdateUser(1, userDto);
