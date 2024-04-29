@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS users.user_interest (
 
 CREATE TABLE IF NOT EXISTS users.interest (
   "id" SERIAL PRIMARY KEY,
-  "name" text NOT NULL CONSTRAINT users_interest_name_maxlength CHECK (LENGTH("name") <= 32),
+  "name" text NOT NULL CONSTRAINT users_interest_name_maxlength CHECK (LENGTH("name") <= 32)
 );
 
 ALTER TABLE users.user ADD FOREIGN KEY ("role_id") REFERENCES users.role ("id");
