@@ -3,12 +3,12 @@ using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 
 namespace ReasnAPI.Services;
-public class ParameterService (ReasnContext context)
+public class ParameterService(ReasnContext context)
 {
     public ParameterDto CreateParameter(ParameterDto parameterDto)
     {
         var parameter = context.Parameters.FirstOrDefault(r => r.Key == parameterDto.Key);
-        if (parameter != null)
+        if (parameter != null && parameter.Value == parameterDto.Value)
         {
             return null;
         }
@@ -23,11 +23,17 @@ public class ParameterService (ReasnContext context)
         return parameterDto;
     }
 
-    public ParameterDto UpdateParameter(int parameterId,ParameterDto parameterDto)
+    public ParameterDto UpdateParameter(int parameterId, ParameterDto parameterDto)
     {
         var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
-        
-        if(parameter == null)
+
+        var parameterCheck = context.EventParameters.FirstOrDefault(r => r.ParameterId == parameterId);
+        if (parameterCheck != null) // if parameter is associated with an event, it cannot be updated
+        {
+            return null;
+        }
+
+        if (parameter == null)
         {
             return null;
         }
@@ -41,6 +47,13 @@ public class ParameterService (ReasnContext context)
     public void DeleteParameter(int parameterId)
     {
         var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
+
+        var parameterCheck = context.EventParameters.FirstOrDefault(r => r.ParameterId == parameterId);
+        if (parameterCheck != null) // if parameter is associated with an event, it cannot be deleted
+        {
+            return;
+        }
+
         if (parameter == null)
         {
             return;
@@ -52,7 +65,7 @@ public class ParameterService (ReasnContext context)
     public ParameterDto GetParameterById(int parameterId)
     {
         var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
-        if(parameter == null)
+        if (parameter == null)
         {
             return null;
         }
@@ -73,13 +86,12 @@ public class ParameterService (ReasnContext context)
         return parameters.Select(parameter => new ParameterDto { Key = parameter.Key, Value = parameter.Value }).ToList();
     }
 
-   public IEnumerable<ParameterDto> GetParametersByFilter(Expression<Func<Parameter, bool>> filter)
+    public IEnumerable<ParameterDto> GetParametersByFilter(Expression<Func<Parameter, bool>> filter)
     {
         var parameters = context.Parameters.Where(filter).ToList();
 
-        return parameters.Select(parameter => new ParameterDto { Key = parameter.Key, Value = parameter.Value }).ToList();
-
+        return parameters.Select(parameter => new ParameterDto { Key = parameter.Key, Value = parameter.Value })
+            .ToList();
     }
 
 }
-

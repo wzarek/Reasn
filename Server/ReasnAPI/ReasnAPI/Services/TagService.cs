@@ -26,6 +26,13 @@ public class TagService (ReasnContext context)
     public TagDto UpdateTag(int tagId,TagDto tagDto)
     {
         var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
+
+        var eventTag = context.EventTags.FirstOrDefault(r => r.TagId == tagId);
+        if (eventTag != null) // if tag is associated with an event, it cannot be updated
+        {
+            return null;
+        }
+
         if(tag == null)
         {
             return null;
@@ -39,6 +46,13 @@ public class TagService (ReasnContext context)
     public void DeleteTag(int tagId)
     {
         var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
+
+        var eventTag = context.EventTags.FirstOrDefault(r => r.TagId == tagId);
+        if (eventTag != null) // if tag is associated with an event, it cannot be deleted
+        {
+            return;
+        }
+
         if (tag == null)
         {
             return;
