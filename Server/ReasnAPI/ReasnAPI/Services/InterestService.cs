@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace ReasnAPI.Services;
 
-public class InterestService (ReasnContext context) 
+public class InterestService(ReasnContext context)
 {
     public InterestDto CreateInterest(InterestDto interestDto)
     {
@@ -24,7 +24,7 @@ public class InterestService (ReasnContext context)
         return interestDto;
     }
 
-    public InterestDto UpdateInterest(int interestId,InterestDto interestDto)
+    public InterestDto UpdateInterest(int interestId, InterestDto interestDto)
     {
         var interest = context.Interests.FirstOrDefault(r => r.Id == interestId);
         if (interest == null)
@@ -45,10 +45,10 @@ public class InterestService (ReasnContext context)
         if (interest == null)
         {
             return;
-        } 
+        }
         context.Interests.Remove(interest);
         context.SaveChanges();
-      
+
     }
 
     public InterestDto GetInterestById(int interestId)
@@ -77,7 +77,7 @@ public class InterestService (ReasnContext context)
     public IEnumerable<InterestDto> GetInterestsByFilter(Expression<Func<Interest, bool>> filter)
     {
         var interests = context.Interests.Where(filter).ToList();
-        
+
         var interestDtos = interests.Select(interest => new InterestDto
         {
             Name = interest.Name

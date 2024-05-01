@@ -185,7 +185,7 @@ namespace ReasnAPI.Tests.Services
 
             var imageService = new ImageService(mockContext.Object);
 
-            var result = imageService.GetImagesByFilter(i => i.Id == 1);
+            var result = imageService.GetImagesByFilter(i => i.Id == 1).ToList();
 
             Assert.IsNotNull(result);
         }
@@ -200,7 +200,7 @@ namespace ReasnAPI.Tests.Services
 
             var imageService = new ImageService(mockContext.Object);
 
-            var result = imageService.GetImagesByFilter(i => i.Id == 1);
+            var result = imageService.GetImagesByFilter(i => i.Id == 1).ToList();
 
             Assert.AreEqual(0, result.Count());
         }

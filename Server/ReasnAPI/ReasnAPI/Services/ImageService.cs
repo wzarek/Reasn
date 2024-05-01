@@ -5,29 +5,52 @@ using static System.Net.Mime.MediaTypeNames;
 using Image = ReasnAPI.Models.Database.Image;
 
 namespace ReasnAPI.Services;
-public class ImageService (ReasnContext context) 
+public class ImageService(ReasnContext context)
 {
-    public ImageDto CreateImage(ImageDto imageDto)
+    public List<ImageDto> CreateImages(List<ImageDto> imageDtos)
     {
-        var image = context.Images.FirstOrDefault(r => r.ObjectId == imageDto.ObjectId && r.ObjectTypeId == imageDto.ObjectTypeId);
-        if (image != null)
+        var newImages = new List<Image>();
+
+        foreach (var imageDto in imageDtos)
         {
-            return null;
+            var image = context.Images.FirstOrDefault(r => r.ObjectId == imageDto.ObjectId && r.ObjectTypeId == imageDto.ObjectTypeId);
+            if (image != null)
+            {
+                continue;
+            }
+
+            var newImage = new Image
+            {
+                ImageData = imageDto.ImageData,
+                ObjectId = imageDto.ObjectId,
+                ObjectTypeId = imageDto.ObjectTypeId
+            };
+
+            newImages.Add(newImage);
         }
 
-        var newImage = new Image
+        if (newImages.Any())
         {
-            ImageData = imageDto.ImageData,
-            ObjectId = imageDto.ObjectId,
-            ObjectTypeId = imageDto.ObjectTypeId
-        };
+            var objectType = context.ObjectTypes.FirstOrDefault(ot => ot.Id == newImages.First().ObjectTypeId);
+            if (objectType != null)
+            {
+                if (objectType.Name == "User" && newImages.Count > 1)
+                {
+                    context.Images.Add(newImages.First());
+                }
+                else if (objectType.Name == "Event")
+                {
+                    context.Images.AddRange(newImages);
+                }
+            }
 
-        context.Images.Add(newImage);
-        context.SaveChanges();
-        return imageDto;
+            context.SaveChanges();
+        }
+
+        return imageDtos;
     }
 
-    public ImageDto UpdateImage(int imageId,ImageDto imageDto)
+    public ImageDto UpdateImage(int imageId, ImageDto imageDto)
     {
         var image = context.Images.FirstOrDefault(r => r.Id == imageId);
         if (image == null)
@@ -47,10 +70,13 @@ public class ImageService (ReasnContext context)
     public void DeleteImage(int id)
     {
         var image = context.Images.FirstOrDefault(r => r.Id == id);
-        if (image == null) { return;}
+        if (image == null)
+        {
+            return;
+        }
         context.Images.Remove(image);
         context.SaveChanges();
-     
+
     }
 
     public ImageDto GetImageById(int id)
@@ -74,7 +100,7 @@ public class ImageService (ReasnContext context)
     public IEnumerable<ImageDto> GetAllImages()
     {
         var images = context.Images.ToList();
-        
+
         var imageDtos = images.Select(image => new ImageDto
         {
             ImageData = image.ImageData,
@@ -98,4 +124,21 @@ public class ImageService (ReasnContext context)
 
         return imageDtos;
     }
+
+    public IEnumerable<ImageDto> GetImagesByEventIdAndType(int eventId)
+    {
+        var images = context.Images
+            .Where(image => image.ObjectType.Name == "event" && image.ObjectId == eventId)
+            .ToList();
+
+        var imageDtos = images.Select(image => new ImageDto
+        {
+            ImageData = image.ImageData,
+            ObjectId = image.ObjectId,
+            ObjectTypeId = image.ObjectTypeId
+        }).ToList();
+
+        return imageDtos;
+    }
+
 }

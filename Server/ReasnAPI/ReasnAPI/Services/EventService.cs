@@ -6,7 +6,7 @@ using System.Linq;
 using System.Transactions;
 
 namespace ReasnAPI.Services;
-public class EventService (ReasnContext context) 
+public class EventService(ReasnContext context)
 {
     public EventDto CreateEvent(EventDto eventDto)
     {
@@ -27,7 +27,7 @@ public class EventService (ReasnContext context)
                 Slug = eventDto.Slug,
                 StatusId = eventDto.StatusId,
             };
-            
+
             context.Events.Add(newEvent);
             context.SaveChanges();
 
@@ -39,17 +39,31 @@ public class EventService (ReasnContext context)
 
             foreach (var tag in eventDto.Tags)
             {
-                var newTag = new Tag { Name = tag.Name };
-                context.Tags.Add(newTag);
-                context.SaveChanges();
-
-                var eventTag = new EventTag
+                var newTag = context.Tags.FirstOrDefault(r => r.Name == tag.Name);
+                if (newTag == null)
                 {
-                    EventId = eventId,
-                    TagId = newTag.Id
-                };
-                context.EventTags.Add(eventTag);
-                context.SaveChanges();
+                    var tagToAdd = new Tag { Name = tag.Name };
+                    context.Tags.Add(tagToAdd);
+                    context.SaveChanges();
+
+                    var eventTag = new EventTag
+                    {
+                        EventId = eventId,
+                        TagId = tagToAdd.Id
+                    };
+                    context.EventTags.Add(eventTag);
+                    context.SaveChanges();
+                }
+                else
+                {
+                    var eventTag = new EventTag
+                    {
+                        EventId = eventId,
+                        TagId = newTag.Id
+                    };
+                    context.EventTags.Add(eventTag);
+                    context.SaveChanges();
+                }
             }
         }
 
@@ -84,7 +98,7 @@ public class EventService (ReasnContext context)
             {
                 return eventDto;
             }
-            
+
             var newTags = eventDto.Tags
                 .Select(tagDto => new Tag
                 {
@@ -92,8 +106,8 @@ public class EventService (ReasnContext context)
                 }).ToList();
 
             var tagsToRemove = from existingTag in existingTags
-                where newTags.All(r => r.Name != existingTag.Tag.Name)
-                select existingTag;
+                               where newTags.All(r => r.Name != existingTag.Tag.Name)
+                               select existingTag;
 
             foreach (var existingTag in tagsToRemove)
             {
@@ -101,8 +115,8 @@ public class EventService (ReasnContext context)
             }
 
             var tagsToAdd = from newTag in newTags
-                where existingTags.All(r => r.Tag.Name != newTag.Name)
-                select newTag;
+                            where existingTags.All(r => r.Tag.Name != newTag.Name)
+                            select newTag;
 
             foreach (var newTag in tagsToAdd)
             {
@@ -113,10 +127,10 @@ public class EventService (ReasnContext context)
                     context.Tags.Add(existingTag);
                     context.SaveChanges();
                 }
-                
+
                 context.EventTags.Add(new EventTag { EventId = eventId, TagId = existingTag.Id });
             }
-            
+
             context.SaveChanges();
         }
 
@@ -133,10 +147,10 @@ public class EventService (ReasnContext context)
             {
                 return;
             }
-            
+
             context.EventTags.RemoveRange(context.EventTags.Where(r => r.EventId == eventId));
             context.Events.Remove(eventToDelete);
-            
+
             context.SaveChanges();
         }
     }
@@ -144,17 +158,20 @@ public class EventService (ReasnContext context)
     public EventDto GetEventById(int eventId)
     {
         var eventToReturn = context.Events.FirstOrDefault(r => r.Id == eventId);
-        if(eventToReturn == null)
+        if (eventToReturn == null)
         {
             return null;
         }
 
-        var eventTags = context.EventTags.Where(r => r.EventId == eventId).Include(e => e.Tag).ToList();
-        var tags = new List<TagDto>();
-        foreach (var eventTag in eventTags)
-        {
-            tags.Add(new TagDto { Name = eventTag.Tag.Name });
-        }
+        var tagIds = context.EventTags
+            .Where(r => r.EventId == eventId)
+            .Select(r => r.TagId)
+            .ToList();
+
+        var tags = context.Tags
+            .Where(t => tagIds.Contains(t.Id))
+            .Select(t => new TagDto { Name = t.Name })
+            .ToList();
 
         var eventDto = new EventDto
         {
@@ -180,12 +197,15 @@ public class EventService (ReasnContext context)
         var eventDtos = new List<EventDto>();
         foreach (var eventToReturn in events)
         {
-            var eventTags = context.EventTags.Where(r => r.EventId == eventToReturn.Id).Include(e => e.Tag).ToList().ToList();
-            var tags = new List<TagDto>();
-            foreach (var eventTag in eventTags)
-            {
-                tags.Add(new TagDto { Name = eventTag.Tag.Name });
-            }
+            var tagIds = context.EventTags
+                .Where(r => r.EventId == eventToReturn.Id)
+                .Select(r => r.TagId)
+                .ToList();
+
+            var tags = context.Tags
+                .Where(t => tagIds.Contains(t.Id))
+                .Select(t => new TagDto { Name = t.Name })
+                .ToList();
 
             var eventDto = new EventDto
             {
@@ -214,12 +234,15 @@ public class EventService (ReasnContext context)
         var eventDtos = new List<EventDto>();
         foreach (var eventToReturn in events)
         {
-            var eventTags = context.EventTags.Where(r => r.EventId == eventToReturn.Id).Include(e=> e.Tag).ToList();
-            var tags = new List<TagDto>();
-            foreach (var eventTag in eventTags)
-            {
-                tags.Add(new TagDto { Name = eventTag.Tag.Name });
-            }
+            var tagIds = context.EventTags
+                .Where(r => r.EventId == eventToReturn.Id)
+                .Select(r => r.TagId)
+                .ToList();
+
+            var tags = context.Tags
+                .Where(t => tagIds.Contains(t.Id))
+                .Select(t => new TagDto { Name = t.Name })
+                .ToList();
 
             var eventDto = new EventDto
             {
@@ -247,5 +270,5 @@ public class EventService (ReasnContext context)
         var slug = eventDto.Name.ToLower().Replace(" ", "-");
         return slug;
     }
-    
+
 }
