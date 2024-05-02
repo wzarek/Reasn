@@ -30,7 +30,8 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Images).ReturnsDbSet(new List<Image>());
 
             var imageService = new ImageService(mockContext.Object);
-            List<ImageDto> imagedtoslist = [imageDto];
+            List<ImageDto> imagedtoslist = new List<ImageDto>();
+            imagedtoslist.Append(imageDto);
 
             var result = imageService.CreateImages(imagedtoslist);
             Assert.IsNotNull(result);
@@ -49,9 +50,13 @@ namespace ReasnAPI.Tests.Services
                 { new Image { ImageData = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 } } });
 
             var imageService = new ImageService(mockContext.Object);
-            List<ImageDto> imagedtoslist = [imageDto];
+            List<ImageDto> imagedtoslist = new List<ImageDto>();
+            imagedtoslist.Append(imageDto);
+
             var result = imageService.CreateImages(imagedtoslist);
-            Assert.IsNull(result);
+
+            mockContext.Verify(m => m.Add(It.IsAny<Image>()), Times.Never());
+            mockContext.Verify(m => m.AddRange(It.IsAny<IEnumerable<Image>>()), Times.Never());
         }
 
         [TestMethod]
@@ -64,7 +69,7 @@ namespace ReasnAPI.Tests.Services
             var imageService = new ImageService(mockContext.Object);
 
             var result = imageService.GetAllImages();
-            
+
             Assert.IsNotNull(result);
         }
 
@@ -77,8 +82,8 @@ namespace ReasnAPI.Tests.Services
             var imageService = new ImageService(mockContext.Object);
 
             var result = imageService.GetAllImages().ToList();
-            
-            Assert.AreEqual(0,result.Count);
+
+            Assert.AreEqual(0, result.Count);
         }
 
         [TestMethod]
