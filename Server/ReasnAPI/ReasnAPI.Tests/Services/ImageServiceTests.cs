@@ -17,6 +17,7 @@ namespace ReasnAPI.Tests.Services
     [TestClass]
     public class ImageServiceTests
     {
+
         [TestMethod]
         public void CreateImage_ImageDoesNotExist_ImageCreated()
         {
@@ -29,8 +30,9 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Images).ReturnsDbSet(new List<Image>());
 
             var imageService = new ImageService(mockContext.Object);
+            List<ImageDto> imagedtoslist = [imageDto];
 
-            var result = imageService.CreateImage(imageDto);
+            var result = imageService.CreateImages(imagedtoslist);
             Assert.IsNotNull(result);
         }
 
@@ -47,8 +49,8 @@ namespace ReasnAPI.Tests.Services
                 { new Image { ImageData = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 } } });
 
             var imageService = new ImageService(mockContext.Object);
-
-            var result = imageService.CreateImage(imageDto);
+            List<ImageDto> imagedtoslist = [imageDto];
+            var result = imageService.CreateImages(imagedtoslist);
             Assert.IsNull(result);
         }
 
