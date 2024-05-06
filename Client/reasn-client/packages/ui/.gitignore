@@ -5,30 +5,12 @@ node_modules
 .pnp
 .pnp.js
 
-# testing
-coverage
-
-# yarn
-.yarn/*
-!.yarn/cache
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-
-# next.js
-.next/
-.swc/
-out/
-build
-
-# expo
-.expo
 
 # misc
 .DS_Store
 *.pem
+
+# build
 dist
 
 # debug

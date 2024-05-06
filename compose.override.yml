@@ -1,0 +1,52 @@
+services:
+  mobile:
+    build:
+      context: Client
+      dockerfile: mobile.Dockerfile
+      target: development
+    restart: unless-stopped
+    networks:
+      - reasn-network
+    ports:
+      - "${MOBILE_LISTEN_PORT:-8081}:${MOBILE_LISTEN_PORT:-8081}"
+    env_file:
+      - .env
+    depends_on:
+      - server
+    develop:
+      watch:
+        - action: rebuild
+          path: ./Client/reasn-client/yarn.lock
+        - action: sync
+          path: ./Client/reasn-client/apps/native
+          target: /source/apps/native
+        - action: sync
+          path: ./Client/reasn-client/packages
+          target: /source/packages
+
+  web:
+    build:
+      target: development
+    develop:
+      watch:
+        - action: rebuild
+          path: ./Client/reasn-client/yarn.lock
+        - action: sync
+          path: ./Client/reasn-client/apps/web
+          target: /source/apps/web
+        - action: sync
+          path: ./Client/reasn-client/packages
+          target: /source/packages
+
+  server:
+    build:
+      target: development
+    develop:
+      watch:
+        - action: rebuild
+          path: ./Server/ReasnAPI/ReasnAPI
+        
+  postgres:
+    volumes:
+      - ./Database/init-dev-data.sql:/docker-entrypoint-initdb.d/03-init-dev-data.sql
+  
