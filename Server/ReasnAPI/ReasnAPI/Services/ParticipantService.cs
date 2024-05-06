@@ -2,11 +2,14 @@
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 
-namespace ReasnAPI.Services {
-    public class ParticipantService (ReasnContext context) {
+namespace ReasnAPI.Services
+{
+    public class ParticipantService(ReasnContext context)
+    {
         private readonly ReasnContext _context = context;
 
-        public ParticipantDto? CreateParticipant(ParticipantDto? participantDto) {
+        public ParticipantDto? CreateParticipant(ParticipantDto? participantDto)
+        {
             if (participantDto is null)
                 return null;
 
@@ -16,14 +19,15 @@ namespace ReasnAPI.Services {
             if (participantDb is not null)
                 return null;
 
-            var userDb = _context.Users.FirstOrDefault(r => r.Id == participantDto.UserId);
-            var eventDb = _context.Events.FirstOrDefault(r => r.Id == participantDto.EventId);
-            var statusDb = _context.Statuses.FirstOrDefault(r => r.Id == participantDto.StatusId);
+            var user = _context.Users.FirstOrDefault(r => r.Id == participantDto.UserId);
+            var eventInDb = _context.Events.FirstOrDefault(r => r.Id == participantDto.EventId); // event is a reserved keyword
+            var status = _context.Statuses.FirstOrDefault(r => r.Id == participantDto.StatusId);
 
-            if (userDb is null || eventDb is null || statusDb is null)
+            if (user is null || eventInDb is null || status is null)
                 return null;
 
-            var participant = new Participant() {
+            var participant = new Participant
+            {
                 EventId = participantDto.EventId,
                 UserId = participantDto.UserId,
                 StatusId = participantDto.StatusId
@@ -35,7 +39,8 @@ namespace ReasnAPI.Services {
             return MapToParticipantDto(participant);
         }
 
-        public ParticipantDto? UpdateParticipant(int participantId, ParticipantDto? participantDto) {
+        public ParticipantDto? UpdateParticipant(int participantId, ParticipantDto? participantDto)
+        {
             if (participantDto is null)
                 return null;
 
@@ -54,37 +59,48 @@ namespace ReasnAPI.Services {
             return MapToParticipantDto(participant);
         }
 
-        public void DeleteParticipant(int participantId) {
+        public bool DeleteParticipant(int participantId)
+        {
             var participant = _context.Participants.FirstOrDefault(r => r.Id == participantId);
 
-            if (participant is not null) {
-                _context.Participants.Remove(participant);
-                _context.SaveChanges();
-            }
+            if (participant is null)
+                return false;
+
+            _context.Participants.Remove(participant);
+            _context.SaveChanges();
+
+            return true;
         }
 
-        public ParticipantDto? GetParticipantById(int participantId) {
-            return MapToParticipantDto(_context.Participants.FirstOrDefault(r => r.Id == participantId));
-        }
+        public ParticipantDto? GetParticipantById(int participantId)
+        {
+            var participant = _context.Participants.FirstOrDefault(r => r.Id == participantId);
 
-        public IEnumerable<ParticipantDto?> GetParticipantsByFilter(Expression<Func<Participant, bool>> filter) {
-            return _context.Participants
-                           .Where(filter)
-                           .Select(participant => MapToParticipantDto(participant))
-                           .ToList();
-        }
-
-        public IEnumerable<ParticipantDto?> GetAllParticipants() {
-            return _context.Participants
-                           .Select(participant => MapToParticipantDto(participant))
-                           .ToList();
-        }
-
-        private static ParticipantDto? MapToParticipantDto(Participant? participant) {
             if (participant is null)
                 return null;
 
-            return new ParticipantDto {
+            return MapToParticipantDto(participant);
+        }
+
+        public IEnumerable<ParticipantDto?> GetParticipantsByFilter(Expression<Func<Participant, bool>> filter)
+        {
+            return _context.Participants
+                           .Where(filter)
+                           .Select(participant => MapToParticipantDto(participant))
+                           .AsEnumerable();
+        }
+
+        public IEnumerable<ParticipantDto?> GetAllParticipants()
+        {
+            return _context.Participants
+                           .Select(participant => MapToParticipantDto(participant))
+                           .AsEnumerable();
+        }
+
+        private static ParticipantDto MapToParticipantDto(Participant participant)
+        {
+            return new ParticipantDto
+            {
                 EventId = participant.EventId,
                 UserId = participant.UserId,
                 StatusId = participant.StatusId

@@ -2,15 +2,19 @@
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 
-namespace ReasnAPI.Services {
-    public class AddressService (ReasnContext context) {
+namespace ReasnAPI.Services
+{
+    public class AddressService(ReasnContext context)
+    {
         private readonly ReasnContext _context = context;
 
-        public AddressDto? CreateAddress(AddressDto? addressDto) {
+        public AddressDto? CreateAddress(AddressDto? addressDto)
+        {
             if (addressDto is null)
                 return null;
 
-            var address = new Address {
+            var address = new Address
+            {
                 City = addressDto.City,
                 Country = addressDto.Country,
                 State = addressDto.State,
@@ -24,7 +28,8 @@ namespace ReasnAPI.Services {
             return addressDto;
         }
 
-        public AddressDto? UpdateAddress(int addressId, AddressDto? addressDto) {
+        public AddressDto? UpdateAddress(int addressId, AddressDto? addressDto)
+        {
             if (addressDto is null)
                 return null;
 
@@ -44,37 +49,48 @@ namespace ReasnAPI.Services {
             return MapToAddressDto(address);
         }
 
-        public void DeleteAddress(int addressId) {
+        public bool DeleteAddress(int addressId)
+        {
             var address = _context.Addresses.FirstOrDefault(r => r.Id == addressId);
 
-            if (address is not null) {
-                _context.Addresses.Remove(address);
-                _context.SaveChanges();
-            }
+            if (address is null)
+                return false ;
+
+            _context.Addresses.Remove(address);
+            _context.SaveChanges();
+
+            return true;
         }
 
-        public AddressDto? GetAddressById(int adrressId) {
-            return MapToAddressDto(_context.Addresses.FirstOrDefault(r => r.Id == adrressId));
-        }
+        public AddressDto? GetAddressById(int addressId)
+        {
+            var address = _context.Addresses.FirstOrDefault(r => r.Id == addressId);
 
-        public IEnumerable<AddressDto?> GetAddressesByFilter(Expression<Func<Address, bool>> filter) {
-            return _context.Addresses
-                           .Where(filter)
-                           .Select(address => MapToAddressDto(address))
-                           .ToList(); 
-        }
-
-        public IEnumerable<AddressDto?> GetAllAddresses() {
-            return _context.Addresses
-                           .Select(address => MapToAddressDto(address))
-                           .ToList();
-        }
-
-        private static AddressDto? MapToAddressDto(Address? address) {
             if (address is null)
                 return null;
 
-            return new AddressDto {
+            return MapToAddressDto(address);
+        }
+
+        public IEnumerable<AddressDto?> GetAddressesByFilter(Expression<Func<Address, bool>> filter)
+        {
+            return _context.Addresses
+                           .Where(filter)
+                           .Select(address => MapToAddressDto(address))
+                           .AsEnumerable();
+        }
+
+        public IEnumerable<AddressDto?> GetAllAddresses()
+        {
+            return _context.Addresses
+                           .Select(address => MapToAddressDto(address))
+                           .AsEnumerable();
+        }
+
+        private static AddressDto MapToAddressDto(Address address)
+        {
+            return new AddressDto
+            {
                 Country = address.Country,
                 City = address.City,
                 Street = address.Street,
