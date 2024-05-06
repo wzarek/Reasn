@@ -43,22 +43,24 @@ public class TagService (ReasnContext context)
         return tagDto;
     }   
 
-    public void DeleteTag(int tagId)
+    public bool DeleteTag(int tagId)
     {
         var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
 
         var eventTag = context.EventTags.FirstOrDefault(r => r.TagId == tagId);
         if (eventTag != null) // if tag is associated with an event, it cannot be deleted
         {
-            return;
+            return false;
         }
 
         if (tag == null)
         {
-            return;
+            return false;
         }
         context.Tags.Remove(tag);
         context.SaveChanges();
+
+        return true;
     }
 
     public TagDto GetTagById(int tagId)

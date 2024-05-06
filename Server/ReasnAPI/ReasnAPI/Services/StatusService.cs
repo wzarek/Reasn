@@ -42,7 +42,7 @@ public class StatusService(ReasnContext context)
         return statusDto;
     }
 
-    public void DeleteStatus(int statusId)
+    public bool DeleteStatus(int statusId)
     {
         var status = context.Statuses.FirstOrDefault(r => r.Id == statusId);
 
@@ -52,16 +52,17 @@ public class StatusService(ReasnContext context)
         if (statusCheck != null ||
             statusCheck2 != null) // if status is associated with a participant or event, it cannot be deleted
         {
-            return;
+            return false;
         }
 
         if (status == null)
         {
-            return;
+            return false;
         }
         context.Statuses.Remove(status);
         context.SaveChanges();
-
+        
+        return true;
     }
 
     public StatusDto GetStatusById(int statusId)

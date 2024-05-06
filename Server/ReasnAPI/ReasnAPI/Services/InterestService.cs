@@ -38,17 +38,18 @@ public class InterestService(ReasnContext context)
         context.SaveChanges();
         return interestDto;
     }
-    public void DeleteInterest(int id)
+    public bool DeleteInterest(int id)
     {
         var interest = context.Interests.FirstOrDefault(r => r.Id == id);
 
         if (interest == null)
         {
-            return;
+            return false;
         }
         context.Interests.Remove(interest);
         context.SaveChanges();
 
+        return true;
     }
 
     public InterestDto GetInterestById(int interestId)
