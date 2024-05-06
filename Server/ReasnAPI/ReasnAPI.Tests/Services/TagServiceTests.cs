@@ -114,7 +114,7 @@ namespace ReasnAPI.Tests.Services
 
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag> { new Tag { Id = 1, Name = "TestTag" } });
-
+            mockContext.Setup(c => c.EventTags).ReturnsDbSet(new List<EventTag>());
             var tagService = new TagService(mockContext.Object);
             
             var result = tagService.UpdateTag(1, tagDto);
@@ -132,7 +132,7 @@ namespace ReasnAPI.Tests.Services
 
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag>());
-
+            mockContext.Setup(c => c.EventTags).ReturnsDbSet(new List<EventTag>());
             var tagService = new TagService(mockContext.Object);
             
             var result = tagService.UpdateTag(1, tagDto);
@@ -145,7 +145,7 @@ namespace ReasnAPI.Tests.Services
         {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag> { new Tag { Id = 1, Name = "TestTag" } });
-
+            mockContext.Setup(c => c.EventTags).ReturnsDbSet(new List<EventTag>());
             var tagService = new TagService(mockContext.Object);
             
             tagService.DeleteTag(1);
@@ -158,7 +158,7 @@ namespace ReasnAPI.Tests.Services
         {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag>());
-
+            mockContext.Setup(c => c.EventTags).ReturnsDbSet(new List<EventTag>());
             var tagService = new TagService(mockContext.Object);
             
             tagService.DeleteTag(1);

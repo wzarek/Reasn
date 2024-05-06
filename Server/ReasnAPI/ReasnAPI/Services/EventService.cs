@@ -137,7 +137,7 @@ public class EventService(ReasnContext context)
         return eventDto;
     }
 
-    public void DeleteEvent(int eventId)
+    public bool DeleteEvent(int eventId)
     {
         using (var scope = new TransactionScope())
         {
@@ -145,7 +145,7 @@ public class EventService(ReasnContext context)
 
             if (eventToDelete == null)
             {
-                return;
+                return false;
             }
 
             context.EventTags.RemoveRange(context.EventTags.Where(r => r.EventId == eventId));
@@ -153,6 +153,8 @@ public class EventService(ReasnContext context)
 
             context.SaveChanges();
         }
+
+        return true;
     }
 
     public EventDto GetEventById(int eventId)

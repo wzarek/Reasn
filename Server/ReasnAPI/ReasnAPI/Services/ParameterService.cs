@@ -44,22 +44,23 @@ public class ParameterService(ReasnContext context)
         return parameterDto;
     }
 
-    public void DeleteParameter(int parameterId)
+    public bool DeleteParameter(int parameterId)
     {
         var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
 
         var parameterCheck = context.EventParameters.FirstOrDefault(r => r.ParameterId == parameterId);
         if (parameterCheck != null) // if parameter is associated with an event, it cannot be deleted
         {
-            return;
+            return false;
         }
 
         if (parameter == null)
         {
-            return;
+            return false;
         }
         context.Parameters.Remove(parameter);
         context.SaveChanges();
+        return true;
     }
 
     public ParameterDto GetParameterById(int parameterId)

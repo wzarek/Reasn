@@ -119,7 +119,8 @@ namespace ReasnAPI.Tests.Services
         {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Statuses).ReturnsDbSet(new List<Status>());
-
+            mockContext.Setup(c => c.Participants).ReturnsDbSet(new List<Participant>());
+            mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event>());
             var statusService = new StatusService(mockContext.Object);
             
             statusService.DeleteStatus(1);
@@ -132,7 +133,8 @@ namespace ReasnAPI.Tests.Services
         {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Statuses).ReturnsDbSet(new List<Status> { new Status { Id = 1, Name = "TestStatus" } });
-
+            mockContext.Setup(c => c.Participants).ReturnsDbSet(new List<Participant>());
+            mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event>());
             var statusService = new StatusService(mockContext.Object);
             
             statusService.DeleteStatus(1);

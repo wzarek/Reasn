@@ -65,6 +65,7 @@ namespace ReasnAPI.Tests.Services
 
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter> { new Parameter { Id = 1, Key = "TestKey", Value = "TestValue" } });
+            mockContext.Setup(c => c.EventParameters).ReturnsDbSet(new List<EventParameter>());
 
             var parameterService = new ParameterService(mockContext.Object);
             
@@ -84,7 +85,7 @@ namespace ReasnAPI.Tests.Services
 
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>());
-
+            mockContext.Setup(c => c.EventParameters).ReturnsDbSet(new List<EventParameter>());
             var parameterService = new ParameterService(mockContext.Object);
             
             var result = parameterService.UpdateParameter(1, parameterDto);
@@ -123,7 +124,7 @@ namespace ReasnAPI.Tests.Services
         {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter> { new Parameter { Id = 1, Key = "TestKey", Value = "TestValue" } });
-
+            mockContext.Setup(c => c.EventParameters).ReturnsDbSet(new List<EventParameter>());
             var parameterService = new ParameterService(mockContext.Object);
             
             parameterService.DeleteParameter(1);
@@ -136,7 +137,7 @@ namespace ReasnAPI.Tests.Services
         {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>());
-
+            mockContext.Setup(c => c.EventParameters).ReturnsDbSet(new List<EventParameter>());
             var parameterService = new ParameterService(mockContext.Object);
             
             parameterService.DeleteParameter(1);

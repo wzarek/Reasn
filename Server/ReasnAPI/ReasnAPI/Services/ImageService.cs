@@ -67,16 +67,17 @@ public class ImageService(ReasnContext context)
         return imageDto;
     }
 
-    public void DeleteImage(int id)
+    public bool DeleteImage(int id)
     {
         var image = context.Images.FirstOrDefault(r => r.Id == id);
         if (image == null)
         {
-            return;
+            return false;
         }
         context.Images.Remove(image);
         context.SaveChanges();
 
+        return true;
     }
 
     public ImageDto GetImageById(int id)
