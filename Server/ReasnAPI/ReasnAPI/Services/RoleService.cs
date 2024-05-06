@@ -1,13 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ReasnAPI.Models.Database;
+﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 
-namespace ReasnAPI.Services {
-    public class RoleService(ReasnContext context) {
+namespace ReasnAPI.Services
+{
+    public class RoleService(ReasnContext context)
+    {
         private readonly ReasnContext _context = context;
 
-        public RoleDto? CreateRole(RoleDto? roleDto) {
+        public RoleDto? CreateRole(RoleDto? roleDto)
+        {
             if (roleDto is null)
                 return null;
 
@@ -17,7 +19,8 @@ namespace ReasnAPI.Services {
             if (roleDb is not null)
                 return null;
 
-            var role = new Role() {
+            var role = new Role
+            {
                 Name = roleDto.Name,
             };
 
@@ -27,13 +30,14 @@ namespace ReasnAPI.Services {
             return roleDto;
         }
 
-        public RoleDto? UpdateRole(int roleId, RoleDto? roleDto) {
+        public RoleDto? UpdateRole(int roleId, RoleDto? roleDto)
+        {
             if (roleDto is null)
                 return null;
 
             var role = _context.Roles.FirstOrDefault(r => r.Id == roleId);
 
-            if (role is null) 
+            if (role is null)
                 return null;
 
             role.Name = roleDto.Name;
@@ -43,43 +47,50 @@ namespace ReasnAPI.Services {
             return MapToRoleDto(role);
         }
 
-        public void DeleteRole(int roleId) {
+        public bool DeleteRole(int roleId)
+        {
             var role = _context.Roles.FirstOrDefault(r => r.Id == roleId);
 
-            if (role is not null) {
-                _context.Roles.Remove(role);
-                _context.SaveChanges();
-            }
+            if (role is null)
+                return false;
+
+            _context.Roles.Remove(role);
+            _context.SaveChanges();
+
+            return true;
         }
 
-        public RoleDto? GetRoleById(int roleId) {
-            return MapToRoleDto(_context.Roles.FirstOrDefault(r => r.Id == roleId));
+        public RoleDto? GetRoleById(int roleId)
+        {
+            var role = _context.Roles.FirstOrDefault(r => r.Id == roleId);
+
+            if (role is null) 
+                return null;
+
+            return MapToRoleDto(role);
         }
 
-        public IEnumerable<RoleDto?> GetRolesByFilter(Expression<Func<Role, bool>> filter) {
+        public IEnumerable<RoleDto?> GetRolesByFilter(Expression<Func<Role, bool>> filter)
+        {
             return _context.Roles
                            .Where(filter)
                            .Select(role => MapToRoleDto(role))
-                           .ToList();
+                           .AsEnumerable();
         }
 
-        public IEnumerable<RoleDto?> GetAllRoles() {
+        public IEnumerable<RoleDto?> GetAllRoles()
+        {
             return _context.Roles
                            .Select(role => MapToRoleDto(role))
-                           .ToList();
+                           .AsEnumerable();
         }
 
-        private static RoleDto? MapToRoleDto(Role? role) {
-            if (role is null)
-                return null;
-
-            return new RoleDto {
+        private static RoleDto MapToRoleDto(Role role)
+        {
+            return new RoleDto
+            {
                 Name = role.Name
             };
-        }
-
-        public bool DbExist() {
-            return context.Database.CanConnect();
         }
     }
 }

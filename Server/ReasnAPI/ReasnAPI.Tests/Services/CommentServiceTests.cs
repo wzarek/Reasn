@@ -1,39 +1,45 @@
-﻿using ReasnAPI.Models.Database;
+﻿using Moq;
+using Moq.EntityFrameworkCore;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Services;
-using Moq;
-using Moq.EntityFrameworkCore;
 
-namespace ReasnAPI.Tests.Services {
+namespace ReasnAPI.Tests.Services
+{
     [TestClass]
-    public class CommentServiceTests {
+    public class CommentServiceTests
+    {
         [TestMethod]
-        public void GetCommentById_CommentExist_CommentReturned() {
+        public void GetCommentById_CommentExist_CommentReturned()
+        {
             var mockContext = new Mock<ReasnContext>();
 
-            var event1 = new Event() {
+            var event1 = new Event
+            {
                 Id = 1,
                 Name = "Event",
                 Description = "Description",
             };
 
-            var user = new User() {
+            var user = new User
+            {
                 Id = 1,
                 Username = "Username",
                 Email = "Email",
                 Password = "Password",
             };
 
-            var comment = new Comment() {
+            var comment = new Comment
+            {
                 Id = 1,
                 Content = "Content",
                 EventId = event1.Id,
                 UserId = user.Id
             };
 
-            mockContext.Setup(c => c.Users).ReturnsDbSet([ user ]);
-            mockContext.Setup(c => c.Events).ReturnsDbSet([ event1 ]);
-            mockContext.Setup(c => c.Comments).ReturnsDbSet([ comment ]);
+            mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
+            mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
+            mockContext.Setup(c => c.Comments).ReturnsDbSet([comment]);
 
             var commentService = new CommentService(mockContext.Object);
 
@@ -46,7 +52,8 @@ namespace ReasnAPI.Tests.Services {
         }
 
         [TestMethod]
-        public void GetCommentById_CommentDoesNotExist_NullReturned() {
+        public void GetCommentById_CommentDoesNotExist_NullReturned()
+        {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Comments).ReturnsDbSet([]);
 
@@ -58,39 +65,44 @@ namespace ReasnAPI.Tests.Services {
         }
 
         [TestMethod]
-        public void GetAllComments_CommentsExist_CommentsReturned() {
+        public void GetAllComments_CommentsExist_CommentsReturned()
+        {
             var mockContext = new Mock<ReasnContext>();
 
-            var user = new User() {
+            var user = new User
+            {
                 Id = 1,
                 Username = "Username",
                 Email = "Email",
                 Password = "Password",
             };
 
-            var event1 = new Event() {
+            var event1 = new Event
+            {
                 Id = 1,
                 Name = "Event",
                 Description = "Description",
             };
 
-            var comment1 = new Comment() {
+            var comment1 = new Comment
+            {
                 Id = 1,
                 Content = "Content",
                 EventId = event1.Id,
                 UserId = user.Id
             };
 
-            var comment2 = new Comment() {
+            var comment2 = new Comment
+            {
                 Id = 2,
                 Content = "Content",
                 EventId = event1.Id,
                 UserId = user.Id
             };
 
-            mockContext.Setup(c => c.Users).ReturnsDbSet([ user ]);
-            mockContext.Setup(c => c.Events).ReturnsDbSet([ event1 ]);
-            mockContext.Setup(c => c.Comments).ReturnsDbSet([ comment1, comment2 ]);
+            mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
+            mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
+            mockContext.Setup(c => c.Comments).ReturnsDbSet([comment1, comment2]);
 
             var commentService = new CommentService(mockContext.Object);
 
@@ -101,7 +113,8 @@ namespace ReasnAPI.Tests.Services {
         }
 
         [TestMethod]
-        public void GetAllComments_NoComments_EmptyListReturned() {
+        public void GetAllComments_NoComments_EmptyListReturned()
+        {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Comments).ReturnsDbSet([]);
 
@@ -114,30 +127,35 @@ namespace ReasnAPI.Tests.Services {
         }
 
         [TestMethod]
-        public void GetCommentsByFilter_CommentsExist_CommentsReturned() {
+        public void GetCommentsByFilter_CommentsExist_CommentsReturned()
+        {
             var mockContext = new Mock<ReasnContext>();
 
-            var user = new User() {
+            var user = new User
+            {
                 Id = 1,
                 Username = "Username",
                 Email = "Email",
                 Password = "Password",
             };
 
-            var event1 = new Event() {
+            var event1 = new Event
+            {
                 Id = 1,
                 Name = "Event",
                 Description = "Description",
             };
 
-            var comment1 = new Comment() {
+            var comment1 = new Comment
+            {
                 Id = 1,
                 Content = "Content",
                 EventId = event1.Id,
                 UserId = user.Id
             };
 
-            var comment2 = new Comment() {
+            var comment2 = new Comment
+            {
                 Id = 2,
                 Content = "Content",
                 EventId = event1.Id,
@@ -157,7 +175,8 @@ namespace ReasnAPI.Tests.Services {
         }
 
         [TestMethod]
-        public void GetCommentsByFilter_NoComments_EmptyListReturned() {
+        public void GetCommentsByFilter_NoComments_EmptyListReturned()
+        {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Comments).ReturnsDbSet([]);
 
@@ -170,29 +189,33 @@ namespace ReasnAPI.Tests.Services {
         }
 
         [TestMethod]
-        public void CreateComment_CommentCreated_CommentReturned() {
+        public void CreateComment_CommentCreated_CommentReturned()
+        {
             var mockContext = new Mock<ReasnContext>();
 
-            var user = new User() {
+            var user = new User
+            {
                 Id = 1,
                 Username = "Username",
                 Email = "Email",
                 Password = "Password",
             };
 
-            var event1 = new Event() {
+            var event1 = new Event
+            {
                 Id = 1,
                 Name = "Event",
                 Description = "Description",
             };
 
-            mockContext.Setup(c => c.Users).ReturnsDbSet([ user ]);
-            mockContext.Setup(c => c.Events).ReturnsDbSet([ event1 ]);
+            mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
+            mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
             mockContext.Setup(c => c.Comments).ReturnsDbSet([]);
 
             var commentService = new CommentService(mockContext.Object);
 
-            var commentDto = new CommentDto {
+            var commentDto = new CommentDto
+            {
                 Content = "Content",
                 UserId = 1,
                 EventId = 1
@@ -207,7 +230,8 @@ namespace ReasnAPI.Tests.Services {
         }
 
         [TestMethod]
-        public void CreateComment_CommentDtoIsNull_NullReturned() {
+        public void CreateComment_CommentDtoIsNull_NullReturned()
+        {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Comments).ReturnsDbSet([]);
 
@@ -219,36 +243,41 @@ namespace ReasnAPI.Tests.Services {
         }
 
         [TestMethod]
-        public void UpdateComment_CommentUpdated_CommentReturned() {
+        public void UpdateComment_CommentUpdated_CommentReturned()
+        {
             var mockContext = new Mock<ReasnContext>();
 
-            var user = new User() {
+            var user = new User
+            {
                 Id = 1,
                 Username = "Username",
                 Email = "Email",
                 Password = "Password",
             };
 
-            var event1 = new Event() {
+            var event1 = new Event
+            {
                 Id = 1,
                 Name = "Event",
                 Description = "Description",
             };
 
-            var comment = new Comment() {
+            var comment = new Comment
+            {
                 Id = 1,
                 Content = "Content",
                 EventId = event1.Id,
                 UserId = user.Id
             };
 
-            mockContext.Setup(c => c.Users).ReturnsDbSet([ user ]);
-            mockContext.Setup(c => c.Events).ReturnsDbSet([ event1 ]);
-            mockContext.Setup(c => c.Comments).ReturnsDbSet([ comment ]);
+            mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
+            mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
+            mockContext.Setup(c => c.Comments).ReturnsDbSet([comment]);
 
             var commentService = new CommentService(mockContext.Object);
 
-            var result = commentService.UpdateComment(1, new CommentDto {
+            var result = commentService.UpdateComment(1, new CommentDto
+            {
                 Content = "UpdatedContent",
                 EventId = 2,
                 UserId = 2
@@ -261,13 +290,15 @@ namespace ReasnAPI.Tests.Services {
         }
 
         [TestMethod]
-        public void UpdateComment_CommentDoesNotExist_NullReturned() {
+        public void UpdateComment_CommentDoesNotExist_NullReturned()
+        {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Comments).ReturnsDbSet([]);
 
             var commentService = new CommentService(mockContext.Object);
 
-            var result = commentService.UpdateComment(1, new CommentDto {
+            var result = commentService.UpdateComment(1, new CommentDto
+            {
                 Content = "UpdatedContent",
                 EventId = 1,
                 UserId = 1
@@ -277,7 +308,8 @@ namespace ReasnAPI.Tests.Services {
         }
 
         [TestMethod]
-        public void UpdateComment_CommentDtoIsNull_NullReturned() {
+        public void UpdateComment_CommentDtoIsNull_NullReturned()
+        {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Comments).ReturnsDbSet([]);
 
@@ -289,17 +321,19 @@ namespace ReasnAPI.Tests.Services {
         }
 
         [TestMethod]
-        public void DeleteComment_CommentExists_CommentDeleted() {
+        public void DeleteComment_CommentExists_CommentDeleted()
+        {
             var mockContext = new Mock<ReasnContext>();
 
-            var comment = new Comment() {
+            var comment = new Comment
+            {
                 Id = 1,
                 Content = "Content",
                 EventId = 1,
                 UserId = 1
             };
 
-            mockContext.Setup(c => c.Comments).ReturnsDbSet([ comment ]);
+            mockContext.Setup(c => c.Comments).ReturnsDbSet([comment]);
 
             var commentService = new CommentService(mockContext.Object);
 
@@ -309,7 +343,8 @@ namespace ReasnAPI.Tests.Services {
         }
 
         [TestMethod]
-        public void DeleteComment_CommentDoesNotExist_NothingHappens() {
+        public void DeleteComment_CommentDoesNotExist_NothingHappens()
+        {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Comments).ReturnsDbSet([]);
 
