@@ -15,13 +15,17 @@ namespace ReasnAPI.Services
         public UserDto? CreateUser(UserDto? userDto)
         {
             if (userDto is null)
+            {
                 return null;
+            }
 
             // check if user with the same username already exists
             var userDb = _context.Users.FirstOrDefault(r => r.Username == userDto.Username);
 
             if (userDb is not null)
+            {
                 return null;
+            }
 
             var user = new User
             {
@@ -45,12 +49,16 @@ namespace ReasnAPI.Services
         public UserDto? UpdateUser(int userId, UserDto? userDto)
         {
             if (userDto is null)
+            {
                 return null;
+            }
 
             var user = _context.Users.FirstOrDefault(r => r.Id == userId);
 
             if (user is null)
+            {
                 return null;
+            }
 
             user.Name = userDto.Name;
             user.Surname = userDto.Surname;
@@ -72,7 +80,9 @@ namespace ReasnAPI.Services
             var user = _context.Users.FirstOrDefault(r => r.Id == userId);
 
             if (user is null)
+            {
                 return false;
+            }
 
             _context.Users.Remove(user);
             _context.SaveChanges();
@@ -85,7 +95,9 @@ namespace ReasnAPI.Services
             var user = _context.Users.FirstOrDefault(r => r.Id == userId);
 
             if (user is null)
+            {
                 return null;
+            }
 
             return MapToUserDto(user);
         }

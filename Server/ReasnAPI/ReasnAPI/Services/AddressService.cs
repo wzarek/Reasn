@@ -11,7 +11,9 @@ namespace ReasnAPI.Services
         public AddressDto? CreateAddress(AddressDto? addressDto)
         {
             if (addressDto is null)
+            {
                 return null;
+            }
 
             var address = new Address
             {
@@ -31,12 +33,16 @@ namespace ReasnAPI.Services
         public AddressDto? UpdateAddress(int addressId, AddressDto? addressDto)
         {
             if (addressDto is null)
+            {
                 return null;
+            }
 
             var address = _context.Addresses.FirstOrDefault(r => r.Id == addressId);
 
             if (address is null)
+            {
                 return null;
+            }
 
             address.City = addressDto.City;
             address.Country = addressDto.Country;
@@ -54,7 +60,9 @@ namespace ReasnAPI.Services
             var address = _context.Addresses.FirstOrDefault(r => r.Id == addressId);
 
             if (address is null)
+            {
                 return false ;
+            }
 
             _context.Addresses.Remove(address);
             _context.SaveChanges();
@@ -67,7 +75,9 @@ namespace ReasnAPI.Services
             var address = _context.Addresses.FirstOrDefault(r => r.Id == addressId);
 
             if (address is null)
+            {
                 return null;
+            }
 
             return MapToAddressDto(address);
         }

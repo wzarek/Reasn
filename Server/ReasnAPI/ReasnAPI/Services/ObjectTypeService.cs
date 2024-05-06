@@ -10,13 +10,17 @@ namespace ReasnAPI.Services
         public ObjectType? CreateObjectType(ObjectType? objectType)
         {
             if (objectType is null)
+            {
                 return null;
+            }
 
             // check if object type with the same name already exists
             var objectTypeDb = _context.ObjectTypes.FirstOrDefault(r => r.Name == objectType.Name);
 
             if (objectTypeDb is not null)
+            {
                 return null;
+            }
 
             _context.ObjectTypes.Add(objectType);
             _context.SaveChanges();
@@ -27,12 +31,16 @@ namespace ReasnAPI.Services
         public ObjectType? UpdateObjectType(ObjectType? objectType)
         {
             if (objectType is null)
+            {
                 return null;
+            }
 
             var objectTypeDb = _context.ObjectTypes.FirstOrDefault(r => r.Id == objectType.Id);
 
             if (objectTypeDb is null)
+            { 
                 return null;
+            }
 
             objectTypeDb.Name = objectType.Name;
             _context.SaveChanges();
@@ -40,16 +48,19 @@ namespace ReasnAPI.Services
             return objectType;
         }
 
-        // TODO: Refator this method to use bool return type
-        public void DeleteObjectType(int objectTypeId)
+        public bool DeleteObjectType(int objectTypeId)
         {
             var objectType = _context.ObjectTypes.FirstOrDefault(r => r.Id == objectTypeId);
 
             if ( objectType is null)
-                return;
+            {
+                return false;
+            }
 
             _context.ObjectTypes.Remove(objectType);
             _context.SaveChanges();
+
+            return true;
         }
 
         public ObjectType? GetObjectTypeById(int objectTypeId)

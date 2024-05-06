@@ -11,13 +11,17 @@ namespace ReasnAPI.Services
         public RoleDto? CreateRole(RoleDto? roleDto)
         {
             if (roleDto is null)
+            {
                 return null;
+            }
 
             // check if role with the same name already exists
             var roleDb = _context.Roles.FirstOrDefault(r => r.Name == roleDto.Name);
 
             if (roleDb is not null)
+            {
                 return null;
+            }
 
             var role = new Role
             {
@@ -33,12 +37,16 @@ namespace ReasnAPI.Services
         public RoleDto? UpdateRole(int roleId, RoleDto? roleDto)
         {
             if (roleDto is null)
+            {
                 return null;
+            }
 
             var role = _context.Roles.FirstOrDefault(r => r.Id == roleId);
 
             if (role is null)
+            {
                 return null;
+            }
 
             role.Name = roleDto.Name;
 
@@ -52,7 +60,9 @@ namespace ReasnAPI.Services
             var role = _context.Roles.FirstOrDefault(r => r.Id == roleId);
 
             if (role is null)
+            {
                 return false;
+            }
 
             _context.Roles.Remove(role);
             _context.SaveChanges();
@@ -64,8 +74,10 @@ namespace ReasnAPI.Services
         {
             var role = _context.Roles.FirstOrDefault(r => r.Id == roleId);
 
-            if (role is null) 
+            if (role is null)
+            {
                 return null;
+            }
 
             return MapToRoleDto(role);
         }
