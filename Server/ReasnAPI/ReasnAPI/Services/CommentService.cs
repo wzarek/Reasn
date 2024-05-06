@@ -11,7 +11,9 @@ namespace ReasnAPI.Services
         public CommentDto? CreateComment(CommentDto? commentDto)
         {
             if (commentDto is null)
+            {
                 return null;
+            }
 
             var comment = new Comment
             {
@@ -30,12 +32,16 @@ namespace ReasnAPI.Services
         public CommentDto? UpdateComment(int commentId, CommentDto? commentDto)
         {
             if (commentDto is null)
+            {
                 return null;
+            }
 
             var comment = _context.Comments.FirstOrDefault(r => r.Id == commentId);
 
             if (comment is null)
+            {
                 return null;
+            }
 
             comment.Content = commentDto.Content;
 
@@ -49,7 +55,9 @@ namespace ReasnAPI.Services
             var comment = _context.Comments.FirstOrDefault(r => r.Id == commentId);
 
             if (comment is null)
+            {
                 return false;
+            }
 
             _context.Comments.Remove(comment);
             _context.SaveChanges();
@@ -62,7 +70,9 @@ namespace ReasnAPI.Services
             var comment = _context.Comments.FirstOrDefault(r => r.Id == commentId);
 
             if (comment is null)
+            {
                 return null;
+            }
 
             return MapToCommentDto(comment);
         }
