@@ -1,33 +1,27 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
+import { z } from "zod"
 
-export class ImageDto {
-    ImageData: string
-    ObjectId: number
-    ObjectTypeId: number
-    
-    constructor(imageData: string, objectId: number, objectTypeId: number) {
-        this.ImageData = imageData
-        this.ObjectId = objectId
-        this.ObjectTypeId = objectTypeId
-    }
+export const ImageDtoSchema = z.object({
+    ImageData: z.string(),
+    ObjectId: z.number(),
+    ObjectTypeId: z.number()
+})
 
-    static fromJson(json: string): ImageDto | null {
-        if (!json) {
-            return null
+export type ImageDto = z.infer<typeof ImageDtoSchema>
+
+export const ImageDtoMapper = {
+    fromObject: (entity: object): ImageDto => {
+        const result = ImageDtoSchema.safeParse(entity)
+        if (!result.success) {
+            throw new ModelMappingError('ImageDto', result.error.name)
         }
-
-        return ImageDto.fromObject(JSON.parse(json))
-    }
-
-    static fromObject(obj: object): ImageDto | null {
-        if (!obj) {
-            return null
+        return result.data
+    },
+    fromJSON: (jsonEntity: string): any => {
+        const result = ImageDtoSchema.safeParse(JSON.parse(jsonEntity))
+        if (!result.success) {
+            throw new ModelMappingError('ImageDto', result.error.name)
         }
-
-        if ('ImageData' in obj === false || typeof obj.ImageData !== 'string') throw new ModelMappingError('ImageDto','ImageData is required')
-        if ('ObjectId' in obj === false || typeof obj.ObjectId !== 'number') throw new ModelMappingError('ImageDto','ObjectId is required')
-        if ('ObjectTypeId' in obj === false || typeof obj.ObjectTypeId !== 'number') throw new ModelMappingError('ImageDto','ObjectTypeId is required')
-
-        return new ImageDto(obj.ImageData, obj.ObjectId, obj.ObjectTypeId)
+        return result.data
     }
 }

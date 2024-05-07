@@ -1,30 +1,26 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
+import { z } from "zod"
 
-export class StatusDto {
-    Name: string
-    ObjectTypeId: number
-    
-    constructor(name: string, objectTypeId: number) {
-        this.Name = name
-        this.ObjectTypeId = objectTypeId
-    }
+export const StatusDtoSchema = z.object({
+    Name: z.string(),
+    ObjectTypeId: z.number()
+})
 
-    static fromJson(json: string): StatusDto | null {
-        if (!json) {
-            return null
+export type StatusDto = z.infer<typeof StatusDtoSchema>
+
+export const StatusDtoMapper = {
+    fromObject: (entity: object): StatusDto => {
+        const result = StatusDtoSchema.safeParse(entity)
+        if (!result.success) {
+            throw new ModelMappingError('StatusDto', result.error.name)
         }
-
-        return StatusDto.fromObject(JSON.parse(json))
-    }
-
-    static fromObject(obj: object): StatusDto | null {
-        if (!obj) {
-            return null
+        return result.data
+    },
+    fromJSON: (jsonEntity: string): any => {
+        const result = StatusDtoSchema.safeParse(JSON.parse(jsonEntity))
+        if (!result.success) {
+            throw new ModelMappingError('StatusDto', result.error.name)
         }
-
-        if ('Name' in obj === false || typeof obj.Name !== 'string') throw new ModelMappingError('StatusDto','Name is required')
-        if ('ObjectTypeId' in obj === false || typeof obj.ObjectTypeId !== 'number') throw new ModelMappingError('StatusDto','ObjectTypeId is required')
-
-        return new StatusDto(obj.Name, obj.ObjectTypeId)
+        return result.data
     }
 }

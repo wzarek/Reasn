@@ -1,27 +1,25 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
+import { z } from "zod"
 
-export class RoleDto {
-    Name: string
+export const RoleDtoSchema = z.object({
+    Name: z.string()
+})
 
-    constructor(name: string) {
-        this.Name = name
-    }
+export type RoleDto = z.infer<typeof RoleDtoSchema>
 
-    static fromJson(json: string): RoleDto | null {
-        if (!json) {
-            return null
+export const RoleDtoMapper = {
+    fromObject: (entity: object): RoleDto => {
+        const result = RoleDtoSchema.safeParse(entity)
+        if (!result.success) {
+            throw new ModelMappingError('RoleDto', result.error.name)
         }
-
-        return RoleDto.fromObject(JSON.parse(json))
-    }
-
-    static fromObject(obj: object): RoleDto | null {
-        if (!obj) {
-            return null
+        return result.data
+    },
+    fromJSON: (jsonEntity: string): any => {
+        const result = RoleDtoSchema.safeParse(JSON.parse(jsonEntity))
+        if (!result.success) {
+            throw new ModelMappingError('RoleDto', result.error.name)
         }
-
-        if ('Name' in obj === false || typeof obj.Name !== 'string') throw new ModelMappingError('RoleDto','Name is required')
-
-        return new RoleDto(obj.Name)
+        return result.data
     }
 }

@@ -1,27 +1,25 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
+import { z } from "zod"
 
-export class TagDto {
-    Name: string
-    
-    constructor(name: string) {
-        this.Name = name
-    }
+export const TagDtoSchema = z.object({
+    Name: z.string()
+})
 
-    static fromJson(json: string): TagDto | null {
-        if (!json) {
-            return null
+export type TagDto = z.infer<typeof TagDtoSchema>
+
+export const TagDtoMapper = {
+    fromObject: (entity: object): TagDto => {
+        const result = TagDtoSchema.safeParse(entity)
+        if (!result.success) {
+            throw new ModelMappingError('TagDto', result.error.name)
         }
-
-        return TagDto.fromObject(JSON.parse(json))
-    }
-
-    static fromObject(obj: object): TagDto | null {
-        if (!obj) {
-            return null
+        return result.data
+    },
+    fromJSON: (jsonEntity: string): any => {
+        const result = TagDtoSchema.safeParse(JSON.parse(jsonEntity))
+        if (!result.success) {
+            throw new ModelMappingError('TagDto', result.error.name)
         }
-
-        if ('Name' in obj === false || typeof obj.Name !== 'string') throw new ModelMappingError('TagDto','Name is required')
-
-        return new TagDto(obj.Name)
+        return result.data
     }
 }
