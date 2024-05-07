@@ -7,8 +7,8 @@ public class ParameterService(ReasnContext context)
 {
     public ParameterDto CreateParameter(ParameterDto parameterDto)
     {
-        var parameter = context.Parameters.FirstOrDefault(r => r.Key == parameterDto.Key);
-        if (parameter != null && parameter.Value == parameterDto.Value)
+        var parameter = context.Parameters.FirstOrDefault(r => r.Key == parameterDto.Key && r.Value == parameterDto.Value);
+        if (parameter != null)
         {
             return null;
         }

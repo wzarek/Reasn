@@ -2,6 +2,7 @@
 using ReasnAPI.Models.DTOs;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Transactions;
 
 namespace ReasnAPI.Services;
 public class TagService (ReasnContext context)
@@ -23,25 +24,53 @@ public class TagService (ReasnContext context)
         return tagDto;
     }
 
-    public TagDto UpdateTag(int tagId,TagDto tagDto)
+    public TagDto UpdateTag(int tagId, TagDto tagDto, int eventId)
     {
-        var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
-
-        var eventTag = context.EventTags.FirstOrDefault(r => r.TagId == tagId);
-        if (eventTag != null) // if tag is associated with an event, it cannot be updated
+        using (var scope = new TransactionScope())
         {
-            return null;
-        }
+            var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
 
-        if(tag == null)
-        {
-            return null;
+            if (tag == null)
+            {
+                return null;
+            }
+
+            var eventTags = context.EventTags.Where(r => r.TagId == tagId).ToList();
+            if (eventTags.Any(et => et.EventId != eventId)) // if tag is associated with more than one event
+            {
+                // Create new tag and event tag, and remove the old one
+                var newTag = new Tag
+                {
+                    Name = tagDto.Name
+                };
+                context.Tags.Add(newTag);
+                context.SaveChanges();
+
+                var newEventTag = new EventTag
+                {
+                    EventId = eventId,
+                    TagId = newTag.Id
+                };
+                context.EventTags.Add(newEventTag);
+
+                var tagsToRemove = context.EventTags.Where(r => r.EventId == eventId && r.TagId == tagId).ToList();
+                context.EventTags.RemoveRange(tagsToRemove);
+            }
+            else if (eventTags.Count == 1 &&
+                     eventTags[0].EventId == eventId) // if tag is associated only with the same event
+            {
+                tag.Name = tagDto.Name;
+                context.Tags.Update(tag);
+            }
+            else
+            {
+                return null;
+            }
+
+            context.SaveChanges();
+            return tagDto;
         }
-        tag.Name = tagDto.Name;
-        context.Tags.Update(tag);
-        context.SaveChanges();
-        return tagDto;
-    }   
+    }
 
     public bool DeleteTag(int tagId)
     {
