@@ -1,41 +1,29 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
+import { z } from "zod"
 
-export class AddressDto {
-    Country: string
-    City: string
-    Street: string
-    State: string
-    ZipCode: string | null
+export const AddressDtoSchema = z.object({
+    Country: z.string(),
+    City: z.string(),
+    Street: z.string(),
+    State: z.string(),
+    ZipCode: z.string().nullable()
+})
 
-    constructor(country: string, city: string, street: string, state: string, zipCode: string | null) {
-        this.Country = country
-        this.City = city
-        this.Street = street
-        this.State = state
-        this.ZipCode = zipCode
-    }
+export type AddressDto = z.infer<typeof AddressDtoSchema>
 
-    static fromJson(json: string): AddressDto | null {
-        if (!json) {
-            return null
+export const AddressDtoMapper = {
+    fromObject: (entity: object): AddressDto => {
+        const result = AddressDtoSchema.safeParse(entity)
+        if (!result.success) {
+            throw new ModelMappingError('AddressDto', result.error.name)
         }
-
-        return AddressDto.fromObject(JSON.parse(json))
-    }
-
-    static fromObject(obj: object): AddressDto | null {
-        if (!obj) {
-            return null
+        return result.data
+    },
+    fromJSON: (jsonEntity: string): any => {
+        const result = AddressDtoSchema.safeParse(JSON.parse(jsonEntity))
+        if (!result.success) {
+            throw new ModelMappingError('AddressDto', result.error.name)
         }
-
-        if ('Country' in obj === false || typeof obj.Country !== 'string') throw new ModelMappingError('AddressDto','Country is required')
-        if ('City' in obj === false || typeof obj.City !== 'string') throw new ModelMappingError('AddressDto','City is required')
-        if ('State' in obj === false || typeof obj.State !== 'string') throw new ModelMappingError('AddressDto','State is required')
-        if ('Street' in obj === false || typeof obj.Street !== 'string') throw new ModelMappingError('AddressDto','Street is required')
-        if ('ZipCode' in obj === true && (obj.ZipCode !== null && typeof obj.ZipCode !== 'string')) throw new ModelMappingError('AddressDto','ZipCode is invalid')
-
-        let zipCode: string | null = 'ZipCode' in obj === true ? obj.ZipCode as string : null
-
-        return new AddressDto(obj.Country, obj.City, obj.Street, obj.State, zipCode)
+        return result.data
     }
 }

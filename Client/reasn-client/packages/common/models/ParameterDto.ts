@@ -1,30 +1,26 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
+import { z } from "zod"
 
-export class ParameterDto {
-    Key: string
-    Value: string
-    
-    constructor(key: string, value: string) {
-        this.Key = key
-        this.Value = value
-    }
+export const ParameterDtoSchema = z.object({
+    Key: z.string(),
+    Value: z.string()
+})
 
-    static fromJson(json: string): ParameterDto | null {
-        if (!json) {
-            return null
+export type ParameterDto = z.infer<typeof ParameterDtoSchema>
+
+export const ParameterDtoMapper = {
+    fromObject: (entity: object): ParameterDto => {
+        const result = ParameterDtoSchema.safeParse(entity)
+        if (!result.success) {
+            throw new ModelMappingError('ParameterDto', result.error.name)
         }
-
-        return ParameterDto.fromObject(JSON.parse(json))
-    }
-
-    static fromObject(obj: object): ParameterDto | null {
-        if (!obj) {
-            return null
+        return result.data
+    },
+    fromJSON: (jsonEntity: string): any => {
+        const result = ParameterDtoSchema.safeParse(JSON.parse(jsonEntity))
+        if (!result.success) {
+            throw new ModelMappingError('ParameterDto', result.error.name)
         }
-
-        if ('Key' in obj === false || typeof obj.Key !== 'string') throw new ModelMappingError('ParameterDto','Key is required')
-        if ('Value' in obj === false || typeof obj.Value !== 'string') throw new ModelMappingError('ParameterDto','Value is required')
-
-        return new ParameterDto(obj.Key, obj.Value)
+        return result.data
     }
 }

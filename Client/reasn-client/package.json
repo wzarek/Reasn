@@ -29,5 +29,8 @@
   },
   "resolutions": {
     "uuid": "^3.4.0"
+  },
+  "dependencies": {
+    "zod": "^3.23.6"
   }
 }

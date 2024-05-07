@@ -1,30 +1,26 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
+import { z } from "zod"
 
-export class InterestDto {
-    Name: string
-    Level: number
-    
-    constructor(name: string, level: number) {
-        this.Name = name
-        this.Level = level
-    }
+export const InterestDtoSchema = z.object({
+    Name: z.string(),
+    Level: z.number()
+})
 
-    static fromJson(json: string): InterestDto | null {
-        if (!json) {
-            return null
+export type InterestDto = z.infer<typeof InterestDtoSchema>
+
+export const InterestDtoMapper = {
+    fromObject: (entity: object): InterestDto => {
+        const result = InterestDtoSchema.safeParse(entity)
+        if (!result.success) {
+            throw new ModelMappingError('InterestDto', result.error.name)
         }
-
-        return InterestDto.fromObject(JSON.parse(json))
-    }
-
-    static fromObject(obj: object): InterestDto | null {
-        if (!obj) {
-            return null
+        return result.data
+    },
+    fromJSON: (jsonEntity: string): any => {
+        const result = InterestDtoSchema.safeParse(JSON.parse(jsonEntity))
+        if (!result.success) {
+            throw new ModelMappingError('InterestDto', result.error.name)
         }
-
-        if ('Name' in obj === false || typeof obj.Name !== 'string') throw new ModelMappingError('InterestDto','Name is required')
-        if ('Level' in obj === false || typeof obj.Level !== 'number') throw new ModelMappingError('InterestDto','Level is required')
-
-        return new InterestDto(obj.Name, obj.Level)
+        return result.data
     }
 }
