@@ -46,19 +46,20 @@ public class StatusService(ReasnContext context)
     {
         var status = context.Statuses.FirstOrDefault(r => r.Id == statusId);
 
-        var statusCheck = context.Participants.FirstOrDefault(r => r.StatusId == statusId);
-        var statusCheck2 = context.Events.FirstOrDefault(r => r.StatusId == statusId);
-
-        if (statusCheck != null ||
-            statusCheck2 != null) // if status is associated with a participant or event, it cannot be deleted
-        {
-            return false;
-        }
-
         if (status == null)
         {
             return false;
         }
+
+        var statusAssignedToParticipant = context.Participants.FirstOrDefault(r => r.StatusId == statusId);
+        var statusAssignedToEvent = context.Events.FirstOrDefault(r => r.StatusId == statusId);
+
+        if (statusAssignedToParticipant != null ||
+            statusAssignedToEvent != null) // if status is associated with a participant or event, it cannot be deleted
+        {
+            return false;
+        }
+        
         context.Statuses.Remove(status);
         context.SaveChanges();
         
@@ -67,7 +68,7 @@ public class StatusService(ReasnContext context)
 
     public StatusDto GetStatusById(int statusId)
     {
-        var status = context.Statuses.FirstOrDefault(r => r.Id == statusId);
+        var status = context.Statuses.Find(statusId);
         if (status == null)
         {
             return null;

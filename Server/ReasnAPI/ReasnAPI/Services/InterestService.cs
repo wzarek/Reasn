@@ -38,15 +38,35 @@ public class InterestService(ReasnContext context)
         context.SaveChanges();
         return interestDto;
     }
+
     public bool DeleteInterest(int id)
     {
         var interest = context.Interests.FirstOrDefault(r => r.Id == id);
+        var eventInterest = context.UserInterests.FirstOrDefault(r => r.InterestId == id);
+        if (eventInterest != null) 
+        {
+            return false;
+        }
 
         if (interest == null)
         {
             return false;
         }
         context.Interests.Remove(interest);
+        context.SaveChanges();
+
+        return true;
+    }
+
+    public bool DeleteInterestFromUserInterests(int interestId, int userId)
+    {
+        var userInterest = context.UserInterests.FirstOrDefault(r => r.InterestId == interestId && r.UserId == userId);
+        if (userInterest == null)
+        {
+            return false;
+        }
+
+        context.UserInterests.Remove(userInterest);
         context.SaveChanges();
 
         return true;
