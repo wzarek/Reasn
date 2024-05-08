@@ -73,7 +73,6 @@ jobs:
         run: yarn set version 4.1
       
       - name: Install dependencies
-        run: yarn install --immutable-cache
-
+        run: yarn install --immutable
       - name: Test with jest
         run: yarn test --coverage --ci
