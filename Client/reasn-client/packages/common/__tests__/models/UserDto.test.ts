@@ -1,5 +1,5 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
-import { UserDto } from '@reasn/common/models/UserDto'
+import { UserDto, UserDtoMapper } from '@reasn/common/models/UserDto'
 import { InterestDto } from '@reasn/common/models/InterestDto'
 
 describe('UserDto', () => {
@@ -15,22 +15,6 @@ describe('UserDto', () => {
         { Name: 'Music', Level: 3 }
     ]
 
-    describe('constructor', () => {
-        it('should create an instance of UserDto', () => {
-            const user = new UserDto(username, name, surname, email, phone, roleId, addressId, interests)
-
-            expect(user).toBeInstanceOf(UserDto)
-            expect(user.Username).toBe(username)
-            expect(user.Name).toBe(name)
-            expect(user.Surname).toBe(surname)
-            expect(user.Email).toBe(email)
-            expect(user.Phone).toBe(phone)
-            expect(user.RoleId).toBe(roleId)
-            expect(user.AddressId).toBe(addressId)
-            expect(user.Intrests).toBe(interests)
-        })
-    })
-
     describe('fromJson', () => {
         it('should create an instance of UserDto from JSON string', () => {
             const json = `{
@@ -44,9 +28,7 @@ describe('UserDto', () => {
                 "Intrests": ${JSON.stringify(interests)}
             }`
 
-            let user = UserDto.fromJson(json)
-
-            expect(user).toBeInstanceOf(UserDto)
+            let user = UserDtoMapper.fromJSON(json)
             user = user as UserDto
 
             expect(user.Username).toBe(username)
@@ -60,11 +42,7 @@ describe('UserDto', () => {
         })
 
         it('should return null if the JSON string is empty', () => {
-            const json = ''
-
-            const user = UserDto.fromJson(json)
-
-            expect(user).toBeNull()
+            expect(() => UserDtoMapper.fromJSON('')).toThrow(ModelMappingError)
         })
 
         it('should throw an error when providing JSON without each property individually', () => {
@@ -148,14 +126,14 @@ describe('UserDto', () => {
                 "AddressId": ${addressId}
             }`
 
-            expect(() => UserDto.fromJson(jsonWithoutUsername)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromJson(jsonWithoutName)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromJson(jsonWithoutSurname)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromJson(jsonWithoutEmail)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromJson(jsonWithoutPhone)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromJson(jsonWithoutRoleId)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromJson(jsonWithoutAddressId)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromJson(jsonWithoutInterests)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromJSON(jsonWithoutUsername)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromJSON(jsonWithoutName)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromJSON(jsonWithoutSurname)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromJSON(jsonWithoutEmail)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromJSON(jsonWithoutPhone)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromJSON(jsonWithoutRoleId)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromJSON(jsonWithoutAddressId)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromJSON(jsonWithoutInterests)).toThrow(ModelMappingError)
         })
     })
 
@@ -172,9 +150,7 @@ describe('UserDto', () => {
                 Intrests: interests
             }
 
-            let user = UserDto.fromObject(object)
-
-            expect(user).toBeInstanceOf(UserDto)
+            let user = UserDtoMapper.fromObject(object)
             user = user as UserDto
 
             expect(user.Username).toBe(username)
@@ -279,15 +255,15 @@ describe('UserDto', () => {
                 AddressId: addressId,
             }
 
-            expect(() => UserDto.fromObject(object)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromObject(objectWithoutUsername)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromObject(objectWithoutName)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromObject(objectWithoutSurname)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromObject(objectWithoutEmail)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromObject(objectWithoutPhone)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromObject(objectWithoutRoleId)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromObject(objectWithoutAddressId)).toThrow(ModelMappingError)
-            expect(() => UserDto.fromObject(objectWithoutInterests)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromObject(object)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromObject(objectWithoutUsername)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromObject(objectWithoutName)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromObject(objectWithoutSurname)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromObject(objectWithoutEmail)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromObject(objectWithoutPhone)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromObject(objectWithoutRoleId)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromObject(objectWithoutAddressId)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromObject(objectWithoutInterests)).toThrow(ModelMappingError)
         })
     })
 })

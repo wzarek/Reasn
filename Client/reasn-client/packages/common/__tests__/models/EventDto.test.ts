@@ -1,4 +1,4 @@
-import { EventDto } from '@reasn/common/models/EventDto'
+import { EventDto, EventDtoMapper } from '@reasn/common/models/EventDto'
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
 import { TagDto } from '@reasn/common/models/TagDto'
 
@@ -14,37 +14,6 @@ describe('EventDto', () => {
     const slug = 'test-event'
     const statusId = 1
     const tags: TagDto[] = [{ Name: 'Tag 1' }, { Name: 'Tag 2' }]
-
-    describe('constructor', () => {
-        it('should create an instance of EventDto', () => {
-            const event = new EventDto(
-                name,
-                addressId,
-                description,
-                organizerId,
-                startAt,
-                endAt,
-                createdAt,
-                updatedAt,
-                slug,
-                statusId,
-                tags
-            )
-
-            expect(event).toBeInstanceOf(EventDto)
-            expect(event.Name).toBe(name)
-            expect(event.AddressId).toBe(addressId)
-            expect(event.Description).toBe(description)
-            expect(event.OrganizerId).toBe(organizerId)
-            expect(event.StartAt).toBe(startAt)
-            expect(event.EndAt).toBe(endAt)
-            expect(event.CreatedAt).toBe(createdAt)
-            expect(event.UpdatedAt).toBe(updatedAt)
-            expect(event.Slug).toBe(slug)
-            expect(event.StatusId).toBe(statusId)
-            expect(event.Tags).toBe(tags)
-        })
-    })
 
     describe('fromJson', () => {
         it('should create an instance of EventDto from JSON string', () => {
@@ -62,9 +31,7 @@ describe('EventDto', () => {
                 "Tags": ${JSON.stringify(tags)}
             }`
 
-            let event = EventDto.fromJson(json)
-
-            expect(event).toBeInstanceOf(EventDto)
+            let event = EventDtoMapper.fromJSON(json)
             event = event as EventDto
 
             expect(event.Name).toBe(name)
@@ -81,11 +48,7 @@ describe('EventDto', () => {
         })
 
         it('should return null if the JSON string is empty', () => {
-            const json = ''
-
-            const event = EventDto.fromJson(json)
-
-            expect(event).toBeNull()
+            expect(() => EventDtoMapper.fromJSON('')).toThrow(ModelMappingError)
         })
 
         it('should throw an error when providing json without each property individually', () => {  
@@ -233,37 +196,37 @@ describe('EventDto', () => {
             }`
 
             expect(() => {
-                EventDto.fromJson(jsonWithoutName)
+                EventDtoMapper.fromJSON(jsonWithoutName)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromJson(jsonWithoutAddressId)
+                EventDtoMapper.fromJSON(jsonWithoutAddressId)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromJson(jsonWithoutDescription)
+                EventDtoMapper.fromJSON(jsonWithoutDescription)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromJson(jsonWithoutOrganizerId)
+                EventDtoMapper.fromJSON(jsonWithoutOrganizerId)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromJson(jsonWithoutStartAt)
+                EventDtoMapper.fromJSON(jsonWithoutStartAt)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromJson(jsonWithoutEndAt)
+                EventDtoMapper.fromJSON(jsonWithoutEndAt)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromJson(jsonWithoutCreatedAt)
+                EventDtoMapper.fromJSON(jsonWithoutCreatedAt)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromJson(jsonWithoutUpdatedAt)
+                EventDtoMapper.fromJSON(jsonWithoutUpdatedAt)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromJson(jsonWithoutSlug)
+                EventDtoMapper.fromJSON(jsonWithoutSlug)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromJson(jsonWithoutStatusId)
+                EventDtoMapper.fromJSON(jsonWithoutStatusId)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromJson(jsonWithoutTags)
+                EventDtoMapper.fromJSON(jsonWithoutTags)
             }).toThrow(ModelMappingError)
         })
     })
@@ -284,9 +247,7 @@ describe('EventDto', () => {
                 Tags: tags
             }
 
-            let event = EventDto.fromObject(obj)
-
-            expect(event).toBeInstanceOf(EventDto)
+            let event = EventDtoMapper.fromObject(obj)
             event = event as EventDto
 
             expect(event.Name).toBe(name)
@@ -461,40 +422,40 @@ describe('EventDto', () => {
             }
 
             expect(() => {
-                EventDto.fromObject(invalidObj)
+                EventDtoMapper.fromObject(invalidObj)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromObject(objWithoutName)
+                EventDtoMapper.fromObject(objWithoutName)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromObject(objWithoutAddressId)
+                EventDtoMapper.fromObject(objWithoutAddressId)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromObject(objWithoutDescription)
+                EventDtoMapper.fromObject(objWithoutDescription)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromObject(objWithoutOrganizerId)
+                EventDtoMapper.fromObject(objWithoutOrganizerId)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromObject(objWithoutStartAt)
+                EventDtoMapper.fromObject(objWithoutStartAt)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromObject(objWithoutEndAt)
+                EventDtoMapper.fromObject(objWithoutEndAt)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromObject(objWithoutCreatedAt)
+                EventDtoMapper.fromObject(objWithoutCreatedAt)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromObject(objWithoutUpdatedAt)
+                EventDtoMapper.fromObject(objWithoutUpdatedAt)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromObject(objWithoutSlug)
+                EventDtoMapper.fromObject(objWithoutSlug)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromObject(objWithoutStatusId)
+                EventDtoMapper.fromObject(objWithoutStatusId)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDto.fromObject(objWithoutTags)
+                EventDtoMapper.fromObject(objWithoutTags)
             }).toThrow(ModelMappingError)
         })
     })

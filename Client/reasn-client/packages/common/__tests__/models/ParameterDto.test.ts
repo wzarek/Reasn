@@ -1,19 +1,9 @@
-import { ParameterDto } from '@reasn/common/models/ParameterDto'
+import { ParameterDto, ParameterDtoMapper } from '@reasn/common/models/ParameterDto'
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
 
 describe('ParameterDto', () => {
     const key = 'Test Key'
     const value = 'Test Value'
-
-    describe('constructor', () => {
-        it('should create an instance of ParameterDto', () => {
-            const parameter = new ParameterDto(key, value)
-
-            expect(parameter).toBeInstanceOf(ParameterDto)
-            expect(parameter.Key).toBe(key)
-            expect(parameter.Value).toBe(value)
-        })
-    })
 
     describe('fromJson', () => {
         it('should create an instance of ParameterDto from JSON string', () => {
@@ -22,9 +12,7 @@ describe('ParameterDto', () => {
                 "Value": "${value}"
             }`
 
-            let parameter = ParameterDto.fromJson(json)
-
-            expect(parameter).toBeInstanceOf(ParameterDto)
+            let parameter = ParameterDtoMapper.fromJSON(json)
             parameter = parameter as ParameterDto
 
             expect(parameter.Key).toBe(key)
@@ -32,11 +20,7 @@ describe('ParameterDto', () => {
         })
 
         it('should return null if the JSON string is empty', () => {
-            const json = ''
-
-            const parameter = ParameterDto.fromJson(json)
-
-            expect(parameter).toBeNull()
+            expect(() => ParameterDtoMapper.fromJSON('')).toThrow(ModelMappingError)
         })
 
         it('should throw an error when providing json without each property individually', () => {  
@@ -48,8 +32,8 @@ describe('ParameterDto', () => {
                 "Key": "${key}"
             }`
 
-            expect(() => ParameterDto.fromJson(jsonWithoutKey)).toThrow(ModelMappingError)
-            expect(() => ParameterDto.fromJson(jsonWithoutValue)).toThrow(ModelMappingError)
+            expect(() => ParameterDtoMapper.fromJSON(jsonWithoutKey)).toThrow(ModelMappingError)
+            expect(() => ParameterDtoMapper.fromJSON(jsonWithoutValue)).toThrow(ModelMappingError)
         })
     })
 
@@ -60,9 +44,7 @@ describe('ParameterDto', () => {
                 Value: value
             }
 
-            let parameter = ParameterDto.fromObject(object)
-
-            expect(parameter).toBeInstanceOf(ParameterDto)
+            let parameter = ParameterDtoMapper.fromObject(object)
             parameter = parameter as ParameterDto
 
             expect(parameter.Key).toBe(key)
@@ -83,9 +65,9 @@ describe('ParameterDto', () => {
                 Key: key
             }
 
-            expect(() => ParameterDto.fromObject(object)).toThrow(ModelMappingError)
-            expect(() => ParameterDto.fromObject(objectWithoutKey)).toThrow(ModelMappingError)
-            expect(() => ParameterDto.fromObject(objectWithoutValue)).toThrow(ModelMappingError)
+            expect(() => ParameterDtoMapper.fromObject(object)).toThrow(ModelMappingError)
+            expect(() => ParameterDtoMapper.fromObject(objectWithoutKey)).toThrow(ModelMappingError)
+            expect(() => ParameterDtoMapper.fromObject(objectWithoutValue)).toThrow(ModelMappingError)
         })
     })
 })

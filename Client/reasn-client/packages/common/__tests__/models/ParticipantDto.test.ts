@@ -1,21 +1,10 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
-import { ParticipantDto } from '@reasn/common/models/ParticipantDto'
+import { ParticipantDto, ParticipantDtoMapper } from '@reasn/common/models/ParticipantDto'
 
 describe('ParticipantDto', () => {
     const eventId = 1
     const userId = 2
     const statusId = 3
-
-    describe('constructor', () => {
-        it('should create an instance of ParticipantDto', () => {
-            const participant = new ParticipantDto(eventId, userId, statusId)
-
-            expect(participant).toBeInstanceOf(ParticipantDto)
-            expect(participant.EventId).toBe(eventId)
-            expect(participant.UserId).toBe(userId)
-            expect(participant.StatusId).toBe(statusId)
-        })
-    })
 
     describe('fromJson', () => {
         it('should create an instance of ParticipantDto from JSON string', () => {
@@ -25,9 +14,7 @@ describe('ParticipantDto', () => {
                 "StatusId": ${statusId}
             }`
 
-            let participant = ParticipantDto.fromJson(json)
-
-            expect(participant).toBeInstanceOf(ParticipantDto)
+            let participant = ParticipantDtoMapper.fromJSON(json)
             participant = participant as ParticipantDto
 
             expect(participant.EventId).toBe(eventId)
@@ -36,11 +23,7 @@ describe('ParticipantDto', () => {
         })
 
         it('should return null if the JSON string is empty', () => {
-            const json = ''
-
-            const participant = ParticipantDto.fromJson(json)
-
-            expect(participant).toBeNull()
+            expect(() => ParticipantDtoMapper.fromJSON('')).toThrow(ModelMappingError)
         })
 
         it('should throw an error when providing JSON without each property individually', () => {  
@@ -59,9 +42,9 @@ describe('ParticipantDto', () => {
                 "UserId": ${userId}
             }`
 
-            expect(() => ParticipantDto.fromJson(jsonWithoutEventId)).toThrow(ModelMappingError)
-            expect(() => ParticipantDto.fromJson(jsonWithoutUserId)).toThrow(ModelMappingError)
-            expect(() => ParticipantDto.fromJson(jsonWithoutStatusId)).toThrow(ModelMappingError)
+            expect(() => ParticipantDtoMapper.fromJSON(jsonWithoutEventId)).toThrow(ModelMappingError)
+            expect(() => ParticipantDtoMapper.fromJSON(jsonWithoutUserId)).toThrow(ModelMappingError)
+            expect(() => ParticipantDtoMapper.fromJSON(jsonWithoutStatusId)).toThrow(ModelMappingError)
         })
     })
 
@@ -73,9 +56,7 @@ describe('ParticipantDto', () => {
                 StatusId: statusId
             }
 
-            let participant = ParticipantDto.fromObject(object)
-
-            expect(participant).toBeInstanceOf(ParticipantDto)
+            let participant = ParticipantDtoMapper.fromObject(object)
             participant = participant as ParticipantDto
 
             expect(participant.EventId).toBe(eventId)
@@ -105,10 +86,10 @@ describe('ParticipantDto', () => {
                 UserId: userId
             }
 
-            expect(() => ParticipantDto.fromObject(object)).toThrow(ModelMappingError)
-            expect(() => ParticipantDto.fromObject(objectWithoutEventId)).toThrow(ModelMappingError)
-            expect(() => ParticipantDto.fromObject(objectWithoutUserId)).toThrow(ModelMappingError)
-            expect(() => ParticipantDto.fromObject(objectWithoutStatusId)).toThrow(ModelMappingError)
+            expect(() => ParticipantDtoMapper.fromObject(object)).toThrow(ModelMappingError)
+            expect(() => ParticipantDtoMapper.fromObject(objectWithoutEventId)).toThrow(ModelMappingError)
+            expect(() => ParticipantDtoMapper.fromObject(objectWithoutUserId)).toThrow(ModelMappingError)
+            expect(() => ParticipantDtoMapper.fromObject(objectWithoutStatusId)).toThrow(ModelMappingError)
         })
     })
 })

@@ -1,17 +1,8 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
-import { TagDto } from '@reasn/common/models/TagDto'
+import { TagDto, TagDtoMapper } from '@reasn/common/models/TagDto'
 
 describe('TagDto', () => {
     const name = 'tag name'
-
-    describe('constructor', () => {
-        it('should create an instance of TagDto', () => {
-            const tag = new TagDto(name)
-
-            expect(tag).toBeInstanceOf(TagDto)
-            expect(tag.Name).toBe(name)
-        })
-    })
 
     describe('fromJson', () => {
         it('should create an instance of TagDto from JSON string', () => {
@@ -19,26 +10,20 @@ describe('TagDto', () => {
                 "Name": "${name}"
             }`
 
-            let tag = TagDto.fromJson(json)
-
-            expect(tag).toBeInstanceOf(TagDto)
+            let tag = TagDtoMapper.fromJSON(json)
             tag = tag as TagDto
 
             expect(tag.Name).toBe(name)
         })
 
         it('should return null if the JSON string is empty', () => {
-            const json = ''
-
-            const tag = TagDto.fromJson(json)
-
-            expect(tag).toBeNull()
+            expect(() => TagDtoMapper.fromJSON('')).toThrow(ModelMappingError)
         })
 
         it('should throw an error when providing JSON without the Name property', () => {  
             const jsonWithoutName = `{}`
 
-            expect(() => TagDto.fromJson(jsonWithoutName)).toThrow(ModelMappingError)
+            expect(() => TagDtoMapper.fromJSON(jsonWithoutName)).toThrow(ModelMappingError)
         })
     })
 
@@ -48,9 +33,7 @@ describe('TagDto', () => {
                 Name: name
             }
 
-            let tag = TagDto.fromObject(object)
-
-            expect(tag).toBeInstanceOf(TagDto)
+            let tag = TagDtoMapper.fromObject(object)
             tag = tag as TagDto
 
             expect(tag.Name).toBe(name)
@@ -63,8 +46,8 @@ describe('TagDto', () => {
 
             const objectWithoutName = {}
 
-            expect(() => TagDto.fromObject(object)).toThrow(ModelMappingError)
-            expect(() => TagDto.fromObject(objectWithoutName)).toThrow(ModelMappingError)
+            expect(() => TagDtoMapper.fromObject(object)).toThrow(ModelMappingError)
+            expect(() => TagDtoMapper.fromObject(objectWithoutName)).toThrow(ModelMappingError)
         })
     })
 })

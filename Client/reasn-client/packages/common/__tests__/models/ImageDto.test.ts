@@ -1,27 +1,10 @@
-import { ImageDto } from '@reasn/common/models/ImageDto'
+import { ImageDto, ImageDtoMapper } from '@reasn/common/models/ImageDto'
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
 
 describe('ImageDto', () => {
     const imageData = 'Test Image'
     const objectId = 1
     const objectTypeId = 1
-
-    describe('constructor', () => {
-        it('should create an instance of ImageDto', () => {
-            let image = new ImageDto(
-                imageData,
-                objectId,
-                objectTypeId
-            )
-
-            expect(image).toBeInstanceOf(ImageDto)
-            image = image as ImageDto
-
-            expect(image.ImageData).toBe(imageData)
-            expect(image.ObjectId).toBe(objectId)
-            expect(image.ObjectTypeId).toBe(objectTypeId)
-        })
-    })
 
     describe('fromJson', () => {
         it('should create an instance of ImageDto from JSON string', () => {
@@ -31,9 +14,7 @@ describe('ImageDto', () => {
                 "ObjectTypeId": ${objectTypeId}
             }`
 
-            let image = ImageDto.fromJson(json)
-
-            expect(image).toBeInstanceOf(ImageDto)
+            let image = ImageDtoMapper.fromJSON(json)
             image = image as ImageDto
 
             expect(image.ImageData).toBe(imageData)
@@ -42,11 +23,7 @@ describe('ImageDto', () => {
         })
 
         it('should return null if the JSON string is empty', () => {
-            const json = ''
-
-            const image = ImageDto.fromJson(json)
-
-            expect(image).toBeNull()
+            expect(() => ImageDtoMapper.fromJSON('')).toThrow(ModelMappingError)
         })
 
         it('should throw an error when providing json without each property individually', () => {  
@@ -65,9 +42,9 @@ describe('ImageDto', () => {
                 "ObjectId": ${objectId}
             }`
 
-            expect(() => ImageDto.fromJson(jsonWithoutImageData)).toThrow(ModelMappingError)
-            expect(() => ImageDto.fromJson(jsonWithoutObjectId)).toThrow(ModelMappingError)
-            expect(() => ImageDto.fromJson(jsonWithoutObjectTypeId)).toThrow(ModelMappingError)
+            expect(() => ImageDtoMapper.fromJSON(jsonWithoutImageData)).toThrow(ModelMappingError)
+            expect(() => ImageDtoMapper.fromJSON(jsonWithoutObjectId)).toThrow(ModelMappingError)
+            expect(() => ImageDtoMapper.fromJSON(jsonWithoutObjectTypeId)).toThrow(ModelMappingError)
         })
     })
 
@@ -79,9 +56,7 @@ describe('ImageDto', () => {
                 ObjectTypeId: objectTypeId
             }
 
-            let image = ImageDto.fromObject(object)
-
-            expect(image).toBeInstanceOf(ImageDto)
+            let image = ImageDtoMapper.fromObject(object)
             image = image as ImageDto
 
             expect(image.ImageData).toBe(imageData)
@@ -111,10 +86,10 @@ describe('ImageDto', () => {
                 ObjectId: objectId
             }
 
-            expect(() => ImageDto.fromObject(object)).toThrow(ModelMappingError)
-            expect(() => ImageDto.fromObject(objectWithoutImageData)).toThrow(ModelMappingError)
-            expect(() => ImageDto.fromObject(objectWithoutObjectId)).toThrow(ModelMappingError)
-            expect(() => ImageDto.fromObject(objectWithoutObjectTypeId)).toThrow(ModelMappingError)
+            expect(() => ImageDtoMapper.fromObject(object)).toThrow(ModelMappingError)
+            expect(() => ImageDtoMapper.fromObject(objectWithoutImageData)).toThrow(ModelMappingError)
+            expect(() => ImageDtoMapper.fromObject(objectWithoutObjectId)).toThrow(ModelMappingError)
+            expect(() => ImageDtoMapper.fromObject(objectWithoutObjectTypeId)).toThrow(ModelMappingError)
         })
     })
 })

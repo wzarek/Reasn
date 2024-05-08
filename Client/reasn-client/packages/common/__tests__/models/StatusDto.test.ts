@@ -1,19 +1,9 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
-import { StatusDto } from '@reasn/common/models/StatusDto'
+import { StatusDto, StatusDtoMapper } from '@reasn/common/models/StatusDto'
 
 describe('StatusDto', () => {
     const statusName = 'Active'
     const objectTypeId = 1
-
-    describe('constructor', () => {
-        it('should create an instance of StatusDto', () => {
-            const status = new StatusDto(statusName, objectTypeId)
-
-            expect(status).toBeInstanceOf(StatusDto)
-            expect(status.Name).toBe(statusName)
-            expect(status.ObjectTypeId).toBe(objectTypeId)
-        })
-    })
 
     describe('fromJson', () => {
         it('should create an instance of StatusDto from JSON string', () => {
@@ -22,9 +12,7 @@ describe('StatusDto', () => {
                 "ObjectTypeId": ${objectTypeId}
             }`
 
-            let status = StatusDto.fromJson(json)
-
-            expect(status).toBeInstanceOf(StatusDto)
+            let status = StatusDtoMapper.fromJSON(json)
             status = status as StatusDto
 
             expect(status.Name).toBe(statusName)
@@ -32,11 +20,7 @@ describe('StatusDto', () => {
         })
 
         it('should return null if the JSON string is empty', () => {
-            const json = ''
-
-            const status = StatusDto.fromJson(json)
-
-            expect(status).toBeNull()
+            expect(() => StatusDtoMapper.fromJSON('')).toThrow(ModelMappingError)
         })
 
         it('should throw an error when providing JSON without each property individually', () => {  
@@ -48,8 +32,8 @@ describe('StatusDto', () => {
                 "ObjectTypeId": ${objectTypeId}
             }`
 
-            expect(() => StatusDto.fromJson(jsonWithoutName)).toThrow(ModelMappingError)
-            expect(() => StatusDto.fromJson(jsonWithoutObjectTypeId)).toThrow(ModelMappingError)
+            expect(() => StatusDtoMapper.fromJSON(jsonWithoutName)).toThrow(ModelMappingError)
+            expect(() => StatusDtoMapper.fromJSON(jsonWithoutObjectTypeId)).toThrow(ModelMappingError)
         })
     })
 
@@ -60,9 +44,7 @@ describe('StatusDto', () => {
                 ObjectTypeId: objectTypeId
             }
 
-            let status = StatusDto.fromObject(object)
-
-            expect(status).toBeInstanceOf(StatusDto)
+            let status = StatusDtoMapper.fromObject(object)
             status = status as StatusDto
 
             expect(status.Name).toBe(statusName)
@@ -83,9 +65,9 @@ describe('StatusDto', () => {
                 Name: statusName
             }
 
-            expect(() => StatusDto.fromObject(object)).toThrow(ModelMappingError)
-            expect(() => StatusDto.fromObject(objectWithoutName)).toThrow(ModelMappingError)
-            expect(() => StatusDto.fromObject(objectWithoutObjectTypeId)).toThrow(ModelMappingError)
+            expect(() => StatusDtoMapper.fromObject(object)).toThrow(ModelMappingError)
+            expect(() => StatusDtoMapper.fromObject(objectWithoutName)).toThrow(ModelMappingError)
+            expect(() => StatusDtoMapper.fromObject(objectWithoutObjectTypeId)).toThrow(ModelMappingError)
         })
     })
 })
