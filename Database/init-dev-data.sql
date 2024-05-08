@@ -65,7 +65,6 @@ INSERT INTO events.participant ("id", "event_id", "user_id", "status_id") VALUES
 (10, 10, 10, 2);
 SELECT setval('events.participant_id_seq', (SELECT MAX(id) FROM events.participant)); 
 
-
 INSERT INTO events.parameter ("id", "key", "value") VALUES
 (1, 'Liczba Uczestników', '1000'),
 (2, 'Długość Trasy', '10 km'),
@@ -78,7 +77,6 @@ INSERT INTO events.parameter ("id", "key", "value") VALUES
 (9, 'Czas Trwania', '10 dni'),
 (10, 'Miejsce Wydarzenia', 'Plenerowe');
 SELECT setval('events.parameter_id_seq', (SELECT MAX(id) FROM events.parameter)); 
-
  
 INSERT INTO events.event_parameter ("parameter_id", "event_id") VALUES
 (1, 1),
