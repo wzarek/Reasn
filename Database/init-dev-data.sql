@@ -1,26 +1,26 @@
 INSERT INTO common.address ("id", "city", "country", "street", "state", "zip_code") VALUES
 (1, 'Stawiszyn', 'Polska', 'Pleszewska 2', 'Wielkopolskie', '62-820'),
 (2, 'Kalisz', 'Polska', 'Stawiszyńska 4', 'Wielkopolskie', '62-800'),
-(3, 'Bydgoszcz', 'Polska', 'Jagielońska 12', 'Kujawsko-Pomorskie', '85-097'),
+(3, 'Bydgoszcz', 'Polska', 'Jagielońska 9', 'Kujawsko-pomorskie', '85-097'),
 (4, 'Poznań', 'Polska', 'Bułgarska 17', 'Wielkopolskie', '60-320'),
-(5, 'Koźminek', 'Polska', 'Mikołaja Kopernika', 'Wielkopolskie', '62-840'),
+(5, 'Koźminek', 'Polska', 'Mikołaja Kopernika 15', 'Wielkopolskie', '62-840'),
 (6, 'Kalisz', 'Polska', 'Górnośląska 2', 'Wielkopolskie', '62-800'),
-(7, 'Warszawa', 'Polska', 'Aleje Jerozolimskie', 'Mazowieckie', '00-001'),
-(8, 'Kraków', 'Polska', 'ul. Floriańska 7', 'Małopolskie', '30-001'),
-(9, 'Gdańsk', 'Polska', 'ul. Długa 69', 'Pomorskie', '80-001'),
+(7, 'Warszawa', 'Polska', 'Aleje Jerozolimskie 69', 'Mazowieckie', '00-001'),
+(8, 'Kraków', 'Polska', 'Floriańska 7', 'Małopolskie', '30-001'),
+(9, 'Gdańsk', 'Polska', 'Długa 69', 'Pomorskie', '80-001'),
 (10, 'Wrocław', 'Polska', 'Legnicka 420', 'Dolnośląskie', '51-702');
 
 INSERT INTO users.user ("id", "name", "surname", "username", "password", "created_at", "updated_at", "role_id", "email", "is_active", "address_id", "phone") VALUES
-(1, 'Kamil', 'Owczarski', 'bilimigus', 'password', '2023-03-20 08:00:00', '2023-03-20 08:00:00', 1, 'bilimigus@example.com', true, 1, '123456789'),
-(2, 'Kamil', 'Owczarzyński', 'bilililimigosu', '12345', '2023-03-21 09:00:00', '2023-03-21 09:00:00', 2, 'bilililimigosu@example.com', true, 2, '696969691'),
-(3, 'Jan', 'Kowalski', 'jkowalski', 'hasło123', '2022-03-21 16:00:00', '2023-1-21 09:21:14', 1, 'jan.kowalski@example.com', false, 1, '123456789'),
-(4, 'Adam', 'Nowak', 'anowak', 'haslo123', '2022-01-05 10:30:00', '2022-02-15 14:20:45', 2, 'adam.nowak@example.com', false, 2, '987654321'),
-(5, 'Ewa', 'Kowalska', 'ekowalska', 'tajnehaslo', '2022-02-10 08:15:00', '2022-03-25 12:45:30', 1, 'ewa.kowalska@example.com', false, 3, '654321987'),
-(6, 'Piotr', 'Wiśniewski', 'pwiśniewski', 'password123', '2022-03-15 11:45:00', '2022-04-30 16:10:20', 3, 'piotr.wisniewski@example.com', false, 4, '321654987'),
-(7, 'Anna', 'Lis', 'alis', '123456', '2022-04-20 13:20:00', '2022-05-10 09:55:15', 2, 'anna.lis@example.com', true, 5, '789456123'),
-(8, 'Tomasz', 'Zieliński', 'tzielinski', 'qwerty', '2022-05-25 15:00:00', '2022-06-20 11:30:10', 1, 'tomasz.zielinski@example.com', true, 6, '456123789'),
-(9, 'Magdalena', 'Kowalczyk', 'mkowalczyk', 'mojehaslo', '2022-06-30 17:10:00', '2022-07-15 13:15:25', 3, 'magdalena.kowalczyk@example.com', true, 7, '987654123'),
-(10, 'Marcin', 'Szymański', 'mszymanski', 'password', '2022-07-05 09:00:00', '2022-08-05 08:20:35', 2, 'marcin.szymanski@example.com', true, 8, '321789654');
+(1, 'Kamil', 'Owczarski', 'bilimigus', 'password', '2023-03-20 08:00:00', '2023-03-20 08:00:00', 1, 'bilimigus@example.com', true, 1, '+48 123456789'),
+(2, 'Kamil', 'Owczarzyński', 'bilililimigosu', '12345', '2023-03-21 09:00:00', '2023-03-21 09:00:00', 2, 'bilililimigosu@example.com', true, 2, '+48 696969691'),
+(3, 'Jan', 'Kowalski', 'jkowalski', 'hasło123', '2022-03-21 16:00:00', '2023-1-21 09:21:14', 1, 'jan.kowalski@example.com', false, 1, '+48 123456119'),
+(4, 'Adam', 'Nowak', 'anowak', 'haslo123', '2022-01-05 10:30:00', '2022-02-15 14:20:45', 2, 'adam.nowak@example.com', false, 2, '+48 987654321'),
+(5, 'Ewa', 'Kowalska', 'ekowalska', 'tajnehaslo', '2022-02-10 08:15:00', '2022-03-25 12:45:30', 1, 'ewa.kowalska@example.com', false, 3, '+48 654321987'),
+(6, 'Piotr', 'Wiśniewski', 'pwiśniewski', 'password123', '2022-03-15 11:45:00', '2022-04-30 16:10:20', 3, 'piotr.wisniewski@example.com', false, 4, '+48 321654987'),
+(7, 'Anna', 'Lis', 'alis', '123456', '2022-04-20 13:20:00', '2022-05-10 09:55:15', 2, 'anna.lis@example.com', true, 5, '+48 789456123'),
+(8, 'Tomasz', 'Zieliński', 'tzielinski', 'qwerty', '2022-05-25 15:00:00', '2022-06-20 11:30:10', 1, 'tomasz.zielinski@example.com', true, 6, '+48 456123789'),
+(9, 'Magdalena', 'Kowalczyk', 'mkowalczyk', 'mojehaslo', '2022-06-30 17:10:00', '2022-07-15 13:15:25', 3, 'magdalena.kowalczyk@example.com', true, 7, '+48 987654123'),
+(10, 'Marcin', 'Szymański', 'mszymanski', 'password', '2022-07-05 09:00:00', '2022-08-05 08:20:35', 2, 'marcin.szymanski@example.com', true, 8, '+48 321789654');
   
 
 INSERT INTO events.event ("id", "name", "address_id", "description", "organizer_id", "start_at", "end_at", "created_at", "updated_at", "slug", "status_id") VALUES
@@ -65,7 +65,7 @@ INSERT INTO events.participant ("id", "event_id", "user_id", "status_id") VALUES
 INSERT INTO events.parameter ("id", "key", "value") VALUES
 (1, 'Liczba Uczestników', '1000'),
 (2, 'Długość Trasy', '10 km'),
-(3, 'Temperatura', '25°C'),
+(3, 'Temperatura', '25 C'),
 (4, 'Czas Trwania', '2 godziny'),
 (5, 'Poziom Trudności', 'Średni'),
 (6, 'Rozdawane Nagrody', '500 USD'),
@@ -98,26 +98,26 @@ INSERT INTO events.comment ("id", "event_id", "content", "created_at", "user_id"
 (9, 9, 'To będzie świetna zabawa!', '2024-05-18', 9),
 (10, 10, 'jd orka', '2024-06-25', 10);
  
-INSERT INTO users.interest ("id", "name", "level") VALUES
-(1, 'Programowanie', 5),
-(2, 'Sport', 4),
-(3, 'Muzyka', 3),
-(4, 'Film', 3),
-(5, 'Taniec', 4),
-(6, 'Fitness', 3),
-(7, 'Sztuka', 4),
-(8, 'Kulinaria', 3),
-(9, 'Podróże', 4),
-(10, 'Gry komputerowe', 5);
+INSERT INTO users.interest ("id", "name") VALUES
+(1, 'Programowanie'),
+(2, 'Sport'),
+(3, 'Muzyka'),
+(4, 'Film'),
+(5, 'Taniec'),
+(6, 'Fitness'),
+(7, 'Sztuka'),
+(8, 'Kulinaria'),
+(9, 'Podróże'),
+(10, 'Gry komputerowe');
  
-INSERT INTO users.user_interest ("user_id", "interest_id") VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5),
-(6, 6),
-(7, 7),
-(8, 8),
-(9, 9),
-(10, 10);
+INSERT INTO users.user_interest ("user_id", "interest_id", "level") VALUES
+(1, 1, 3),
+(2, 2, 2),
+(3, 3, 5),
+(4, 4, 2),
+(5, 5, 3),
+(6, 6, 4),
+(7, 7, 6),
+(8, 8,3),
+(9, 9, 1),
+(10, 10, 5);

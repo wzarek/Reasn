@@ -1,0 +1,59 @@
+name: postgres tests
+
+on:
+  pull_request: 
+    types: [opened, synchronize, reopened]    
+env:
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: reasn
+  POSTGRES_HOST: localhost
+    
+jobs:
+  postgres-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Database
+    services:
+        postgres:
+            image: postgres:16
+            options: >-
+              --health-cmd pg_isready
+              --health-interval 10s
+              --health-timeout 5s
+              --health-retries 5
+            ports:
+              - 5432:5432
+            env:
+                POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+                POSTGRES_DB: ${{ env.POSTGRES_DB }}
+    steps:
+      - uses: actions/checkout@v4
+        
+      - name: Initialize database
+        run: |
+          psql -h ${{ env.POSTGRES_HOST }} -U ${{ env.POSTGRES_USER }} -d ${{ env.POSTGRES_DB }} -f init-db.sql
+          psql -h ${{ env.POSTGRES_HOST }} -U ${{ env.POSTGRES_USER }} -d ${{ env.POSTGRES_DB }} -f init-constraints.sql
+        env:
+          PGPASSWORD: ${{ env.POSTGRES_PASSWORD }}
+      
+      - name: Initialize development data
+        run: |
+          psql -h ${{ env.POSTGRES_HOST }} -U ${{ env.POSTGRES_USER }} -d ${{ env.POSTGRES_DB }} -f init-dev-data.sql
+        env:
+          PGPASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          
+      - name: Verify data initialization correctness
+        run: |
+          docker logs "${{ job.services.postgres.id }}" 2>&1 | tee "postgres-logs-commit-${{ github.sha }}.log"
+          if grep -q -i error postgres-logs-commit-${{ github.sha }}.log; then exit 1; fi
+          
+      - name: Upload captured logs
+        uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        with:
+          name: postgres-logs-commit-${{ github.sha }}
+          path: Database/postgres-logs-commit-${{ github.sha }}.log
+          retention-days: 14    
+    

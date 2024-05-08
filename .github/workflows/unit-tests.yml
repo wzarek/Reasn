@@ -1,15 +1,21 @@
 ﻿name: unit tests
 
 on: [push]
-
+env:
+  DOTNET_MINIMUM_TEST_COVERAGE: 0
+  
 jobs:
-  tests:
-    runs-on: ubuntu-latest
+  dotnet-tests:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: Server/ReasnAPI
     steps:
       - uses: actions/checkout@v4
-      - name: Determine ReasnAPI solution
-        run: echo SOLUTION_FILE=$(realpath ./Server/ReasnAPI/ReasnAPI.sln) >> $GITHUB_ENV
-      
+        
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
@@ -19,26 +25,55 @@ jobs:
         run: dotnet tool install -g coverlet.console
       
       - name: Install dependencies
-        run: dotnet restore ${{ env.SOLUTION_FILE }}
+        run: dotnet restore
         
       - name: Build solution
-        run: dotnet build ${{ env.SOLUTION_FILE }} --no-restore
+        run: dotnet build --no-restore
         
       - name: Test with dotnet
-        run: |
-          RESULTS_FILENAME=results-$(date +"%Y-%m-%d_%H_%M_%S")
-          dotnet test ${{ env.SOLUTION_FILE }} --logger "trx;logfilename=$RESULTS_FILENAME.trx" --logger "html;logfilename=$RESULTS_FILENAME.html" --no-build --results-directory "TestResults-${{ github.sha }}"
+        run: >
+          dotnet test
+          --no-build
+          --verbosity normal
+          --logger "trx;logfilename=${{ matrix.os }}-commit-${{ github.sha }}.trx"
+          --results-directory "TestResults-${{ matrix.os }}-commit-${{ github.sha }}"
           
       - name: Run coverlet
-        run: |
-          TEST_ASSEMBLY=$(find ./Server/ReasnAPI/ReasnAPI.Tests/bin/ -name "ReasnAPI.Tests.dll")
-          coverlet "$TEST_ASSEMBLY" --target "dotnet" --targetargs "test ${{ env.SOLUTION_FILE }} --no-build"
+        run: >
+          coverlet .
+          --target "dotnet"
+          --targetargs "test --no-build"
+          --threshold ${{ env.DOTNET_MINIMUM_TEST_COVERAGE }}
         
       - name: Upload dotnet test results
         uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         with:
-          name: dotnet-results-${{ github.sha }}
-          path: TestResults-${{ github.sha }}
-          retention-days: 14 
-          
+          name: dotnet-results-${{ matrix.os }}-commit-${{ github.sha }}
+          path: Server/ReasnAPI/TestResults-${{ matrix.os }}-commit-${{ github.sha }}
+          retention-days: 14
+
+  client-tests:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: Client/reasn-client
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21.7.x'
+
+      - name: Set yarn version
+        run: yarn set version 4.1
+      
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Test with jest
+        run: yarn test --coverage --ci
