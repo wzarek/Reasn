@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS events.participant (
   "id" SERIAL PRIMARY KEY,
   "event_id" integer NOT NULL,
   "user_id" integer NOT NULL,
-  "status_id" integer NOT NULL
+  "status_id" integer NOT NULL,
   UNIQUE ("event_id", "user_id")
 );
 
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS users.user (
 CREATE TABLE IF NOT EXISTS events.parameter (
   "id" SERIAL PRIMARY KEY,
   "key" text NOT NULL CONSTRAINT events_patameter_key_maxlength CHECK (LENGTH("key") <= 32),
-  "value" text NOT NULL CONSTRAINT events_patameter_value_maxlength CHECK (LENGTH("value") <= 64)
+  "value" text NOT NULL CONSTRAINT events_patameter_value_maxlength CHECK (LENGTH("value") <= 64),
   UNIQUE("key", "value")
 );
 
