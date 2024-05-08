@@ -1,4 +1,4 @@
-import { AddressDto } from '@reasn/common/models/AddressDto'
+import { AddressDtoMapper, AddressDto } from '@reasn/common/models/AddressDto'
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
 
 describe('AddressDto', () => {
@@ -7,19 +7,6 @@ describe('AddressDto', () => {
     const street = 'Test Street'
     const state = 'Test State'
     const zipCode = '12345'
-
-    describe('constructor', () => {
-        it('should create an instance of AddressDto', () => {
-            const address = new AddressDto(country, city, street, state, zipCode)
-
-            expect(address).toBeInstanceOf(AddressDto)
-            expect(address.Country).toBe(country)
-            expect(address.City).toBe(city)
-            expect(address.Street).toBe(street)
-            expect(address.State).toBe(state)
-            expect(address.ZipCode).toBe(zipCode)
-        })
-    })
 
     describe('fromJson', () => {
         it('should create an instance of AddressDto from JSON string', () => {
@@ -31,9 +18,7 @@ describe('AddressDto', () => {
                 "ZipCode": "${zipCode}"
             }`
 
-            let address = AddressDto.fromJson(json)
-
-            expect(address).toBeInstanceOf(AddressDto)
+            let address = AddressDtoMapper.fromJSON(json)
             address = address as AddressDto
 
             expect(address.Country).toBe(country)
@@ -43,12 +28,8 @@ describe('AddressDto', () => {
             expect(address.ZipCode).toBe(zipCode)
         })
 
-        it('should return null if the JSON string is empty', () => {
-            const json = ''
-
-            const address = AddressDto.fromJson(json)
-
-            expect(address).toBeNull()
+        it('should throw error if the JSON string is empty', () => {
+            expect(() => AddressDtoMapper.fromJSON('')).toThrow(ModelMappingError)
         })
 
         it('should throw an error when providing JSON without each property individually', () => {
@@ -87,15 +68,11 @@ describe('AddressDto', () => {
                 "State": "${state}"
             }`
 
-            expect(() => AddressDto.fromJson(jsonWithoutCountry)).toThrow(ModelMappingError)
-            expect(() => AddressDto.fromJson(jsonWithoutCity)).toThrow(ModelMappingError)
-            expect(() => AddressDto.fromJson(jsonWithoutStreet)).toThrow(ModelMappingError)
-            expect(() => AddressDto.fromJson(jsonWithoutState)).toThrow(ModelMappingError)
-            
-            let addressWithoutZipcode = AddressDto.fromJson(jsonWithoutZipCode)
-            expect(addressWithoutZipcode).toBeInstanceOf(AddressDto)
-            addressWithoutZipcode = addressWithoutZipcode as AddressDto
-            expect(addressWithoutZipcode.ZipCode).toBeNull()
+            expect(() => AddressDtoMapper.fromJSON(jsonWithoutCountry)).toThrow(ModelMappingError)
+            expect(() => AddressDtoMapper.fromJSON(jsonWithoutCity)).toThrow(ModelMappingError)
+            expect(() => AddressDtoMapper.fromJSON(jsonWithoutStreet)).toThrow(ModelMappingError)
+            expect(() => AddressDtoMapper.fromJSON(jsonWithoutState)).toThrow(ModelMappingError)
+            expect(() => AddressDtoMapper.fromJSON(jsonWithoutZipCode)).toThrow(ModelMappingError)
         })
     })
 
@@ -109,9 +86,7 @@ describe('AddressDto', () => {
                 ZipCode: zipCode
             }
 
-            let address = AddressDto.fromObject(object)
-
-            expect(address).toBeInstanceOf(AddressDto)
+            let address = AddressDtoMapper.fromObject(object)
             address = address as AddressDto
 
             expect(address.Country).toBe(country)
@@ -165,16 +140,12 @@ describe('AddressDto', () => {
                 State: state
             }
 
-            expect(() => AddressDto.fromObject(object)).toThrow(ModelMappingError)
-            expect(() => AddressDto.fromObject(objectWithoutCountry)).toThrow(ModelMappingError)
-            expect(() => AddressDto.fromObject(objectWithoutCity)).toThrow(ModelMappingError)
-            expect(() => AddressDto.fromObject(objectWithoutStreet)).toThrow(ModelMappingError)
-            expect(() => AddressDto.fromObject(objectWithoutState)).toThrow(ModelMappingError)
-
-            let addressWithoutZipcode = AddressDto.fromObject(objectWithoutZipCode)
-            expect(addressWithoutZipcode).toBeInstanceOf(AddressDto)
-            addressWithoutZipcode = addressWithoutZipcode as AddressDto
-            expect(addressWithoutZipcode.ZipCode).toBeNull()
+            expect(() => AddressDtoMapper.fromObject(object)).toThrow(ModelMappingError)
+            expect(() => AddressDtoMapper.fromObject(objectWithoutCountry)).toThrow(ModelMappingError)
+            expect(() => AddressDtoMapper.fromObject(objectWithoutCity)).toThrow(ModelMappingError)
+            expect(() => AddressDtoMapper.fromObject(objectWithoutStreet)).toThrow(ModelMappingError)
+            expect(() => AddressDtoMapper.fromObject(objectWithoutState)).toThrow(ModelMappingError)
+            expect(() => AddressDtoMapper.fromObject(objectWithoutZipCode)).toThrow(ModelMappingError)
         })
     })
 })

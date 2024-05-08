@@ -1,17 +1,8 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
-import { RoleDto } from '@reasn/common/models/RoleDto'
+import { RoleDto, RoleDtoMapper } from '@reasn/common/models/RoleDto'
 
 describe('RoleDto', () => {
     const roleName = 'admin'
-
-    describe('constructor', () => {
-        it('should create an instance of RoleDto', () => {
-            const role = new RoleDto(roleName)
-
-            expect(role).toBeInstanceOf(RoleDto)
-            expect(role.Name).toBe(roleName)
-        })
-    })
 
     describe('fromJson', () => {
         it('should create an instance of RoleDto from JSON string', () => {
@@ -19,26 +10,20 @@ describe('RoleDto', () => {
                 "Name": "${roleName}"
             }`
 
-            let role = RoleDto.fromJson(json)
-
-            expect(role).toBeInstanceOf(RoleDto)
+            let role = RoleDtoMapper.fromJSON(json)
             role = role as RoleDto
 
             expect(role.Name).toBe(roleName)
         })
 
         it('should return null if the JSON string is empty', () => {
-            const json = ''
-
-            const role = RoleDto.fromJson(json)
-
-            expect(role).toBeNull()
+            expect(() => RoleDtoMapper.fromJSON('')).toThrow(ModelMappingError)
         })
 
         it('should throw an error when providing JSON without each property individually', () => {  
             const jsonWithoutName = `{}`
 
-            expect(() => RoleDto.fromJson(jsonWithoutName)).toThrow(ModelMappingError)
+            expect(() => RoleDtoMapper.fromJSON(jsonWithoutName)).toThrow(ModelMappingError)
         })
     })
 
@@ -48,9 +33,7 @@ describe('RoleDto', () => {
                 Name: roleName
             }
 
-            let role = RoleDto.fromObject(object)
-
-            expect(role).toBeInstanceOf(RoleDto)
+            let role = RoleDtoMapper.fromObject(object)
             role = role as RoleDto
 
             expect(role.Name).toBe(roleName)
@@ -63,8 +46,8 @@ describe('RoleDto', () => {
             
             const objectWithoutName = {}
 
-            expect(() => RoleDto.fromObject(object)).toThrow(ModelMappingError)
-            expect(() => RoleDto.fromObject(objectWithoutName)).toThrow(ModelMappingError)
+            expect(() => RoleDtoMapper.fromObject(object)).toThrow(ModelMappingError)
+            expect(() => RoleDtoMapper.fromObject(objectWithoutName)).toThrow(ModelMappingError)
         })
     })
 })
