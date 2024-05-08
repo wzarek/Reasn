@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS events.parameter (
 
 CREATE TABLE IF NOT EXISTS events.event_parameter (
   "parameter_id" integer NOT NULL,
-  "event_id" integer NOT NULL
+  "event_id" integer NOT NULL,
   PRIMARY KEY (parameter_id, event_id)
 );
 
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS common.object_type (
 CREATE TABLE IF NOT EXISTS users.user_interest (
   "user_id" integer NOT NULL,
   "interest_id" integer NOT NULL,
-  "level" integer NOT NULL
+  "level" integer NOT NULL,
   PRIMARY KEY (user_id, interest_id)
 );
 
