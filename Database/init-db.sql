@@ -155,17 +155,21 @@ INSERT INTO users.role ("id", "name") VALUES
 (1, 'User'),
 (2, 'Organizer'),
 (3, 'Admin');
- 
-INSERT INTO common.object_type ("id", "name") VALUES (1, 'Event'),
+SELECT setval('common.address_id_seq', (SELECT MAX(id) FROM users.role));
+
+INSERT INTO common.object_type ("id", "name") VALUES 
+(1, 'Event'),
 (2, 'User');
- 
+SELECT setval('common.address_id_seq', (SELECT MAX(id) FROM common.object_type));
+
 INSERT INTO common.status ("id", "name", "object_type_id") VALUES
 (1, 'Interested', 2),
 (2, 'Participating', 2),
 (3, 'Completed', 1),
 (4, 'In progress', 1),
 (5, 'Waiting for approval', 1);
- 
+SELECT setval('common.address_id_seq', (SELECT MAX(id) FROM common.status));
+
 INSERT INTO events.tag ("id", "name") VALUES
 (1, 'Technologia'),
 (2, 'Sport'),
@@ -177,3 +181,4 @@ INSERT INTO events.tag ("id", "name") VALUES
 (8, 'Esport'),
 (9, 'League of Legends'),
 (10, 'Zdrowie');
+SELECT setval('common.address_id_seq', (SELECT MAX(id) FROM events.tag));
