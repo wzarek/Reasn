@@ -5,7 +5,6 @@ CREATE SCHEMA common;
 CREATE TYPE common.status AS ENUM ('Interested', 'Participating', 'Completed', 'In progress', 'Waiting for approval');
 CREATE TYPE users.role AS ENUM ('User', 'Organizer', 'Admin');
 CREATE TYPE common.object_type AS ENUM ('Event', 'User');
-CREATE TYPE common.type AS ENUM ('Custom', 'Predefined', 'Yes/No', 'Link', 'Price');
 
 CREATE TABLE IF NOT EXISTS events.event (
   "id" SERIAL PRIMARY KEY,
@@ -58,8 +57,7 @@ CREATE TABLE IF NOT EXISTS users.user (
 CREATE TABLE IF NOT EXISTS events.parameter (
   "id" SERIAL PRIMARY KEY,
   "key" text NOT NULL CONSTRAINT events_patameter_key_maxlength CHECK (LENGTH("key") <= 32),
-  "value" text NOT NULL CONSTRAINT events_patameter_value_maxlength CHECK (LENGTH("value") <= 64),
-  "type" common.type NOT NULL,
+  "value" text NOT NULL CONSTRAINT events_patameter_value_maxlength CHECK (LENGTH("value") <= 64)
   UNIQUE("key", "value")
 );
 
