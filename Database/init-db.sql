@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS users.user (
 CREATE TABLE IF NOT EXISTS events.parameter (
   "id" SERIAL PRIMARY KEY,
   "key" text NOT NULL CONSTRAINT events_patameter_key_maxlength CHECK (LENGTH("key") <= 32),
-  "value" text NOT NULL CONSTRAINT events_patameter_value_maxlength CHECK (LENGTH("value") <= 64)
+  "value" text NOT NULL CONSTRAINT events_patameter_value_maxlength CHECK (LENGTH("value") <= 64),
   UNIQUE("key", "value")
 );
 
