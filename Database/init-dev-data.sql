@@ -25,16 +25,16 @@ INSERT INTO users.user ("id", "name", "surname", "username", "password", "create
   
 
 INSERT INTO events.event ("id", "name", "address_id", "description", "organizer_id", "start_at", "end_at", "created_at", "updated_at", "slug", "status") VALUES
-(1, 'Tech Conference', 1, 'Annual tech conference', 1, '2023-10-01 09:00:00', '2023-10-02 17:00:00', '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'tech-conference', 'Interested'),
-(2, 'Health Symposium', 2, 'Health and wellness symposium', 2, '2023-11-05 09:00:00', '2023-11-06 17:00:00', '2023-10-05 08:00:00', '2023-10-05 08:00:00', 'health-symposium', 'Participating'),
-(3, 'Koncert Rockowy', 3, 'Występ ulubionych zespołów rockowych', 2, CURRENT_TIMESTAMP - '1 day'::INTERVAL, CURRENT_TIMESTAMP + '4 hours'::INTERVAL, '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'koncert-rockowy', 'Interested'),
-(4, 'Konferencja IT', 4, 'Coroczna konferencja technologiczna', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + '3 hours'::INTERVAL, '2023-10-02 17:00:00', '2023-10-02 18:00:00', 'konferencja-it', 'Interested'),
-(5, 'Mecz Piłki Nożnej', 5, 'Mecz drużynowej rywalizacji w piłce nożnej', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + '3 hours'::INTERVAL, '2022-12-01 08:00:00', '2023-09-01 08:30:00', 'mecz-pilki-noznej', 'Interested'),
-(6, 'Festiwal Elektroniczny', 6, 'Największe hity muzyki elektronicznej', 4, CURRENT_TIMESTAMP - '4 day'::INTERVAL, CURRENT_TIMESTAMP - '2 days'::INTERVAL, '2023-09-01 08:00:00', '2023-09-02 08:00:00', 'festiwal-elektroniczny', 'Interested'),
-(7, 'Koncert Hip-Hopowy', 7, 'Najnowsze hity hip-hopu w wykonaniu gwiazd', 6, CURRENT_TIMESTAMP + '2 days'::INTERVAL, CURRENT_TIMESTAMP + '2 days'::INTERVAL + '4 hours'::INTERVAL, '2023-10-08 17:00:00', '2023-11-01 09:19:22', 'koncert-hip-hopowy', 'Interested'),
-(8, 'Wieczór Jazzowy', 8, 'Relaksujące dźwięki jazzu w kameralnej atmosferze', 8, CURRENT_TIMESTAMP + '1 day'::INTERVAL, CURRENT_TIMESTAMP + '1 day'::INTERVAL + '5 hours'::INTERVAL, '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'wieczor-jazzowy', 'Interested'),
-(9, 'Koncert Klasyczny', 9, 'Muzyka klasyczna w wykonaniu renomowanych artystów', 10, CURRENT_TIMESTAMP + '1 day'::INTERVAL, CURRENT_TIMESTAMP + '1 day'::INTERVAL + '3 hours'::INTERVAL, '2023-01-01 15:00:00', '2023-02-01 08:00:00', 'koncert-klasyczny', 'Interested'),
-(10, 'Turniej w League of Legends', 10, 'Turniej LAN dla miłośnikow esportu i gry League of Legends', 10, CURRENT_TIMESTAMP - '1 day'::INTERVAL, CURRENT_TIMESTAMP - '3 hours'::INTERVAL, '2023-01-01 15:00:00', '2023-02-01 08:00:00', 'turniej-lol', 'Interested');
+(1, 'Tech Conference', 1, 'Annual tech conference', 1, '2023-10-01 09:00:00', '2023-10-02 17:00:00', '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'tech-conference', 'Completed'),
+(2, 'Health Symposium', 2, 'Health and wellness symposium', 2, '2023-11-05 09:00:00', '2023-11-06 17:00:00', '2023-10-05 08:00:00', '2023-10-05 08:00:00', 'health-symposium', 'Completed'),
+(3, 'Koncert Rockowy', 3, 'Występ ulubionych zespołów rockowych', 2, CURRENT_TIMESTAMP - '1 day'::INTERVAL, CURRENT_TIMESTAMP + '4 hours'::INTERVAL, '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'koncert-rockowy', 'Completed'),
+(4, 'Konferencja IT', 4, 'Coroczna konferencja technologiczna', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + '3 hours'::INTERVAL, '2023-10-02 17:00:00', '2023-10-02 18:00:00', 'konferencja-it', 'Completed'),
+(5, 'Mecz Piłki Nożnej', 5, 'Mecz drużynowej rywalizacji w piłce nożnej', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + '3 hours'::INTERVAL, '2022-12-01 08:00:00', '2023-09-01 08:30:00', 'mecz-pilki-noznej', 'Completed'),
+(6, 'Festiwal Elektroniczny', 6, 'Największe hity muzyki elektronicznej', 4, CURRENT_TIMESTAMP - '4 day'::INTERVAL, CURRENT_TIMESTAMP - '2 days'::INTERVAL, '2023-09-01 08:00:00', '2023-09-02 08:00:00', 'festiwal-elektroniczny', 'Completed'),
+(7, 'Koncert Hip-Hopowy', 7, 'Najnowsze hity hip-hopu w wykonaniu gwiazd', 6, CURRENT_TIMESTAMP + '2 days'::INTERVAL, CURRENT_TIMESTAMP + '2 days'::INTERVAL + '4 hours'::INTERVAL, '2023-10-08 17:00:00', '2023-11-01 09:19:22', 'koncert-hip-hopowy', 'Completed'),
+(8, 'Wieczór Jazzowy', 8, 'Relaksujące dźwięki jazzu w kameralnej atmosferze', 8, CURRENT_TIMESTAMP + '1 day'::INTERVAL, CURRENT_TIMESTAMP + '1 day'::INTERVAL + '5 hours'::INTERVAL, '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'wieczor-jazzowy', 'Completed'),
+(9, 'Koncert Klasyczny', 9, 'Muzyka klasyczna w wykonaniu renomowanych artystów', 10, CURRENT_TIMESTAMP + '1 day'::INTERVAL, CURRENT_TIMESTAMP + '1 day'::INTERVAL + '3 hours'::INTERVAL, '2023-01-01 15:00:00', '2023-02-01 08:00:00', 'koncert-klasyczny', 'Completed'),
+(10, 'Turniej w League of Legends', 10, 'Turniej LAN dla miłośnikow esportu i gry League of Legends', 10, CURRENT_TIMESTAMP - '1 day'::INTERVAL, CURRENT_TIMESTAMP - '3 hours'::INTERVAL, '2023-01-01 15:00:00', '2023-02-01 08:00:00', 'turniej-lol', 'Completed');
 
 INSERT INTO events.event_tag ("event_id", "tag_id") VALUES
 (1, 1),
@@ -63,12 +63,12 @@ INSERT INTO events.participant ("id", "event_id", "user_id", "status") VALUES
 (9, 9, 9, 'Participating'),
 (10, 10, 10, 'Participating');
 
-INSERT INTO events.parameter ("id", "key", "value", "is_predefined", "type") VALUES
-(1, 'Płatne', '500zl', true, 'Price'),
-(2, 'Długość Trasy', '10 km', false, 'Custom'),
-(3, 'Stream link', 'url com', false, 'Link'),
-(4, 'Rejestracja', 'Tak', true, 'Yes/No'),
-(5, 'Poziom Trudności', 'Średni', false, 'Custom');
+INSERT INTO events.parameter ("id", "key", "value", "type") VALUES
+(1, 'Płatne', '500zl', 'Price'),
+(2, 'Długość Trasy', '10 km', 'Custom'),
+(3, 'Stream link', 'url com', 'Link'),
+(4, 'Rejestracja', 'Tak', 'Yes/No'),
+(5, 'Poziom Trudności', 'Średni', 'Custom');
  
 INSERT INTO events.event_parameter ("parameter_id", "event_id") VALUES
 (1, 1),
@@ -87,8 +87,7 @@ INSERT INTO events.comment ("id", "event_id", "content", "created_at", "user_id"
 (7, 7, 'Bardzo ciekawe!', '2024-03-21', 7),
 (8, 8, 'Jestem zachwycony!', '2024-04-30', 8),
 (9, 9, 'To będzie świetna zabawa!', '2024-05-18', 9),
-(10, 10, 'jd orka', '2024-06-25', 10);
-SELECT setval('events.comment_id_seq', (SELECT MAX(id) FROM events.comment)); 
+(10, 10, 'Oki', '2024-06-25', 10);
  
 INSERT INTO users.interest ("id", "name") VALUES
 (1, 'Programowanie'),

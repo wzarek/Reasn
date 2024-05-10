@@ -2,9 +2,9 @@ CREATE OR REPLACE FUNCTION
 common.check_fk_exists(object_id INT, object_type common.object_type)
 RETURNS BOOLEAN AS $$
 BEGIN
-	IF object_type = 'Event' THEN
+	IF object_type = 'User' THEN
 	RETURN EXISTS (SELECT 1 FROM users.user WHERE "id" = object_id);
-	ELSIF object_type = 'User' THEN RETURN EXISTS (SELECT 1 FROM events.event WHERE "id" = object_id);
+	ELSIF object_type = 'Event' THEN RETURN EXISTS (SELECT 1 FROM events.event WHERE "id" = object_id);
 	ELSE RETURN FALSE;
 	END IF;
 END;
@@ -45,12 +45,9 @@ ALTER TABLE events.parameter ADD CONSTRAINT chk_parameter_value CHECK (value ~ '
 
 ALTER TABLE events.parameter ADD CONSTRAINT chk_parameter_key CHECK (key ~ '^[[:alpha:]]+(?:\s[[:alpha:]]+)*$');
 
--- ALTER TABLE common.status
--- ADD CONSTRAINT chk_object_type_for_status
--- CHECK (
---     (name IN ('Interested', 'Participating') AND object_type = 'User') OR
---     (name IN ('Completed', 'In progress', 'Waiting for approval') AND object_type = 'Event')
--- );
+ALter TABLE events.event ADD CONSTRAINT chk_event_status CHECK (status in ('Completed', 'In progress', 'Waiting for approval'));
+
+ALTER TABLE events.participant ADD CONSTRAINT chk_participant_status CHECK (status in ('Interested', 'Participating'));
 
 CREATE UNIQUE INDEX unique_image_for_user
 ON common.image ("object_type", "object_id")
