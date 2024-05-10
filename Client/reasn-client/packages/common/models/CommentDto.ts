@@ -4,7 +4,7 @@ import { z } from "zod"
 export const CommentDtoSchema = z.object({
     EventId: z.number(),
     Content: z.string(),
-    CreatedAt: z.string().or(z.date()).transform(arg => new Date(arg)),
+    CreatedAt: z.string().datetime({ offset: true }).or(z.date()).transform(arg => new Date(arg)),
     UserId: z.number()
 })
 

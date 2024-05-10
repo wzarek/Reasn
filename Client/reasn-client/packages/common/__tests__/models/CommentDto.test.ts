@@ -117,5 +117,62 @@ describe('CommentDto', () => {
             expect(() => CommentDtoMapper.fromObject(objectWithoutCreatedAt)).toThrow(ModelMappingError)
             expect(() => CommentDtoMapper.fromObject(objectWithoutUserId)).toThrow(ModelMappingError)
         })
+
+        it('should throw an error if date is in incorrect format', () => {
+            const object = {
+                EventId: eventId,
+                Content: content,
+                CreatedAt: 'invalid date',
+                UserId: userId
+            }
+
+            const objectMissingZ = {
+                EventId: eventId,
+                Content: content,
+                CreatedAt: '2009-06-15T13:45:30.0000000',
+                UserId: userId
+            }
+
+            expect(() => CommentDtoMapper.fromObject(object)).toThrow(ModelMappingError)
+            expect(() => CommentDtoMapper.fromObject(objectMissingZ)).toThrow(ModelMappingError)
+        })
+
+        it('should properly parse date string', () => {
+            const object = {
+                EventId: eventId,
+                Content: content,
+                CreatedAt: '2009-06-15T13:45:30.0000000-07:00',
+                UserId: userId
+            }
+
+            const objectWithoutOffset = {
+                EventId: eventId,
+                Content: content,
+                CreatedAt: '2009-06-15T13:45:30.0000000Z',
+                UserId: userId
+            }
+
+            const objectWithoutMilliseconds = {
+                EventId: eventId,
+                Content: content,
+                CreatedAt: '2009-06-15T13:45:30Z',
+                UserId: userId
+            }
+
+            let comment = CommentDtoMapper.fromObject(object)
+            comment = comment as CommentDto
+
+            expect(comment.CreatedAt).toEqual(new Date('2009-06-15T13:45:30.0000000-07:00'))
+
+            comment = CommentDtoMapper.fromObject(objectWithoutOffset)
+            comment = comment as CommentDto
+
+            expect(comment.CreatedAt).toEqual(new Date('2009-06-15T13:45:30.0000000Z'))
+
+            comment = CommentDtoMapper.fromObject(objectWithoutMilliseconds)
+            comment = comment as CommentDto
+
+            expect(comment.CreatedAt).toEqual(new Date('2009-06-15T13:45:30Z'))
+        })
     })
 })
