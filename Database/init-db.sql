@@ -59,7 +59,6 @@ CREATE TABLE IF NOT EXISTS events.parameter (
   "id" SERIAL PRIMARY KEY,
   "key" text NOT NULL CONSTRAINT events_patameter_key_maxlength CHECK (LENGTH("key") <= 32),
   "value" text NOT NULL CONSTRAINT events_patameter_value_maxlength CHECK (LENGTH("value") <= 64),
-  "is_predefined" boolean NOT NULL,
   "type" common.type NOT NULL,
   UNIQUE("key", "value")
 );
