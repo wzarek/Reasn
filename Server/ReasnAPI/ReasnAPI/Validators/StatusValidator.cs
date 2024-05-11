@@ -1,5 +1,6 @@
 ﻿using ReasnAPI.Models.Database;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace ReasnAPI.Validators
 {
@@ -20,6 +21,11 @@ namespace ReasnAPI.Validators
             if (string.IsNullOrWhiteSpace(status.ObjectTypeId.ToString()))
             {
                 yield return new ValidationResult("ObjectTypeId is required", [nameof(status.ObjectTypeId)]);
+            }
+
+            if (new Regex("^(Interested|Participating|Completed|In progress|Waiting for approval)$").IsMatch(status.Name) is false)
+            {
+                yield return new ValidationResult("Name is invalid", [nameof(status.Name)]);
             }
         }
     }

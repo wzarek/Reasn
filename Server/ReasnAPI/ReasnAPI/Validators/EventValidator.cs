@@ -1,5 +1,6 @@
 ﻿using ReasnAPI.Models.Database;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace ReasnAPI.Validators
 {
@@ -70,6 +71,11 @@ namespace ReasnAPI.Validators
             if (eventData.Slug.Length > 128)
             {
                 yield return new ValidationResult("Slug is too long", [nameof(eventData.Slug)]);
+            }
+
+            if (new Regex("^[\\p{L}\\d]+[\\p{L}\\d-]*$").IsMatch(eventData.Slug))
+            {
+                yield return new ValidationResult("Slug is invalid", [nameof(eventData.Name)]);
             }
 
             if (string.IsNullOrWhiteSpace(eventData.StatusId.ToString()))

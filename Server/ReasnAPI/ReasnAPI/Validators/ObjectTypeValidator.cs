@@ -1,5 +1,6 @@
 ﻿using ReasnAPI.Models.Database;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace ReasnAPI.Validators
 {
@@ -15,6 +16,11 @@ namespace ReasnAPI.Validators
             if (objectType.Name.Length > 32)
             {
                 yield return new ValidationResult("Name is too long", [nameof(objectType.Name)]);
+            }
+
+            if (new Regex("^(Event|User)$").IsMatch(objectType.Name) is false)
+            {
+                yield return new ValidationResult("Name is invalid", [nameof(objectType.Name)]);
             }
         }
     }
