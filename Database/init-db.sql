@@ -128,16 +128,3 @@ ALTER TABLE events.event_tag ADD FOREIGN KEY ("tag_id") REFERENCES events.tag ("
 ALTER TABLE events.event_tag ADD FOREIGN KEY ("event_id") REFERENCES events.event ("id");
 
 ALTER TABLE users.user_interest ADD FOREIGN KEY ("interest_id") REFERENCES users.interest ("id");
-  
-INSERT INTO events.tag ("id", "name") VALUES
-(1, 'Technologia'),
-(2, 'Sport'),
-(3, 'Piłka nożna'),
-(4, 'Muzyka'),
-(5, 'Rock'),
-(6, 'Koszykówka'),
-(7, 'Hip Hop'),
-(8, 'Esport'),
-(9, 'League of Legends'),
-(10, 'Zdrowie');
-SELECT setval('common.address_id_seq', (SELECT MAX(id) FROM events.tag));
