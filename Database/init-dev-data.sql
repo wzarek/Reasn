@@ -22,7 +22,7 @@ INSERT INTO users.user ("id", "name", "surname", "username", "password", "create
 (8, 'Tomasz', 'Zieliński', 'tzielinski', 'qwerty', '2022-05-25 15:00:00', '2022-06-20 11:30:10', 'User', 'tomasz.zielinski@example.com', true, 6, '+48 456123789'),
 (9, 'Magdalena', 'Kowalczyk', 'mkowalczyk', 'mojehaslo', '2022-06-30 17:10:00', '2022-07-15 13:15:25', 'Admin', 'magdalena.kowalczyk@example.com', true, 7, '+48 987654123'),
 (10, 'Marcin', 'Szymański', 'mszymanski', 'password', '2022-07-05 09:00:00', '2022-08-05 08:20:35', 'Organizer', 'marcin.szymanski@example.com', true, 8, '+48 321789654');
-  
+SELECT setval('users.user_id_seq', (SELECT MAX(id) FROM users.user));
 
 INSERT INTO events.event ("id", "name", "address_id", "description", "organizer_id", "start_at", "end_at", "created_at", "updated_at", "slug", "status") VALUES
 (1, 'Tech Conference', 1, 'Annual tech conference', 1, '2023-10-01 09:00:00', '2023-10-02 17:00:00', '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'tech-conference', 'Completed'),
@@ -35,6 +35,20 @@ INSERT INTO events.event ("id", "name", "address_id", "description", "organizer_
 (8, 'Wieczór Jazzowy', 8, 'Relaksujące dźwięki jazzu w kameralnej atmosferze', 8, CURRENT_TIMESTAMP + '1 day'::INTERVAL, CURRENT_TIMESTAMP + '1 day'::INTERVAL + '5 hours'::INTERVAL, '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'wieczor-jazzowy', 'In progress'),
 (9, 'Koncert Klasyczny', 9, 'Muzyka klasyczna w wykonaniu renomowanych artystów', 10, CURRENT_TIMESTAMP + '1 day'::INTERVAL, CURRENT_TIMESTAMP + '1 day'::INTERVAL + '3 hours'::INTERVAL, '2023-01-01 15:00:00', '2023-02-01 08:00:00', 'koncert-klasyczny', 'Waiting for approval'),
 (10, 'Turniej w League of Legends', 10, 'Turniej LAN dla miłośnikow esportu i gry League of Legends', 10, CURRENT_TIMESTAMP - '1 day'::INTERVAL, CURRENT_TIMESTAMP - '3 hours'::INTERVAL, '2023-01-01 15:00:00', '2023-02-01 08:00:00', 'turniej-lol', 'Completed');
+SELECT setval('events.event_id_seq', (SELECT MAX(id) FROM events.event));
+
+INSERT INTO events.tag ("id", "name") VALUES
+(1, 'Technologia'),
+(2, 'Sport'),
+(3, 'Piłka nożna'),
+(4, 'Muzyka'),
+(5, 'Rock'),
+(6, 'Koszykówka'),
+(7, 'Hip Hop'),
+(8, 'Esport'),
+(9, 'League of Legends'),
+(10, 'Zdrowie');
+SELECT setval('events.tag_id_seq', (SELECT MAX(id) FROM events.tag));
 
 INSERT INTO events.event_tag ("event_id", "tag_id") VALUES
 (1, 1),
@@ -62,20 +76,32 @@ INSERT INTO events.participant ("id", "event_id", "user_id", "status") VALUES
 (8, 7, 8, 'Participating'),
 (9, 9, 9, 'Interested'),
 (10, 10, 10, 'Participating');
+SELECT setval('events.participant_id_seq', (SELECT MAX(id) FROM events.participant));
 
 INSERT INTO events.parameter ("id", "key", "value") VALUES
-(1, 'Płatne', '500zl'),
+(1, 'Liczba Uczestników', '1000'),
 (2, 'Długość Trasy', '10 km'),
-(3, 'Stream link', 'url com'),
-(4, 'Rejestracja', 'Tak'),
-(5, 'Poziom Trudności', 'Średni');
+(3, 'Temperatura', '25 C'),
+(4, 'Czas Trwania', '2 godziny'),
+(5, 'Poziom Trudności', 'Średni'),
+(6, 'Rozdawane Nagrody', '500 USD'),
+(7, 'Typ Wydarzenia', 'Bezpośrednie'),
+(8, 'Czas Trwania', '3 dni'),
+(9, 'Czas Trwania', '10 dni'),
+(10, 'Miejsce Wydarzenia', 'Plenerowe');
+SELECT setval('events.parameter_id_seq', (SELECT MAX(id) FROM events.parameter)); 
  
 INSERT INTO events.event_parameter ("parameter_id", "event_id") VALUES
 (1, 1),
 (2, 2),
 (3, 3),
 (4, 4),
-(5, 5);
+(5, 5),
+(6, 6),
+(7, 7),
+(8, 8),
+(9, 9),
+(10, 10);
 
 INSERT INTO events.comment ("id", "event_id", "content", "created_at", "user_id") VALUES
 (1, 1, 'Nie mogę się doczekać!', '2023-09-10', 1),
@@ -88,6 +114,7 @@ INSERT INTO events.comment ("id", "event_id", "content", "created_at", "user_id"
 (8, 8, 'Jestem zachwycony!', '2024-04-30', 8),
 (9, 9, 'To będzie świetna zabawa!', '2024-05-18', 9),
 (10, 10, 'Oki', '2024-06-25', 10);
+SELECT setval('events.comment_id_seq', (SELECT MAX(id) FROM events.comment));
  
 INSERT INTO users.interest ("id", "name") VALUES
 (1, 'Programowanie'),

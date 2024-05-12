@@ -45,7 +45,7 @@ ALTER TABLE events.parameter ADD CONSTRAINT chk_parameter_value CHECK (value ~ '
 
 ALTER TABLE events.parameter ADD CONSTRAINT chk_parameter_key CHECK (key ~ '^[[:alpha:]]+(?:\s[[:alpha:]]+)*$');
 
-ALter TABLE events.event ADD CONSTRAINT chk_event_status CHECK (status in ('Completed', 'In progress', 'Waiting for approval'));
+ALTER TABLE events.event ADD CONSTRAINT chk_event_status CHECK (status in ('Completed', 'In progress', 'Waiting for approval'));
 
 ALTER TABLE events.participant ADD CONSTRAINT chk_participant_status CHECK (status in ('Interested', 'Participating'));
 
