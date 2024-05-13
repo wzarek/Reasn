@@ -10,7 +10,7 @@ namespace ReasnAPI.Models.DTOs {
         public DateTime EndAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public string Slug { get; set; } = null!;
+        public string? Slug { get; set; }
         public int StatusId { get; set; }
         public List<TagDto>? Tags { get; set; }
     }
