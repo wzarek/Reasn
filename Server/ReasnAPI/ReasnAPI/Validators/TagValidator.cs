@@ -1,12 +1,12 @@
-﻿using ReasnAPI.Models.Database;
+﻿using ReasnAPI.Models.DTOs;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace ReasnAPI.Validators
 {
-    public class TagValidator : IValidator<Tag>
+    public class TagValidator : IValidator<TagDto>
     {
-        public static IEnumerable<ValidationResult> Validate(Tag tag)
+        public static IEnumerable<ValidationResult> Validate(TagDto tag)
         {
             if (string.IsNullOrWhiteSpace(tag.Name))
             {
@@ -18,7 +18,7 @@ namespace ReasnAPI.Validators
                 yield return new ValidationResult("Name is too long", [nameof(tag.Name)]);
             }
 
-            if (new Regex("^\\p{L}+(?:\\s\\p{L}+)*$").IsMatch(tag.Name))
+            if (!new Regex("^\\p{L}+(?:\\s\\p{L}+)*$").IsMatch(tag.Name))
             {
                 yield return new ValidationResult("Name is invalid", [nameof(tag.Name)]);
             }
