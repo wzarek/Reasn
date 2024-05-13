@@ -1,0 +1,5 @@
+# .husky/pre-commit
+. "$(dirname -- "$0")/common.sh"
+
+(cd ./Client/reasn-client && yarn lint-staged)
+(cd ./Server/ReasnAPI && dotnet format)
