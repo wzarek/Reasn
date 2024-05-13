@@ -13,7 +13,7 @@ export const ParticipantDtoMapper = {
     fromObject: (entity: object): ParticipantDto => {
         const result = ParticipantDtoSchema.safeParse(entity)
         if (!result.success) {
-            throw new ModelMappingError('ParticipantDto', result.error.message)
+            throw new ModelMappingError('ParticipantDto', result.error.message, result.error.issues)
         }
         return result.data
     },
@@ -23,7 +23,7 @@ export const ParticipantDtoMapper = {
         }
         const result = ParticipantDtoSchema.safeParse(JSON.parse(jsonEntity))
         if (!result.success) {
-            throw new ModelMappingError('ParticipantDto', result.error.message)
+            throw new ModelMappingError('ParticipantDto', result.error.message, result.error.issues)
         }
         return result.data
     }

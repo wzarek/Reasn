@@ -12,7 +12,7 @@ export const InterestDtoMapper = {
     fromObject: (entity: object): InterestDto => {
         const result = InterestDtoSchema.safeParse(entity)
         if (!result.success) {
-            throw new ModelMappingError('InterestDto', result.error.message)
+            throw new ModelMappingError('InterestDto', result.error.message, result.error.issues)
         }
         return result.data
     },
@@ -22,7 +22,7 @@ export const InterestDtoMapper = {
         }
         const result = InterestDtoSchema.safeParse(JSON.parse(jsonEntity))
         if (!result.success) {
-            throw new ModelMappingError('InterestDto', result.error.message)
+            throw new ModelMappingError('InterestDto', result.error.message, result.error.issues)
         }
         return result.data
     }

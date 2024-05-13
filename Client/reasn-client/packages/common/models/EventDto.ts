@@ -22,7 +22,7 @@ export const EventDtoMapper = {
     fromObject: (entity: object): EventDto => {
         const result = EventDtoSchema.safeParse(entity)
         if (!result.success) {
-            throw new ModelMappingError('EventDto', result.error.message)
+            throw new ModelMappingError('EventDto', result.error.message, result.error.issues)
         }
         return result.data
     },
@@ -32,7 +32,7 @@ export const EventDtoMapper = {
         }
         const result = EventDtoSchema.safeParse(JSON.parse(jsonEntity))
         if (!result.success) {
-            throw new ModelMappingError('EventDto', result.error.message)
+            throw new ModelMappingError('EventDto', result.error.message, result.error.issues)
         }
         return result.data
     }

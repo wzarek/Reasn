@@ -12,7 +12,7 @@ export const ParameterDtoMapper = {
     fromObject: (entity: object): ParameterDto => {
         const result = ParameterDtoSchema.safeParse(entity)
         if (!result.success) {
-            throw new ModelMappingError('ParameterDto', result.error.message)
+            throw new ModelMappingError('ParameterDto', result.error.message, result.error.issues)
         }
         return result.data
     },
@@ -22,7 +22,7 @@ export const ParameterDtoMapper = {
         }
         const result = ParameterDtoSchema.safeParse(JSON.parse(jsonEntity))
         if (!result.success) {
-            throw new ModelMappingError('ParameterDto', result.error.message)
+            throw new ModelMappingError('ParameterDto', result.error.message, result.error.issues)
         }
         return result.data
     }

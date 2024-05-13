@@ -11,7 +11,7 @@ export const TagDtoMapper = {
     fromObject: (entity: object): TagDto => {
         const result = TagDtoSchema.safeParse(entity)
         if (!result.success) {
-            throw new ModelMappingError('TagDto', result.error.message)
+            throw new ModelMappingError('TagDto', result.error.message, result.error.issues)
         }
         return result.data
     },
@@ -21,7 +21,7 @@ export const TagDtoMapper = {
         }
         const result = TagDtoSchema.safeParse(JSON.parse(jsonEntity))
         if (!result.success) {
-            throw new ModelMappingError('TagDto', result.error.message)
+            throw new ModelMappingError('TagDto', result.error.message, result.error.issues)
         }
         return result.data
     }

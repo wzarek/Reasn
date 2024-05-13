@@ -15,7 +15,7 @@ export const AddressDtoMapper = {
     fromObject: (entity: object): AddressDto => {
         const result = AddressDtoSchema.safeParse(entity)
         if (!result.success) {
-            throw new ModelMappingError('AddressDto', result.error.message)
+            throw new ModelMappingError('AddressDto', result.error.message, result.error.issues)
         }
         return result.data
     },
@@ -25,7 +25,7 @@ export const AddressDtoMapper = {
         }
         const result = AddressDtoSchema.safeParse(JSON.parse(jsonEntity))
         if (!result.success) {
-            throw new ModelMappingError('AddressDto', result.error.message)
+            throw new ModelMappingError('AddressDto', result.error.message, result.error.issues)
         }
         return result.data
     }

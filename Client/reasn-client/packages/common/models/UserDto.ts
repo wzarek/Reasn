@@ -19,7 +19,7 @@ export const UserDtoMapper = {
     fromObject: (entity: object): UserDto => {
         const result = UserDtoSchema.safeParse(entity)
         if (!result.success) {
-            throw new ModelMappingError('UserDto', result.error.message)
+            throw new ModelMappingError('UserDto', result.error.message, result.error.issues)
         }
         return result.data
     },
@@ -29,7 +29,7 @@ export const UserDtoMapper = {
         }
         const result = UserDtoSchema.safeParse(JSON.parse(jsonEntity))
         if (!result.success) {
-            throw new ModelMappingError('UserDto', result.error.message)
+            throw new ModelMappingError('UserDto', result.error.message, result.error.issues)
         }
         return result.data
     }
