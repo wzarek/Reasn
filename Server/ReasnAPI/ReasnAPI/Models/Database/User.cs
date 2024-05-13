@@ -38,4 +38,6 @@ public partial class User
     public virtual ICollection<Participant> Participants { get; set; } = new List<Participant>();
 
     public virtual Role Role { get; set; } = null!;
+
+    public virtual ICollection<UserInterest> UserInterests { get; set; } = new List<UserInterest>();
 }
