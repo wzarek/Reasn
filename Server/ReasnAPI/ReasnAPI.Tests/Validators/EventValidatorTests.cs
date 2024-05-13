@@ -1,5 +1,6 @@
 ﻿using ReasnAPI.Models.DTOs;
 using ReasnAPI.Validators;
+using System;
 
 namespace ReasnAPI.Tests.Validators
 {
@@ -14,7 +15,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "",
                 Description = "Description",
                 StartAt = DateTime.Now,
-                EndAt = DateTime.Now,
+                EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 Slug = "slug"
@@ -33,7 +34,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = new string('a', 65),
                 Description = "Description",
                 StartAt = DateTime.Now,
-                EndAt = DateTime.Now,
+                EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 Slug = "slug"
@@ -52,7 +53,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "ValidName",
                 Description = "Description",
                 StartAt = DateTime.Now,
-                EndAt = DateTime.Now,
+                EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 Slug = "slug"
@@ -71,7 +72,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Description = "",
                 StartAt = DateTime.Now,
-                EndAt = DateTime.Now,
+                EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 Slug = "slug"
@@ -90,7 +91,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Description = new string('a', 4049),
                 StartAt = DateTime.Now,
-                EndAt = DateTime.Now,
+                EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 Slug = "slug"
@@ -109,7 +110,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Description = "Valid Description",
                 StartAt = DateTime.Now,
-                EndAt = DateTime.Now,
+                EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 Slug = "slug"
@@ -147,7 +148,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Description = "Description",
                 StartAt = DateTime.Now,
-                EndAt = DateTime.Now,
+                EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now.AddMinutes(1),
                 UpdatedAt = DateTime.Now,
                 Slug = "slug"
@@ -166,7 +167,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Description = "Description",
                 StartAt = DateTime.Now,
-                EndAt = DateTime.Now,
+                EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now.AddMinutes(1),
                 Slug = "slug"
@@ -185,7 +186,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Description = "Description",
                 StartAt = DateTime.Now,
-                EndAt = DateTime.Now,
+                EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 Slug = ""
@@ -205,7 +206,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Description = "Description",
                 StartAt = DateTime.Now,
-                EndAt = DateTime.Now,
+                EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 Slug = new string('a', 129)
@@ -224,7 +225,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Description = "Description",
                 StartAt = DateTime.Now,
-                EndAt = DateTime.Now,
+                EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 Slug = "invalid slug"
@@ -243,7 +244,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Description = "Description",
                 StartAt = DateTime.Now,
-                EndAt = DateTime.Now,
+                EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 Slug = "valid-slug"
