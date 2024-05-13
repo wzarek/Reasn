@@ -13,12 +13,7 @@ namespace ReasnAPI.Validators
                 yield return new ValidationResult("Name is required", [nameof(objectType.Name)]);
             }
 
-            if (objectType.Name.Length > 32)
-            {
-                yield return new ValidationResult("Name is too long", [nameof(objectType.Name)]);
-            }
-
-            if (new Regex("^(Event|User)$").IsMatch(objectType.Name) is false)
+            if (!new Regex("^(Event|User)$").IsMatch(objectType.Name))
             {
                 yield return new ValidationResult("Name is invalid", [nameof(objectType.Name)]);
             }
