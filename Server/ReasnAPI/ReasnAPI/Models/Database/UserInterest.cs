@@ -9,8 +9,6 @@ public partial class UserInterest
 
     public int InterestId { get; set; }
 
-    public int Level { get; set; }
-
     public virtual Interest Interest { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
