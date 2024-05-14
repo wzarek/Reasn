@@ -21,10 +21,6 @@ public partial class ReasnContext : DbContext
 
     public virtual DbSet<Event> Events { get; set; }
 
-    public virtual DbSet<EventParameter> EventParameters { get; set; }
-
-    public virtual DbSet<EventTag> EventTags { get; set; }
-
     public virtual DbSet<Image> Images { get; set; }
 
     public virtual DbSet<Interest> Interests { get; set; }
@@ -57,21 +53,11 @@ public partial class ReasnContext : DbContext
             entity.ToTable("address", "common");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.City)
-                .HasMaxLength(255)
-                .HasColumnName("city");
-            entity.Property(e => e.Country)
-                .HasMaxLength(255)
-                .HasColumnName("country");
-            entity.Property(e => e.State)
-                .HasMaxLength(255)
-                .HasColumnName("state");
-            entity.Property(e => e.Street)
-                .HasMaxLength(255)
-                .HasColumnName("street");
-            entity.Property(e => e.ZipCode)
-                .HasMaxLength(255)
-                .HasColumnName("zip_code");
+            entity.Property(e => e.City).HasColumnName("city");
+            entity.Property(e => e.Country).HasColumnName("country");
+            entity.Property(e => e.State).HasColumnName("state");
+            entity.Property(e => e.Street).HasColumnName("street");
+            entity.Property(e => e.ZipCode).HasColumnName("zip_code");
         });
 
         modelBuilder.Entity<Comment>(entity =>
@@ -81,9 +67,7 @@ public partial class ReasnContext : DbContext
             entity.ToTable("comment", "events");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Content)
-                .HasMaxLength(255)
-                .HasColumnName("content");
+            entity.Property(e => e.Content).HasColumnName("content");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.EventId).HasColumnName("event_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
@@ -110,13 +94,9 @@ public partial class ReasnContext : DbContext
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.EndAt).HasColumnName("end_at");
-            entity.Property(e => e.Name)
-                .HasColumnType("character varying")
-                .HasColumnName("name");
+            entity.Property(e => e.Name).HasColumnName("name");
             entity.Property(e => e.OrganizerId).HasColumnName("organizer_id");
-            entity.Property(e => e.Slug)
-                .HasColumnType("character varying")
-                .HasColumnName("slug");
+            entity.Property(e => e.Slug).HasColumnName("slug");
             entity.Property(e => e.StartAt).HasColumnName("start_at");
             entity.Property(e => e.StatusId).HasColumnName("status_id");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
@@ -135,46 +115,25 @@ public partial class ReasnContext : DbContext
                 .HasForeignKey(d => d.StatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("event_status_id_fkey");
-        });
 
-        modelBuilder.Entity<EventParameter>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("event_parameter", "events");
-
-            entity.Property(e => e.EventId).HasColumnName("event_id");
-            entity.Property(e => e.ParameterId).HasColumnName("parameter_id");
-
-            entity.HasOne(d => d.Event).WithMany()
-                .HasForeignKey(d => d.EventId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("event_parameter_event_id_fkey");
-
-            entity.HasOne(d => d.Parameter).WithMany()
-                .HasForeignKey(d => d.ParameterId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("event_parameter_parameter_id_fkey");
-        });
-
-        modelBuilder.Entity<EventTag>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("event_tag", "events");
-
-            entity.Property(e => e.EventId).HasColumnName("event_id");
-            entity.Property(e => e.TagId).HasColumnName("tag_id");
-
-            entity.HasOne(d => d.Event).WithMany()
-                .HasForeignKey(d => d.EventId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("event_tag_event_id_fkey");
-
-            entity.HasOne(d => d.Tag).WithMany()
-                .HasForeignKey(d => d.TagId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("event_tag_tag_id_fkey");
+            entity.HasMany(d => d.Tags).WithMany(p => p.Events)
+                .UsingEntity<Dictionary<string, object>>(
+                    "EventTag",
+                    r => r.HasOne<Tag>().WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("event_tag_tag_id_fkey"),
+                    l => l.HasOne<Event>().WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("event_tag_event_id_fkey"),
+                    j =>
+                    {
+                        j.HasKey("EventId", "TagId").HasName("event_tag_pkey");
+                        j.ToTable("event_tag", "events");
+                        j.IndexerProperty<int>("EventId").HasColumnName("event_id");
+                        j.IndexerProperty<int>("TagId").HasColumnName("tag_id");
+                    });
         });
 
         modelBuilder.Entity<Image>(entity =>
@@ -182,6 +141,10 @@ public partial class ReasnContext : DbContext
             entity.HasKey(e => e.Id).HasName("image_pkey");
 
             entity.ToTable("image", "common");
+
+            entity.HasIndex(e => new { e.ObjectTypeId, e.ObjectId }, "unique_image_for_user")
+                .IsUnique()
+                .HasFilter("(object_type_id = 2)");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.ImageData).HasColumnName("image_data");
@@ -200,11 +163,10 @@ public partial class ReasnContext : DbContext
 
             entity.ToTable("interest", "users");
 
+            entity.HasIndex(e => e.Name, "interest_name_key").IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Level).HasColumnName("level");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasColumnName("name");
+            entity.Property(e => e.Name).HasColumnName("name");
         });
 
         modelBuilder.Entity<ObjectType>(entity =>
@@ -213,10 +175,10 @@ public partial class ReasnContext : DbContext
 
             entity.ToTable("object_type", "common");
 
+            entity.HasIndex(e => e.Name, "object_type_name_key").IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasColumnName("name");
+            entity.Property(e => e.Name).HasColumnName("name");
         });
 
         modelBuilder.Entity<Parameter>(entity =>
@@ -225,13 +187,30 @@ public partial class ReasnContext : DbContext
 
             entity.ToTable("parameter", "events");
 
+            entity.HasIndex(e => new { e.Key, e.Value }, "parameter_key_value_key").IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Key)
-                .HasMaxLength(255)
-                .HasColumnName("key");
-            entity.Property(e => e.Value)
-                .HasMaxLength(255)
-                .HasColumnName("value");
+            entity.Property(e => e.Key).HasColumnName("key");
+            entity.Property(e => e.Value).HasColumnName("value");
+
+            entity.HasMany(d => d.Events).WithMany(p => p.Parameters)
+                .UsingEntity<Dictionary<string, object>>(
+                    "EventParameter",
+                    r => r.HasOne<Event>().WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("event_parameter_event_id_fkey"),
+                    l => l.HasOne<Parameter>().WithMany()
+                        .HasForeignKey("ParameterId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("event_parameter_parameter_id_fkey"),
+                    j =>
+                    {
+                        j.HasKey("ParameterId", "EventId").HasName("event_parameter_pkey");
+                        j.ToTable("event_parameter", "events");
+                        j.IndexerProperty<int>("ParameterId").HasColumnName("parameter_id");
+                        j.IndexerProperty<int>("EventId").HasColumnName("event_id");
+                    });
         });
 
         modelBuilder.Entity<Participant>(entity =>
@@ -239,6 +218,8 @@ public partial class ReasnContext : DbContext
             entity.HasKey(e => e.Id).HasName("participant_pkey");
 
             entity.ToTable("participant", "events");
+
+            entity.HasIndex(e => new { e.EventId, e.UserId }, "participant_event_id_user_id_key").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.EventId).HasColumnName("event_id");
@@ -267,10 +248,10 @@ public partial class ReasnContext : DbContext
 
             entity.ToTable("role", "users");
 
+            entity.HasIndex(e => e.Name, "role_name_key").IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasColumnName("name");
+            entity.Property(e => e.Name).HasColumnName("name");
         });
 
         modelBuilder.Entity<Status>(entity =>
@@ -279,10 +260,10 @@ public partial class ReasnContext : DbContext
 
             entity.ToTable("status", "common");
 
+            entity.HasIndex(e => e.Name, "status_name_key").IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasColumnName("name");
+            entity.Property(e => e.Name).HasColumnName("name");
             entity.Property(e => e.ObjectTypeId).HasColumnName("object_type_id");
 
             entity.HasOne(d => d.ObjectType).WithMany(p => p.Statuses)
@@ -297,10 +278,10 @@ public partial class ReasnContext : DbContext
 
             entity.ToTable("tag", "events");
 
+            entity.HasIndex(e => e.Name, "tag_name_key").IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasColumnName("name");
+            entity.Property(e => e.Name).HasColumnName("name");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -309,30 +290,24 @@ public partial class ReasnContext : DbContext
 
             entity.ToTable("user", "users");
 
+            entity.HasIndex(e => e.Email, "user_email_key").IsUnique();
+
+            entity.HasIndex(e => e.Phone, "user_phone_key").IsUnique();
+
+            entity.HasIndex(e => e.Username, "user_username_key").IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.AddressId).HasColumnName("address_id");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.Email)
-                .HasMaxLength(255)
-                .HasColumnName("email");
+            entity.Property(e => e.Email).HasColumnName("email");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasColumnName("name");
-            entity.Property(e => e.Password)
-                .HasMaxLength(255)
-                .HasColumnName("password");
-            entity.Property(e => e.Phone)
-                .HasMaxLength(255)
-                .HasColumnName("phone");
+            entity.Property(e => e.Name).HasColumnName("name");
+            entity.Property(e => e.Password).HasColumnName("password");
+            entity.Property(e => e.Phone).HasColumnName("phone");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
-            entity.Property(e => e.Surname)
-                .HasMaxLength(255)
-                .HasColumnName("surname");
+            entity.Property(e => e.Surname).HasColumnName("surname");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            entity.Property(e => e.Username)
-                .HasMaxLength(255)
-                .HasColumnName("username");
+            entity.Property(e => e.Username).HasColumnName("username");
 
             entity.HasOne(d => d.Address).WithMany(p => p.Users)
                 .HasForeignKey(d => d.AddressId)
@@ -347,19 +322,20 @@ public partial class ReasnContext : DbContext
 
         modelBuilder.Entity<UserInterest>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("user_interest", "users");
+            entity.HasKey(e => new { e.UserId, e.InterestId }).HasName("user_interest_pkey");
 
-            entity.Property(e => e.InterestId).HasColumnName("interest_id");
+            entity.ToTable("user_interest", "users");
+
             entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.InterestId).HasColumnName("interest_id");
+            entity.Property(e => e.Level).HasColumnName("level");
 
-            entity.HasOne(d => d.Interest).WithMany()
+            entity.HasOne(d => d.Interest).WithMany(p => p.UserInterests)
                 .HasForeignKey(d => d.InterestId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("user_interest_interest_id_fkey");
 
-            entity.HasOne(d => d.User).WithMany()
+            entity.HasOne(d => d.User).WithMany(p => p.UserInterests)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("user_interest_user_id_fkey");
