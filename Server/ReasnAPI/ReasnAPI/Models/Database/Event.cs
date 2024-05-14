@@ -36,8 +36,4 @@ public partial class Event
     public virtual ICollection<Participant> Participants { get; set; } = new List<Participant>();
 
     public virtual Status Status { get; set; } = null!;
-
-    public virtual ICollection<Parameter> Parameters { get; set; } = new List<Parameter>();
-
-    public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 }

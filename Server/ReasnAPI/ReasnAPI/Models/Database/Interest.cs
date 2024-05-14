@@ -9,5 +9,5 @@ public partial class Interest
 
     public string Name { get; set; } = null!;
 
-    public virtual ICollection<UserInterest> UserInterests { get; set; } = new List<UserInterest>();
+    public int Level { get; set; }
 }
