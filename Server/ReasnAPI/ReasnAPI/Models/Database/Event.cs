@@ -1,5 +1,7 @@
-﻿using System;
+﻿using ReasnAPI.Models.Enums;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ReasnAPI.Models.Database;
 
@@ -25,7 +27,7 @@ public partial class Event
 
     public string Slug { get; set; } = null!;
 
-    public int StatusId { get; set; }
+    public EventStatus status { get; set; }
 
     public virtual Address Address { get; set; } = null!;
 
@@ -35,5 +37,7 @@ public partial class Event
 
     public virtual ICollection<Participant> Participants { get; set; } = new List<Participant>();
 
-    public virtual Status Status { get; set; } = null!;
+    public virtual ICollection<Parameter> Parameters { get; set; } = new List<Parameter>();
+
+    public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 }

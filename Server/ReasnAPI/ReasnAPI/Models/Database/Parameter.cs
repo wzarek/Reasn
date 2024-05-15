@@ -10,4 +10,6 @@ public partial class Parameter
     public string Key { get; set; } = null!;
 
     public string Value { get; set; } = null!;
+
+    public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 }
