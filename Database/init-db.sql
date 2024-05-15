@@ -2,7 +2,8 @@ CREATE SCHEMA events;
 CREATE SCHEMA users;
 CREATE SCHEMA common;
 
-CREATE TYPE common.status AS ENUM ('Interested', 'Participating', 'Completed', 'In progress', 'Waiting for approval');
+CREATE TYPE common.participant_status AS ENUM ('Interested', 'Participating');
+CREATE TYPE common.event_status AS ENUM ('Completed', 'In progress', 'Approved', 'Waiting for approval');
 CREATE TYPE users.role AS ENUM ('User', 'Organizer', 'Admin');
 CREATE TYPE common.object_type AS ENUM ('Event', 'User');
 
@@ -17,14 +18,14 @@ CREATE TABLE IF NOT EXISTS events.event (
   "created_at" timestamptz NOT NULL,
   "updated_at" timestamptz NOT NULL,
   "slug" text NOT NULL CONSTRAINT events_event_slug_maxlength CHECK (LENGTH("slug") <= 128),
-  "status" common.status NOT NULL
+  "status" common.event_status NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS events.participant (
   "id" SERIAL PRIMARY KEY,
   "event_id" integer NOT NULL,
   "user_id" integer NOT NULL,
-  "status" common.status NOT NULL,
+  "status" common.participant_status NOT NULL,
   UNIQUE ("event_id", "user_id")
 );
 
