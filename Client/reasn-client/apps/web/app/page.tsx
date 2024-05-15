@@ -1,12 +1,10 @@
 "use client";
 
-import { HeroSection } from "@reasn/ui";
-
-import styles from "../styles/index.module.css";
+import { HeroSection } from "@reasn/ui/src";
 
 export default function Web() {
   return (
-    <div className={styles.container}>
+    <div className='bg-[#161618] text-white'>
       <HeroSection />
     </div>
   );
