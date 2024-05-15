@@ -5,6 +5,8 @@ namespace ReasnAPI.Validators
 {
     public class CommentValidator : IValidator<CommentDto>
     {
+        private const int ContentMaxLength = 1024;
+
         public static IEnumerable<ValidationResult> Validate(CommentDto comment)
         {
             if (string.IsNullOrWhiteSpace(comment.Content))
@@ -12,7 +14,7 @@ namespace ReasnAPI.Validators
                 yield return new ValidationResult("Content is required", [nameof(comment.Content)]);
             }
 
-            if (comment.Content.Length > 1024)
+            if (comment.Content.Length > ContentMaxLength)
             {
                 yield return new ValidationResult("Content is too long", [nameof(comment.Content)]);
             }

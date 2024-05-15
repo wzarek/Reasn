@@ -6,6 +6,11 @@ namespace ReasnAPI.Validators
 {
     public class EventValidator : IValidator<EventDto>
     {
+        private const int NameMaxLength = 64;
+        private const int DescriptionMaxLength = 4048;
+        private const int SlugMaxLength = 128;
+        private const string SlugRegexPattern = "^[\\p{L}\\d]+[\\p{L}\\d-]*$";
+
         public static IEnumerable<ValidationResult> Validate(EventDto eventData)
         {
             if (string.IsNullOrWhiteSpace(eventData.Name))
@@ -13,7 +18,7 @@ namespace ReasnAPI.Validators
                 yield return new ValidationResult("Name is required", [nameof(eventData.Name)]);
             }
 
-            if (eventData.Name.Length > 64)
+            if (eventData.Name.Length > NameMaxLength)
             {
                 yield return new ValidationResult("Name is too long", [nameof(eventData.Name)]);
             }
@@ -23,7 +28,7 @@ namespace ReasnAPI.Validators
                 yield return new ValidationResult("Description is required", [nameof(eventData.Description)]);
             }
 
-            if (eventData.Description.Length > 4048)
+            if (eventData.Description.Length > DescriptionMaxLength)
             {
                 yield return new ValidationResult("Description is too long", [nameof(eventData.Description)]);
             }
@@ -48,12 +53,12 @@ namespace ReasnAPI.Validators
                 yield return new ValidationResult("Slug is required", [nameof(eventData.Slug)]);
             }
 
-            if (eventData.Slug.Length > 128)
+            if (eventData.Slug.Length > SlugMaxLength)
             {
                 yield return new ValidationResult("Slug is too long", [nameof(eventData.Slug)]);
             }
 
-            if (!new Regex("^[\\p{L}\\d]+[\\p{L}\\d-]*$").IsMatch(eventData.Slug))
+            if (!new Regex(SlugRegexPattern).IsMatch(eventData.Slug))
             {
                 yield return new ValidationResult("Slug is invalid", [nameof(eventData.Name)]);
             }

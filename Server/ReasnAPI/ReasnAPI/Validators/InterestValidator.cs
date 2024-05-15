@@ -6,6 +6,9 @@ namespace ReasnAPI.Validators
 {
     public class InterestValidator : IValidator<IntrestDto>
     {
+        private const int NameMaxLength = 32;
+        private const string NameRegexPattern = "^\\p{Lu}\\p{Ll}+(?:\\s\\p{L}+)*$";
+
         public static IEnumerable<ValidationResult> Validate(IntrestDto interest)
         {
             if (string.IsNullOrWhiteSpace(interest.Name))
@@ -13,12 +16,12 @@ namespace ReasnAPI.Validators
                 yield return new ValidationResult("Name is required", [nameof(interest.Name)]);
             }
 
-            if (interest.Name.Length > 32)
+            if (interest.Name.Length > NameMaxLength)
             {
                 yield return new ValidationResult("Name is too long", [nameof(interest.Name)]);
             }
 
-            if (!new Regex("^\\p{Lu}\\p{Ll}+(?:\\s\\p{L}+)*$").IsMatch(interest.Name))
+            if (!new Regex(NameRegexPattern).IsMatch(interest.Name))
             {
                 yield return new ValidationResult("Name is invalid", [nameof(interest.Name)]);
             }
