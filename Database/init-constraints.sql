@@ -45,10 +45,6 @@ ALTER TABLE events.parameter ADD CONSTRAINT chk_parameter_value CHECK (value ~ '
 
 ALTER TABLE events.parameter ADD CONSTRAINT chk_parameter_key CHECK (key ~ '^[[:alpha:]]+(?:\s[[:alpha:]]+)*$');
 
-ALTER TABLE events.event ADD CONSTRAINT chk_event_status CHECK (status in ('Completed', 'In progress', 'Waiting for approval'));
-
-ALTER TABLE events.participant ADD CONSTRAINT chk_participant_status CHECK (status in ('Interested', 'Participating'));
-
 CREATE UNIQUE INDEX unique_image_for_user
 ON common.image ("object_type", "object_id")
 WHERE ("object_type" = 'User');
