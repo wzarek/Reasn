@@ -13,7 +13,7 @@ export const ImageDtoMapper = {
     fromObject: (entity: object): ImageDto => {
         const result = ImageDtoSchema.safeParse(entity)
         if (!result.success) {
-            throw new ModelMappingError('ImageDto', result.error.message, result.error.issues)
+            throw new ModelMappingError('ImageDto', result.error.message, result.error)
         }
         return result.data
     },
@@ -23,7 +23,7 @@ export const ImageDtoMapper = {
         }
         const result = ImageDtoSchema.safeParse(JSON.parse(jsonEntity))
         if (!result.success) {
-            throw new ModelMappingError('ImageDto', result.error.message, result.error.issues)
+            throw new ModelMappingError('ImageDto', result.error.message, result.error)
         }
         return result.data
     }

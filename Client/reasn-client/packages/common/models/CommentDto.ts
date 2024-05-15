@@ -14,7 +14,7 @@ export const CommentDtoMapper = {
     fromObject: (entity: object): CommentDto => {
         const result = CommentDtoSchema.safeParse(entity)
         if (!result.success) {
-            throw new ModelMappingError('CommentDto', result.error.message, result.error.issues)
+            throw new ModelMappingError('CommentDto', result.error.message, result.error)
         }
         return result.data
     },
@@ -24,7 +24,7 @@ export const CommentDtoMapper = {
         }
         const result = CommentDtoSchema.safeParse(JSON.parse(jsonEntity))
         if (!result.success) {
-            throw new ModelMappingError('CommentDto', result.error.message, result.error.issues)
+            throw new ModelMappingError('CommentDto', result.error.message, result.error)
         }
         return result.data
     }

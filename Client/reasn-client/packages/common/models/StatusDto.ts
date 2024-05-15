@@ -12,7 +12,7 @@ export const StatusDtoMapper = {
     fromObject: (entity: object): StatusDto => {
         const result = StatusDtoSchema.safeParse(entity)
         if (!result.success) {
-            throw new ModelMappingError('StatusDto', result.error.message, result.error.issues)
+            throw new ModelMappingError('StatusDto', result.error.message, result.error)
         }
         return result.data
     },
@@ -22,7 +22,7 @@ export const StatusDtoMapper = {
         }
         const result = StatusDtoSchema.safeParse(JSON.parse(jsonEntity))
         if (!result.success) {
-            throw new ModelMappingError('StatusDto', result.error.message, result.error.issues)
+            throw new ModelMappingError('StatusDto', result.error.message, result.error)
         }
         return result.data
     }

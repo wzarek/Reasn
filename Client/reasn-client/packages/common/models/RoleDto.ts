@@ -11,7 +11,7 @@ export const RoleDtoMapper = {
     fromObject: (entity: object): RoleDto => {
         const result = RoleDtoSchema.safeParse(entity)
         if (!result.success) {
-            throw new ModelMappingError('RoleDto', result.error.message, result.error.issues)
+            throw new ModelMappingError('RoleDto', result.error.message, result.error)
         }
         return result.data
     },
@@ -21,7 +21,7 @@ export const RoleDtoMapper = {
         }
         const result = RoleDtoSchema.safeParse(JSON.parse(jsonEntity))
         if (!result.success) {
-            throw new ModelMappingError('RoleDto', result.error.message, result.error.issues)
+            throw new ModelMappingError('RoleDto', result.error.message, result.error)
         }
         return result.data
     }
