@@ -11,16 +11,16 @@ using ReasnAPI.Models.Database;
 var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.Services.AddControllers();
-var dataSourceBuilder = new NpgsqlDataSourceBuilder("Server=localhost;Port=5432;Database=reasn;User Id=dba;Password=sql");
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(builder.Configuration.GetConnectionString("DefaultValue"));
 dataSourceBuilder.MapEnum<ParticipantStatus>("events.participant.status");
 dataSourceBuilder.MapEnum<EventStatus>("events.event.status");
 dataSourceBuilder.MapEnum<ObjectType>("common.image.object_type");
 dataSourceBuilder.MapEnum<UserRole>("users.user.role");
 
-await using var dataSource = dataSourceBuilder.Build();
+var dataSource = dataSourceBuilder.Build();
 // todo: uncomment after creating DbContext and change context name and if needed - connection string localized in appsettings.json
 builder.Services.AddDbContext<ReasnContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Development")));
+    options.UseNpgsql(dataSource));
 
 builder.Services.AddSwaggerGen(options =>
 {
