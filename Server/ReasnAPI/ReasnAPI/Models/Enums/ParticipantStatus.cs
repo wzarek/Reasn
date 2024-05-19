@@ -2,6 +2,6 @@
 
 public enum ParticipantStatus
 {
-    Interested = 1,
-    Participating = 2
+    Interested,
+    Participating
 }

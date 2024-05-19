@@ -2,6 +2,6 @@
 
 public enum ObjectType
 {
-    Event = 1,
-    User = 2
+    Event,
+    User
 }
