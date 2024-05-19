@@ -2,7 +2,7 @@
 {
     public class UserInterestDto
     {
-        public int InterestId { get; set; }
+        public InterestDto Interest { get; set; } = null!;
         public int Level { get; set; }
     }
 }
