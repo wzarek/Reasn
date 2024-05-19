@@ -9,7 +9,7 @@ public partial class Image
 {
     public int Id { get; set; }
 
-    public ObjectType object_type { get; set; }
+    public ObjectType ObjectType { get; set; }
 
     public byte[] ImageData { get; set; } = null!;
 

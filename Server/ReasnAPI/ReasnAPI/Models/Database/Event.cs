@@ -27,7 +27,7 @@ public partial class Event
 
     public string Slug { get; set; } = null!;
 
-    public EventStatus status { get; set; }
+    public EventStatus Status { get; set; }
 
     public virtual Address Address { get; set; } = null!;
 

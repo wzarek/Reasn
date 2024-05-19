@@ -13,7 +13,7 @@ public partial class Participant
 
     public int UserId { get; set; }
 
-    public ParticipantStatus status { get; set; }
+    public ParticipantStatus Status { get; set; }
 
     public virtual Event Event { get; set; } = null!;
 

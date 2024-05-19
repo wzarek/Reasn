@@ -27,7 +27,7 @@ public partial class User
 
     public int AddressId { get; set; }
 
-    public UserRole role { get; set; }
+    public UserRole Role { get; set; }
 
     public string? Phone { get; set; }
 

@@ -49,22 +49,22 @@ public partial class ReasnContext : DbContext
 
         modelBuilder
             .Entity<User>()
-            .Property(u => u.role)
+            .Property(u => u.Role)
             .HasConversion<string>();
 
         modelBuilder
             .Entity<Event>()
-            .Property(u => u.status)
+            .Property(u => u.Status)
             .HasConversion<string>();
 
         modelBuilder
             .Entity<Image>()
-            .Property(u => u.object_type)
+            .Property(u => u.ObjectType)
             .HasConversion<string> ();
 
         modelBuilder
             .Entity<Participant>()
-            .Property(u => u.status)
+            .Property(u => u.Status)
             .HasConversion<string>();
 
         modelBuilder.Entity<Address>(entity =>
@@ -120,6 +120,7 @@ public partial class ReasnContext : DbContext
             entity.Property(e => e.Slug).HasColumnName("slug");
             entity.Property(e => e.StartAt).HasColumnName("start_at");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+            entity.Property(e => e.Status).HasColumnName("status");
 
             entity.HasOne(d => d.Address).WithMany(p => p.Events)
                 .HasForeignKey(d => d.AddressId)
@@ -160,6 +161,7 @@ public partial class ReasnContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.ImageData).HasColumnName("image_data");
             entity.Property(e => e.ObjectId).HasColumnName("object_id");
+            entity.Property(e => e.ObjectType).HasColumnName("object_type");
         });
 
         modelBuilder.Entity<Interest>(entity =>
@@ -217,6 +219,7 @@ public partial class ReasnContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.EventId).HasColumnName("event_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.Status).HasColumnName("status");
 
             entity.HasOne(d => d.Event).WithMany(p => p.Participants)
                 .HasForeignKey(d => d.EventId)
@@ -264,6 +267,7 @@ public partial class ReasnContext : DbContext
             entity.Property(e => e.Surname).HasColumnName("surname");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             entity.Property(e => e.Username).HasColumnName("username");
+            entity.Property(e => e.Role).HasColumnName("role");
 
             entity.HasOne(d => d.Address).WithMany(p => p.Users)
                 .HasForeignKey(d => d.AddressId)
