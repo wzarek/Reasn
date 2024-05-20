@@ -9,7 +9,7 @@ namespace ReasnAPI.Tests.Validators
         [TestMethod]
         public void Validate_WhenNameIsEmpty_ReturnsValidationResult()
         {
-            var interest = new IntrestDto
+            var interest = new InterestDto
             {
                 Name = ""
             };
@@ -23,7 +23,7 @@ namespace ReasnAPI.Tests.Validators
         [TestMethod]
         public void Validate_WhenNameIsTooLong_ReturnsValidationResult()
         {
-            var interest = new IntrestDto
+            var interest = new InterestDto
             {
                 Name = new string('a', 33)
             };
@@ -36,7 +36,7 @@ namespace ReasnAPI.Tests.Validators
         [TestMethod]
         public void Validate_WhenNameIsInvalid_ReturnsValidationResult()
         {
-            var interest = new IntrestDto
+            var interest = new InterestDto
             {
                 Name = "Invalid  Name"
             };
@@ -49,7 +49,7 @@ namespace ReasnAPI.Tests.Validators
         [TestMethod]
         public void Validate_WhenNameIsValid_ReturnsNoValidationResult()
         {
-            var interest = new IntrestDto
+            var interest = new InterestDto
             {
                 Name = "Valid Name"
             };

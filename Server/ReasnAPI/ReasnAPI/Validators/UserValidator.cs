@@ -16,7 +16,6 @@ namespace ReasnAPI.Validators
         private const string EmailRegexPattern = "^[a-zA-Z\\d._%+-]+@[a-zA-Z\\d.-]+\\.[a-zA-Z]{2,6}$";
         private const int PhoneMaxLength = 16;
         private const string PhoneRegexPattern = "^\\+\\d{1,3}\\s\\d{1,15}$";
-        private const string RoleRegexPattern = "^(Admin|User|Organizer)$";
 
         public static IEnumerable<ValidationResult> Validate(UserDto user)
         {
@@ -91,11 +90,6 @@ namespace ReasnAPI.Validators
                 {
                     yield return new ValidationResult("Phone is invalid", [nameof(user.Phone)]);
                 }
-            }
-
-            if (!new Regex(RoleRegexPattern).IsMatch(user.Role.ToString()))
-            {
-                yield return new ValidationResult("Role is invalid", [nameof(user.Role)]);
             }
         }
     }

@@ -10,7 +10,6 @@ namespace ReasnAPI.Validators
         private const int DescriptionMaxLength = 4048;
         private const int SlugMaxLength = 128;
         private const string SlugRegexPattern = "^[\\p{L}\\d]+[\\p{L}\\d-]*$";
-        private const string StatusRegexPattern = "^(Completed|In progress|Approved|Waiting for aproval)$";
 
         public static IEnumerable<ValidationResult> Validate(EventDto eventData)
         {
@@ -62,11 +61,6 @@ namespace ReasnAPI.Validators
             if (!new Regex(SlugRegexPattern).IsMatch(eventData.Slug))
             {
                 yield return new ValidationResult("Slug is invalid", [nameof(eventData.Name)]);
-            }
-
-            if (!new Regex(StatusRegexPattern).IsMatch(eventData.Status.ToString()))
-            {
-                yield return new ValidationResult("Status is invalid", [nameof(eventData.Status)]);
             }
         }
     }

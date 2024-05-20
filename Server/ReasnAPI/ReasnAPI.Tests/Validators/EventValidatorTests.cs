@@ -1,6 +1,6 @@
 ﻿using ReasnAPI.Models.DTOs;
+using ReasnAPI.Models.Enums;
 using ReasnAPI.Validators;
-using System;
 
 namespace ReasnAPI.Tests.Validators
 {
@@ -18,7 +18,8 @@ namespace ReasnAPI.Tests.Validators
                 EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                Slug = "slug"
+                Slug = "slug",
+                Status = EventStatus.Completed
             };
 
             var result = EventValidator.Validate(event1);
@@ -37,7 +38,8 @@ namespace ReasnAPI.Tests.Validators
                 EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                Slug = "slug"
+                Slug = "slug",
+                Status = EventStatus.WaitingForApproval
             };
 
             var result = EventValidator.Validate(event1);
@@ -56,7 +58,8 @@ namespace ReasnAPI.Tests.Validators
                 EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                Slug = "slug"
+                Slug = "slug",
+                Status = EventStatus.Inprogress
             };
 
             var result = EventValidator.Validate(event1);
@@ -75,7 +78,8 @@ namespace ReasnAPI.Tests.Validators
                 EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                Slug = "slug"
+                Slug = "slug",
+                Status = EventStatus.Inprogress
             };
 
             var result = EventValidator.Validate(event1);
@@ -94,7 +98,8 @@ namespace ReasnAPI.Tests.Validators
                 EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                Slug = "slug"
+                Slug = "slug",
+                Status = EventStatus.Approved
             };
 
             var result = EventValidator.Validate(event1);
@@ -113,7 +118,8 @@ namespace ReasnAPI.Tests.Validators
                 EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                Slug = "slug"
+                Slug = "slug",
+                Status = EventStatus.WaitingForApproval
             };
 
             var result = EventValidator.Validate(event1);
@@ -132,7 +138,8 @@ namespace ReasnAPI.Tests.Validators
                 EndAt = DateTime.Now,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                Slug = "slug"
+                Slug = "slug",
+                Status = EventStatus.Completed
             };
 
             var result = EventValidator.Validate(event1);
@@ -151,7 +158,8 @@ namespace ReasnAPI.Tests.Validators
                 EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now.AddMinutes(1),
                 UpdatedAt = DateTime.Now,
-                Slug = "slug"
+                Slug = "slug",
+                Status = EventStatus.Inprogress
             };
 
             var result = EventValidator.Validate(event1);
@@ -170,7 +178,8 @@ namespace ReasnAPI.Tests.Validators
                 EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now.AddMinutes(1),
-                Slug = "slug"
+                Slug = "slug",
+                Status = EventStatus.WaitingForApproval
             };
 
             var result = EventValidator.Validate(event1);
@@ -189,7 +198,8 @@ namespace ReasnAPI.Tests.Validators
                 EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                Slug = ""
+                Slug = "",
+                Status = EventStatus.Inprogress
             };
 
             var result = EventValidator.Validate(event1);
@@ -209,7 +219,8 @@ namespace ReasnAPI.Tests.Validators
                 EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                Slug = new string('a', 129)
+                Slug = new string('a', 129),
+                Status = EventStatus.WaitingForApproval
             };
 
             var result = EventValidator.Validate(event1);
@@ -228,7 +239,8 @@ namespace ReasnAPI.Tests.Validators
                 EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                Slug = "invalid slug"
+                Slug = "invalid slug",
+                Status = EventStatus.Completed
             };
 
             var result = EventValidator.Validate(event1);
@@ -247,7 +259,8 @@ namespace ReasnAPI.Tests.Validators
                 EndAt = DateTime.Now.AddMinutes(1),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                Slug = "valid-slug"
+                Slug = "valid-slug",
+                Status = EventStatus.Inprogress
             };
 
             var result = EventValidator.Validate(event1);

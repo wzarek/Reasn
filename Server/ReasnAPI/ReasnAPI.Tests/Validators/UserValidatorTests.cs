@@ -1,4 +1,5 @@
 ﻿using ReasnAPI.Models.DTOs;
+using ReasnAPI.Models.Enums;
 using ReasnAPI.Validators;
 
 namespace ReasnAPI.Tests.Validators
@@ -14,7 +15,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "",
                 Surname = "Surname",
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -34,7 +35,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = new string('a', 65),
                 Surname = "Surname",
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -53,7 +54,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Invalid  Name",
                 Surname = "Surname",
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -72,7 +73,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Validname",
                 Surname = "Surname",
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -91,7 +92,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = "",
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -111,7 +112,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = new string('a', 65),
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -130,7 +131,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = "Invalid  Surname",
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -149,7 +150,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = "Validsurname",
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -168,7 +169,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = "Surname",
                 Username = "",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -188,7 +189,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = "Surname",
                 Username = new string('a', 65),
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -207,7 +208,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = "Surname",
                 Username = "Invalid  Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -226,7 +227,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = "Surname",
                 Username = "ValidUsername",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -245,7 +246,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = "Surname",
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -265,7 +266,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = "Surname",
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = new string('a', 256),
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -284,7 +285,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = "Surname",
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "Invalid Email",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -303,7 +304,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = "Surname",
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "valid@email.com",
                 AddressId = 1,
                 Phone = "+48 123456789"
@@ -322,7 +323,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = "Surname",
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = new string('a', 20)
@@ -341,7 +342,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = "Surname",
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = "Invalid Phone"
@@ -360,7 +361,7 @@ namespace ReasnAPI.Tests.Validators
                 Name = "Name",
                 Surname = "Surname",
                 Username = "Username",
-                RoleId = 1,
+                Role = UserRole.User,
                 Email = "email@email.com",
                 AddressId = 1,
                 Phone = "+48 123456789"
