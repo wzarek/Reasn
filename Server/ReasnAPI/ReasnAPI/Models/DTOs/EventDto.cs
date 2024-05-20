@@ -1,7 +1,9 @@
-using System;
+using ReasnAPI.Models.Enums;
 
-namespace ReasnAPI.Models.DTOs {
-    public class EventDto {
+namespace ReasnAPI.Models.DTOs
+{
+    public class EventDto
+    {
         public string Name { get; set; } = null!;
         public int AddressId { get; set; }
         public string Description { get; set; } = null!;
@@ -10,8 +12,9 @@ namespace ReasnAPI.Models.DTOs {
         public DateTime EndAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public string? Slug { get; set; }
-        public int StatusId { get; set; }
+        public string Slug { get; set; } = null!;
+        public EventStatus Status { get; set; }
         public List<TagDto>? Tags { get; set; }
+        public List<ParameterDto>? Parameters { get; set; }
     }
 }
