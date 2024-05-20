@@ -4,12 +4,12 @@ using System.Text.RegularExpressions;
 
 namespace ReasnAPI.Validators
 {
-    public class InterestValidator : IValidator<IntrestDto>
+    public class InterestValidator : IValidator<InterestDto>
     {
         private const int NameMaxLength = 32;
         private const string NameRegexPattern = "^\\p{Lu}\\p{Ll}+(?:\\s\\p{L}+)*$";
 
-        public static IEnumerable<ValidationResult> Validate(IntrestDto interest)
+        public static IEnumerable<ValidationResult> Validate(InterestDto interest)
         {
             if (string.IsNullOrWhiteSpace(interest.Name))
             {
