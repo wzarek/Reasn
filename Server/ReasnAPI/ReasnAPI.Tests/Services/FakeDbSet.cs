@@ -1,4 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace ReasnAPI.Tests.Services
@@ -10,10 +15,10 @@ namespace ReasnAPI.Tests.Services
 
         public FakeDbSet()
         {
-            _data = [];
+            _data = new List<T>();
         }
 
-        public override T? Find(params object[] keyValues)
+        public override T Find(params object[] keyValues)
         {
             return _data.FirstOrDefault();
         }
@@ -24,7 +29,7 @@ namespace ReasnAPI.Tests.Services
             return null; // Return null for simplicity, adjust as needed
         }
 
-        public override IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
             return new AsyncEnumerator<T>(_data.GetEnumerator());
         }
@@ -33,9 +38,14 @@ namespace ReasnAPI.Tests.Services
 
         // Implement other methods...
 
-        private class AsyncEnumerator<T>(IEnumerator<T> enumerator) : IAsyncEnumerator<T>
+        private class AsyncEnumerator<T> : IAsyncEnumerator<T>
         {
-            private readonly IEnumerator<T> _enumerator = enumerator;
+            private readonly IEnumerator<T> _enumerator;
+
+            public AsyncEnumerator(IEnumerator<T> enumerator)
+            {
+                _enumerator = enumerator;
+            }
 
             public ValueTask DisposeAsync()
             {

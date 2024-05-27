@@ -5,10 +5,10 @@ using System.Linq.Expressions;
 namespace ReasnAPI.Services;
 public class ParameterService(ReasnContext context)
 {
-    public ParameterDto CreateParameter(ParameterDto parameterDto)
+    public ParameterDto? CreateParameter(ParameterDto parameterDto)
     {
         var parameter = context.Parameters.FirstOrDefault(r => r.Key == parameterDto.Key && r.Value == parameterDto.Value);
-        if (parameter != null)
+        if (parameter is not null)
         {
             return null;
         }
@@ -23,17 +23,17 @@ public class ParameterService(ReasnContext context)
         return parameterDto;
     }
 
-    public ParameterDto UpdateParameter(int parameterId, ParameterDto parameterDto)
+    public ParameterDto? UpdateParameter(int parameterId, ParameterDto parameterDto)
     {
         var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
 
         var parameterCheck = context.EventParameters.FirstOrDefault(r => r.ParameterId == parameterId);
-        if (parameterCheck != null) // if parameter is associated with an event, it cannot be updated
+        if (parameterCheck is not null) // if parameter is associated with an event, it cannot be updated
         {
             return null;
         }
 
-        if (parameter == null)
+        if (parameter is null)
         {
             return null;
         }
@@ -49,12 +49,12 @@ public class ParameterService(ReasnContext context)
         var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
 
         var parameterCheck = context.EventParameters.FirstOrDefault(r => r.ParameterId == parameterId);
-        if (parameterCheck != null) // if parameter is associated with an event, it cannot be deleted
+        if (parameterCheck is not null) // if parameter is associated with an event, it cannot be deleted
         {
             return false;
         }
 
-        if (parameter == null)
+        if (parameter is null)
         {
             return false;
         }
@@ -63,10 +63,10 @@ public class ParameterService(ReasnContext context)
         return true;
     }
 
-    public ParameterDto GetParameterById(int parameterId)
+    public ParameterDto? GetParameterById(int parameterId)
     {
-        var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
-        if (parameter == null)
+        var parameter = context.Parameters.Find(parameterId);
+        if (parameter is null)
         {
             return null;
         }
@@ -84,7 +84,7 @@ public class ParameterService(ReasnContext context)
     {
         var parameters = context.Parameters.ToList();
 
-        return parameters.Select(parameter => new ParameterDto { Key = parameter.Key, Value = parameter.Value }).ToList();
+        return parameters.Select(parameter => new ParameterDto { Key = parameter.Key, Value = parameter.Value }).AsEnumerable();
     }
 
     public IEnumerable<ParameterDto> GetParametersByFilter(Expression<Func<Parameter, bool>> filter)
@@ -92,7 +92,7 @@ public class ParameterService(ReasnContext context)
         var parameters = context.Parameters.Where(filter).ToList();
 
         return parameters.Select(parameter => new ParameterDto { Key = parameter.Key, Value = parameter.Value })
-            .ToList();
+            .AsEnumerable();
     }
 
 }

@@ -32,50 +32,36 @@ public class EventService(ReasnContext context)
             context.SaveChanges();
 
             var eventId = newEvent.Id;
-            if (eventDto.Tags == null)
+            if (eventDto.Tags is null)
             {
                 return eventDto;
             }
 
-            foreach (var tag in eventDto.Tags)
-            {
-                var newTag = context.Tags.FirstOrDefault(r => r.Name == tag.Name);
-                if (newTag == null)
-                {
-                    var tagToAdd = new Tag { Name = tag.Name };
-                    context.Tags.Add(tagToAdd);
-                    context.SaveChanges();
+            var newTags = eventDto.Tags
+                .Where(t => !context.Tags.Any(x => x.Name == t.Name))
+                .Select(t => new Tag { Name = t.Name })
+                .ToList();
 
-                    var eventTag = new EventTag
-                    {
-                        EventId = eventId,
-                        TagId = tagToAdd.Id
-                    };
-                    context.EventTags.Add(eventTag);
-                    context.SaveChanges();
-                }
-                else
-                {
-                    var eventTag = new EventTag
-                    {
-                        EventId = eventId,
-                        TagId = newTag.Id
-                    };
-                    context.EventTags.Add(eventTag);
-                    context.SaveChanges();
-                }
-            }
+            context.Tags.AddRange(newTags);
+            context.SaveChanges();
+
+            var eventTagsToAdd = eventDto.Tags
+                .Select(t => new EventTag { EventId = eventId, TagId = context.Tags.First(x => x.Name == t.Name).Id })
+                .ToList();
+
+            context.EventTags.AddRange(eventTagsToAdd);
+            context.SaveChanges();
         }
 
         return eventDto;
     }
 
-    public EventDto UpdateEvent(int eventId, EventDto eventDto)
+    public EventDto? UpdateEvent(int eventId, EventDto eventDto)
     {
         using (var scope = new TransactionScope())
         {
             var eventToUpdate = context.Events.FirstOrDefault(r => r.Id == eventId);
-            if (eventToUpdate == null)
+            if (eventToUpdate is null)
             {
                 return null;
             }
@@ -94,7 +80,7 @@ public class EventService(ReasnContext context)
 
             var existingTags = context.EventTags.Where(r => r.EventId == eventId).Include(eventTag => eventTag.Tag).ToList();
 
-            if (eventDto.Tags == null)
+            if (eventDto.Tags is null)
             {
                 return eventDto;
             }
@@ -118,19 +104,19 @@ public class EventService(ReasnContext context)
                             where existingTags.All(r => r.Tag.Name != newTag.Name)
                             select newTag;
 
-            foreach (var newTag in tagsToAdd)
-            {
-                var existingTag = context.Tags.FirstOrDefault(t => t.Name == newTag.Name);
-                if (existingTag == null)
-                {
-                    existingTag = new Tag { Name = newTag.Name };
-                    context.Tags.Add(existingTag);
-                    context.SaveChanges();
-                }
+            var newTagsToAdd = tagsToAdd
+                .Where(t => !context.Tags.Any(x => x.Name == t.Name))
+                .Select(t => new Tag { Name = t.Name })
+                .ToList();
 
-                context.EventTags.Add(new EventTag { EventId = eventId, TagId = existingTag.Id });
-            }
+            context.Tags.AddRange(newTagsToAdd);
+            context.SaveChanges();
 
+            var eventTagsToAdd = newTagsToAdd
+                .Select(t => new EventTag { EventId = eventId, TagId = t.Id })
+                .ToList();
+
+            context.EventTags.AddRange(eventTagsToAdd);
             context.SaveChanges();
         }
 
@@ -143,7 +129,7 @@ public class EventService(ReasnContext context)
         {
             var eventToDelete = context.Events.FirstOrDefault(r => r.Id == eventId);
 
-            if (eventToDelete == null)
+            if (eventToDelete is null)
             {
                 return false;
             }
@@ -157,10 +143,10 @@ public class EventService(ReasnContext context)
         return true;
     }
 
-    public EventDto GetEventById(int eventId)
+    public EventDto? GetEventById(int eventId)
     {
-        var eventToReturn = context.Events.FirstOrDefault(r => r.Id == eventId);
-        if (eventToReturn == null)
+        var eventToReturn = context.Events.Find(eventId);
+        if (eventToReturn is null)
         {
             return null;
         }

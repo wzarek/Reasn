@@ -89,9 +89,17 @@ namespace ReasnAPI.Tests.Services
         [TestMethod]
         public void GetImageById_ImageExists_ImageReturned()
         {
+
+            var imaDto = new ImageDto()
+            {
+                ImageData = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 }
+            };
+
+            var fakeStatuses = new FakeDbSet<Image>();
+            fakeStatuses.Add(new Image() { Id = 1, ImageData = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 } });
+
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Images).ReturnsDbSet(new List<Image>
-                { new Image { Id = 1, ImageData = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 } } });
+            mockContext.Setup(c => c.Images).Returns(fakeStatuses);
 
             var imageService = new ImageService(mockContext.Object);
 

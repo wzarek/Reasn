@@ -23,6 +23,14 @@ var dataSource = dataSourceBuilder.Build();
 builder.Services.AddDbContext<ReasnContext>(options =>
     options.UseNpgsql(dataSource));
 
+builder.Services.AddScoped<InterestService>();
+builder.Services.AddScoped<TagService>();
+builder.Services.AddScoped<ParameterService>();
+builder.Services.AddScoped<EventService>();
+builder.Services.AddScoped<ParticipantService>();
+builder.Services.AddScoped<ImageService>();
+
+
 builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen(options =>

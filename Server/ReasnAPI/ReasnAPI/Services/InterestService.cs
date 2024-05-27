@@ -6,10 +6,10 @@ namespace ReasnAPI.Services;
 
 public class InterestService(ReasnContext context)
 {
-    public InterestDto CreateInterest(InterestDto interestDto)
+    public InterestDto? CreateInterest(InterestDto interestDto)
     {
         var interest = context.Interests.FirstOrDefault(r => r.Name == interestDto.Name);
-        if (interest != null)
+        if (interest is not null)
         {
             return null;
         }
@@ -24,10 +24,10 @@ public class InterestService(ReasnContext context)
         return interestDto;
     }
 
-    public InterestDto UpdateInterest(int interestId, InterestDto interestDto)
+    public InterestDto? UpdateInterest(int interestId, InterestDto interestDto)
     {
         var interest = context.Interests.FirstOrDefault(r => r.Id == interestId);
-        if (interest == null)
+        if (interest is null)
         {
             return null;
         }
@@ -43,12 +43,12 @@ public class InterestService(ReasnContext context)
     {
         var interest = context.Interests.FirstOrDefault(r => r.Id == id);
         var eventInterest = context.UserInterests.FirstOrDefault(r => r.InterestId == id);
-        if (eventInterest != null) 
+        if (eventInterest is not null) 
         {
             return false;
         }
 
-        if (interest == null)
+        if (interest is null)
         {
             return false;
         }
@@ -58,24 +58,24 @@ public class InterestService(ReasnContext context)
         return true;
     }
 
-    public bool DeleteInterestFromUserInterests(int interestId, int userId)
+    //public bool DeleteInterestFromUserInterests(int interestId, int userId)
+    //{
+    //    var userInterest = context.UserInterests.FirstOrDefault(r => r.InterestId == interestId && r.UserId == userId);
+    //    if (userInterest == null)
+    //    {
+    //        return false;
+    //    }
+
+    //    context.UserInterests.Remove(userInterest);
+    //    context.SaveChanges();
+
+    //    return true;
+    //}
+
+    public InterestDto? GetInterestById(int interestId)
     {
-        var userInterest = context.UserInterests.FirstOrDefault(r => r.InterestId == interestId && r.UserId == userId);
-        if (userInterest == null)
-        {
-            return false;
-        }
-
-        context.UserInterests.Remove(userInterest);
-        context.SaveChanges();
-
-        return true;
-    }
-
-    public InterestDto GetInterestById(int interestId)
-    {
-        var interest = context.Interests.FirstOrDefault(r => r.Id == interestId);
-        if (interest == null)
+        var interest = context.Interests.Find(interestId);
+        if (interest is null)
         {
             return null;
         }
@@ -92,7 +92,7 @@ public class InterestService(ReasnContext context)
     {
         var interests = context.Interests.ToList();
 
-        return interests.Select(interest => new InterestDto { Name = interest.Name }).ToList();
+        return interests.Select(interest => new InterestDto { Name = interest.Name }).AsEnumerable();
     }
 
     public IEnumerable<InterestDto> GetInterestsByFilter(Expression<Func<Interest, bool>> filter)
@@ -102,7 +102,7 @@ public class InterestService(ReasnContext context)
         var interestDtos = interests.Select(interest => new InterestDto
         {
             Name = interest.Name
-        }).ToList();
+        }).AsEnumerable();
 
         return interestDtos;
     }

@@ -111,14 +111,16 @@ namespace ReasnAPI.Tests.Services
             {
                 Name = "TestTag1"
             };
+            var eventId = 1;
 
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag> { new Tag { Id = 1, Name = "TestTag" } });
+            mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event> { new Event() { Id=1 } });
             mockContext.Setup(c => c.EventTags).ReturnsDbSet(new List<EventTag>());
             var tagService = new TagService(mockContext.Object);
-            
-            var result = tagService.UpdateTag(1, tagDto);
-            
+
+            var result = tagService.UpdateTag(1, tagDto, eventId);
+
             Assert.AreEqual("TestTag1", result.Name);
         }
 
@@ -129,16 +131,18 @@ namespace ReasnAPI.Tests.Services
             {
                 Name = "TestTag"
             };
+            var eventId = 1;
 
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag>());
             mockContext.Setup(c => c.EventTags).ReturnsDbSet(new List<EventTag>());
             var tagService = new TagService(mockContext.Object);
-            
-            var result = tagService.UpdateTag(1, tagDto);
-            
+
+            var result = tagService.UpdateTag(1, tagDto, eventId);
+
             Assert.IsNull(result);
         }
+        
 
         [TestMethod]
         public void DeleteTag_TagExists_TagDeleted()
