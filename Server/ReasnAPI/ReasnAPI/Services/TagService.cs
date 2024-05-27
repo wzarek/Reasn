@@ -7,10 +7,10 @@ using System.Transactions;
 namespace ReasnAPI.Services;
 public class TagService (ReasnContext context)
 {
-    public TagDto CreateTag(TagDto tagDto)
+    public TagDto? CreateTag(TagDto tagDto)
     {
         var tag = context.Tags.FirstOrDefault(r => r.Name == tagDto.Name);
-        if (tag != null)
+        if (tag is not null)
         {
             return null;
         }
@@ -24,13 +24,13 @@ public class TagService (ReasnContext context)
         return tagDto;
     }
 
-    public TagDto UpdateTag(int tagId, TagDto tagDto, int eventId)
+    public TagDto? UpdateTag(int tagId, TagDto tagDto, int eventId)
     {
         using (var scope = new TransactionScope())
         {
             var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
 
-            if (tag == null)
+            if (tag is null)
             {
                 return null;
             }
@@ -77,7 +77,7 @@ public class TagService (ReasnContext context)
         var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
 
         var eventTag = context.EventTags.FirstOrDefault(r => r.TagId == tagId);
-        if (eventTag != null) // if tag is associated with an event, it cannot be deleted
+        if (eventTag is not null) // if tag is associated with an event, it cannot be deleted
         {
             return false;
         }
@@ -92,10 +92,10 @@ public class TagService (ReasnContext context)
         return true;
     }
 
-    public TagDto GetTagById(int tagId)
+    public TagDto? GetTagById(int tagId)
     {
-        var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
-        if(tag == null)
+        var tag = context.Tags.Find(tagId);
+        if(tag is null)
         {
             return null;
         }
@@ -109,13 +109,13 @@ public class TagService (ReasnContext context)
     public IEnumerable<TagDto> GetAllTags()
     {
         var tags = context.Tags.ToList();
-        return tags.Select(tag => new TagDto { Name = tag.Name }).ToList();
+        return tags.Select(tag => new TagDto { Name = tag.Name }).AsEnumerable();
     }
 
     public IEnumerable<TagDto> GetTagsByFilter(Expression<Func<Tag, bool>> filter)
     {
         var tags = context.Tags.Where(filter).ToList();
-        return tags.Select(tag => new TagDto { Name = tag.Name }).ToList();
+        return tags.Select(tag => new TagDto { Name = tag.Name }).AsEnumerable();
     }
 
 }

@@ -10,14 +10,21 @@ using ReasnAPI.Services;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
-builder.Services.AddControllers();
 
 // todo: uncomment after creating DbContext and change context name and if needed - connection string localized in appsettings.json
 
 builder.Services.AddDbContext<ReasnContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultValue ")));
 
+builder.Services.AddScoped<InterestService>();
 builder.Services.AddScoped<TagService>();
+builder.Services.AddScoped<ParameterService>();
+builder.Services.AddScoped<EventService>();
+builder.Services.AddScoped<ParticipantService>();
+builder.Services.AddScoped<ImageService>();
+
+
+builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen(options =>
 {

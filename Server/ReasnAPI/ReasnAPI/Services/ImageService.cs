@@ -14,7 +14,7 @@ public class ImageService(ReasnContext context)
         foreach (var imageDto in imageDtos)
         {
             var image = context.Images.FirstOrDefault(r => r.ObjectId == imageDto.ObjectId && r.ObjectTypeId == imageDto.ObjectTypeId);
-            if (image != null)
+            if (image is not null)
             {
                 continue;
             }
@@ -32,7 +32,7 @@ public class ImageService(ReasnContext context)
         if (newImages.Any())
         {
             var objectType = context.ObjectTypes.FirstOrDefault(ot => ot.Id == newImages.First().ObjectTypeId);
-            if (objectType != null)
+            if (objectType is not null)
             {
                 if (objectType.Name == "User" && newImages.Count > 1)
                 {
@@ -50,10 +50,10 @@ public class ImageService(ReasnContext context)
         return imageDtos;
     }
 
-    public ImageDto UpdateImage(int imageId, ImageDto imageDto)
+    public ImageDto? UpdateImage(int imageId, ImageDto imageDto)
     {
         var image = context.Images.FirstOrDefault(r => r.Id == imageId);
-        if (image == null)
+        if (image is null)
         {
             return null;
         }
@@ -70,7 +70,7 @@ public class ImageService(ReasnContext context)
     public bool DeleteImage(int id)
     {
         var image = context.Images.FirstOrDefault(r => r.Id == id);
-        if (image == null)
+        if (image is null)
         {
             return false;
         }
@@ -80,10 +80,10 @@ public class ImageService(ReasnContext context)
         return true;
     }
 
-    public ImageDto GetImageById(int id)
+    public ImageDto? GetImageById(int id)
     {
-        var image = context.Images.FirstOrDefault(r => r.Id == id);
-        if (image == null)
+        var image = context.Images.Find(id);
+        if (image is null)
         {
             return null;
         }
@@ -121,7 +121,7 @@ public class ImageService(ReasnContext context)
             ImageData = image.ImageData,
             ObjectId = image.ObjectId,
             ObjectTypeId = image.ObjectTypeId
-        }).ToList();
+        }).AsEnumerable();
 
         return imageDtos;
     }
@@ -137,7 +137,7 @@ public class ImageService(ReasnContext context)
             ImageData = image.ImageData,
             ObjectId = image.ObjectId,
             ObjectTypeId = image.ObjectTypeId
-        }).ToList();
+        }).AsEnumerable();
 
         return imageDtos;
     }

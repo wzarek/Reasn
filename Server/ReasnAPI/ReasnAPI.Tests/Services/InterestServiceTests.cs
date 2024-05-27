@@ -95,7 +95,7 @@ namespace ReasnAPI.Tests.Services
         public void GetInterestById_InterestExists_InterestReturned()
         {
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Interests).ReturnsDbSet(new List<Interest> { new Interest { Id = 1, Name = "TestInterest"} });
+            mockContext.Setup(c => c.Interests).ReturnsDbSet(new List<Interest> { new Interest {Id = 1, Name = "TestInterest"} });
 
             var interestService = new InterestService(mockContext.Object);
 
