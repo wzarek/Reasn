@@ -7,6 +7,7 @@ using Serilog;
 using System;
 using System.Text.Json.Serialization;
 using ReasnAPI.Models.Database;
+using ReasnAPI.Services;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
@@ -21,6 +22,11 @@ var dataSource = dataSourceBuilder.Build();
 // todo: uncomment after creating DbContext and change context name and if needed - connection string localized in appsettings.json
 builder.Services.AddDbContext<ReasnContext>(options =>
     options.UseNpgsql(dataSource));
+
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<AddressService>();
+builder.Services.AddScoped<CommentService>();
+builder.Services.AddScoped<ParticipantService>();
 
 builder.Services.AddSwaggerGen(options =>
 {

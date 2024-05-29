@@ -2,6 +2,7 @@
 using Moq.EntityFrameworkCore;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
+using ReasnAPI.Models.Enums;
 using ReasnAPI.Services;
 
 namespace ReasnAPI.Tests.Services
@@ -29,24 +30,21 @@ namespace ReasnAPI.Tests.Services
                 Password = "Password"
             };
 
-            var status = new Status
-            {
-                Id = 1,
-                Name = "Status"
-            };
-
             var participant = new Participant
             {
                 Id = 1,
                 EventId = event1.Id,
                 UserId = user.Id,
-                StatusId = status.Id
+                Status = ParticipantStatus.Interested
             };
 
-            mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
-            mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
-            mockContext.Setup(c => c.Statuses).ReturnsDbSet([status]);
-            mockContext.Setup(c => c.Participants).ReturnsDbSet([participant]);
+            var fakeParticipant = new FakeDbSet<Participant> { participant };
+            var fakeEvent = new FakeDbSet<Event> { event1 };
+            var fakeUser = new FakeDbSet<User> { user };
+
+            mockContext.Setup(c => c.Events).Returns(fakeEvent);
+            mockContext.Setup(c => c.Users).Returns(fakeUser);
+            mockContext.Setup(c => c.Participants).Returns(fakeParticipant);
 
             var participantService = new ParticipantService(mockContext.Object);
 
@@ -55,7 +53,7 @@ namespace ReasnAPI.Tests.Services
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.EventId);
             Assert.AreEqual(1, result.UserId);
-            Assert.AreEqual(1, result.StatusId);
+            Assert.AreEqual(ParticipantStatus.Interested, result.Status);
         }
 
         [TestMethod]
@@ -99,18 +97,12 @@ namespace ReasnAPI.Tests.Services
                 Password = "Password"
             };
 
-            var status = new Status
-            {
-                Id = 1,
-                Name = "Status"
-            };
-
             var participant1 = new Participant
             {
                 Id = 1,
                 EventId = event1.Id,
                 UserId = user1.Id,
-                StatusId = status.Id
+                Status = ParticipantStatus.Interested
             };
 
             var participant2 = new Participant
@@ -118,12 +110,11 @@ namespace ReasnAPI.Tests.Services
                 Id = 2,
                 EventId = event1.Id,
                 UserId = user2.Id,
-                StatusId = status.Id
+                Status = ParticipantStatus.Participating
             };
 
             mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
             mockContext.Setup(c => c.Users).ReturnsDbSet([user1, user2]);
-            mockContext.Setup(c => c.Statuses).ReturnsDbSet([status]);
             mockContext.Setup(c => c.Participants).ReturnsDbSet([participant1, participant2]);
 
             var participantService = new ParticipantService(mockContext.Object);
@@ -176,18 +167,12 @@ namespace ReasnAPI.Tests.Services
                 Password = "Password"
             };
 
-            var status = new Status
-            {
-                Id = 1,
-                Name = "Status"
-            };
-
             var participant1 = new Participant
             {
                 Id = 1,
                 EventId = event1.Id,
                 UserId = user1.Id,
-                StatusId = status.Id
+                Status = ParticipantStatus.Interested
             };
 
             var participant2 = new Participant
@@ -195,12 +180,11 @@ namespace ReasnAPI.Tests.Services
                 Id = 2,
                 EventId = event1.Id,
                 UserId = user2.Id,
-                StatusId = status.Id
+                Status = ParticipantStatus.Participating
             };
 
             mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
             mockContext.Setup(c => c.Users).ReturnsDbSet([user1, user2]);
-            mockContext.Setup(c => c.Statuses).ReturnsDbSet([status]);
             mockContext.Setup(c => c.Participants).ReturnsDbSet([participant1, participant2]);
 
             var participantService = new ParticipantService(mockContext.Object);
@@ -245,15 +229,8 @@ namespace ReasnAPI.Tests.Services
                 Password = "Password"
             };
 
-            var status = new Status
-            {
-                Id = 1,
-                Name = "Status"
-            };
-
             mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
             mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
-            mockContext.Setup(c => c.Statuses).ReturnsDbSet([status]);
             mockContext.Setup(c => c.Participants).ReturnsDbSet([]);
 
             var participantService = new ParticipantService(mockContext.Object);
@@ -262,7 +239,7 @@ namespace ReasnAPI.Tests.Services
             {
                 EventId = 1,
                 UserId = 1,
-                StatusId = 1
+                Status = ParticipantStatus.Interested
             };
 
             var result = participantService.CreateParticipant(participantDto);
@@ -270,7 +247,7 @@ namespace ReasnAPI.Tests.Services
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.EventId);
             Assert.AreEqual(1, result.UserId);
-            Assert.AreEqual(1, result.StatusId);
+            Assert.AreEqual(ParticipantStatus.Interested, result.Status);
         }
 
         [TestMethod]
@@ -306,29 +283,16 @@ namespace ReasnAPI.Tests.Services
                 Password = "Password"
             };
 
-            var status1 = new Status
-            {
-                Id = 1,
-                Name = "Status"
-            };
-
-            var status2 = new Status
-            {
-                Id = 2,
-                Name = "Status"
-            };
-
             var participant = new Participant
             {
                 Id = 1,
                 EventId = event1.Id,
                 UserId = user.Id,
-                StatusId = status1.Id
+                Status = ParticipantStatus.Interested
             };
 
             mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
             mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
-            mockContext.Setup(c => c.Statuses).ReturnsDbSet([status1, status2]);
             mockContext.Setup(c => c.Participants).ReturnsDbSet([participant]);
 
             var participantService = new ParticipantService(mockContext.Object);
@@ -337,13 +301,13 @@ namespace ReasnAPI.Tests.Services
             {
                 EventId = 2,
                 UserId = 2,
-                StatusId = 2
+                Status = ParticipantStatus.Participating
             });
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.EventId);
             Assert.AreEqual(1, result.UserId);
-            Assert.AreEqual(2, result.StatusId);
+            Assert.AreEqual(ParticipantStatus.Participating, result.Status);
         }
 
         [TestMethod]
@@ -358,7 +322,7 @@ namespace ReasnAPI.Tests.Services
             {
                 EventId = 2,
                 UserId = 2,
-                StatusId = 2
+                Status = ParticipantStatus.Participating
             });
 
             Assert.IsNull(result);
@@ -369,7 +333,7 @@ namespace ReasnAPI.Tests.Services
         {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Participants).ReturnsDbSet([
-                new() { Id = 1, EventId = 1, UserId = 1, StatusId = 1 }
+                new() { Id = 1, EventId = 1, UserId = 1, Status = ParticipantStatus.Participating }
             ]);
 
             var participantService = new ParticipantService(mockContext.Object);
@@ -384,7 +348,7 @@ namespace ReasnAPI.Tests.Services
         {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Participants).ReturnsDbSet([
-                new() { Id = 1, EventId = 1, UserId = 1, StatusId = 1 }
+                new() { Id = 1, EventId = 1, UserId = 1, Status = ParticipantStatus.Participating }
             ]);
 
             var participantService = new ParticipantService(mockContext.Object);

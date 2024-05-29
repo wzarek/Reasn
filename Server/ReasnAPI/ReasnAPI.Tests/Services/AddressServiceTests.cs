@@ -24,7 +24,9 @@ namespace ReasnAPI.Tests.Services
                 ZipCode = "ZipCode"
             };
 
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet([address]);
+            var fakeAddress = new FakeDbSet<Address> { address };
+
+            mockContext.Setup(c => c.Addresses).Returns(fakeAddress);
 
             var addressService = new AddressService(mockContext.Object);
 

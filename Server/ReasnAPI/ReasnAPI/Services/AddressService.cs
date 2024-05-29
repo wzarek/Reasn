@@ -6,8 +6,6 @@ namespace ReasnAPI.Services
 {
     public class AddressService(ReasnContext context)
     {
-        private readonly ReasnContext _context = context;
-
         public AddressDto? CreateAddress(AddressDto? addressDto)
         {
             if (addressDto is null)
@@ -24,8 +22,8 @@ namespace ReasnAPI.Services
                 ZipCode = addressDto.ZipCode
             };
 
-            _context.Addresses.Add(address);
-            _context.SaveChanges();
+            context.Addresses.Add(address);
+            context.SaveChanges();
 
             return addressDto;
         }
@@ -37,7 +35,7 @@ namespace ReasnAPI.Services
                 return null;
             }
 
-            var address = _context.Addresses.FirstOrDefault(r => r.Id == addressId);
+            var address = context.Addresses.FirstOrDefault(r => r.Id == addressId);
 
             if (address is null)
             {
@@ -50,29 +48,30 @@ namespace ReasnAPI.Services
             address.State = addressDto.State;
             address.ZipCode = addressDto.ZipCode;
 
-            _context.SaveChanges();
+            context.Addresses.Update(address);
+            context.SaveChanges();
 
             return MapToAddressDto(address);
         }
 
         public bool DeleteAddress(int addressId)
         {
-            var address = _context.Addresses.FirstOrDefault(r => r.Id == addressId);
+            var address = context.Addresses.FirstOrDefault(r => r.Id == addressId);
 
             if (address is null)
             {
-                return false ;
+                return false;
             }
 
-            _context.Addresses.Remove(address);
-            _context.SaveChanges();
+            context.Addresses.Remove(address);
+            context.SaveChanges();
 
             return true;
         }
 
         public AddressDto? GetAddressById(int addressId)
         {
-            var address = _context.Addresses.FirstOrDefault(r => r.Id == addressId);
+            var address = context.Addresses.Find(addressId);
 
             if (address is null)
             {
@@ -84,7 +83,7 @@ namespace ReasnAPI.Services
 
         public IEnumerable<AddressDto?> GetAddressesByFilter(Expression<Func<Address, bool>> filter)
         {
-            return _context.Addresses
+            return context.Addresses
                            .Where(filter)
                            .Select(address => MapToAddressDto(address))
                            .AsEnumerable();
@@ -92,7 +91,7 @@ namespace ReasnAPI.Services
 
         public IEnumerable<AddressDto?> GetAllAddresses()
         {
-            return _context.Addresses
+            return context.Addresses
                            .Select(address => MapToAddressDto(address))
                            .AsEnumerable();
         }

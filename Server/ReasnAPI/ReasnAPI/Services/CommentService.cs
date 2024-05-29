@@ -6,8 +6,6 @@ namespace ReasnAPI.Services
 {
     public class CommentService(ReasnContext context)
     {
-        private readonly ReasnContext _context = context;
-
         public CommentDto? CreateComment(CommentDto? commentDto)
         {
             if (commentDto is null)
@@ -23,8 +21,8 @@ namespace ReasnAPI.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            _context.Comments.Add(comment);
-            _context.SaveChanges();
+            context.Comments.Add(comment);
+            context.SaveChanges();
 
             return commentDto;
         }
@@ -36,7 +34,7 @@ namespace ReasnAPI.Services
                 return null;
             }
 
-            var comment = _context.Comments.FirstOrDefault(r => r.Id == commentId);
+            var comment = context.Comments.FirstOrDefault(r => r.Id == commentId);
 
             if (comment is null)
             {
@@ -45,29 +43,30 @@ namespace ReasnAPI.Services
 
             comment.Content = commentDto.Content;
 
-            _context.SaveChanges();
+            context.Comments.Update(comment);
+            context.SaveChanges();
 
             return MapToCommentDto(comment);
         }
 
         public bool DeleteComment(int commentId)
         {
-            var comment = _context.Comments.FirstOrDefault(r => r.Id == commentId);
+            var comment = context.Comments.FirstOrDefault(r => r.Id == commentId);
 
             if (comment is null)
             {
                 return false;
             }
 
-            _context.Comments.Remove(comment);
-            _context.SaveChanges();
+            context.Comments.Remove(comment);
+            context.SaveChanges();
 
             return true;
         }
 
         public CommentDto? GetCommentById(int commentId)
         {
-            var comment = _context.Comments.FirstOrDefault(r => r.Id == commentId);
+            var comment = context.Comments.Find(commentId);
 
             if (comment is null)
             {
@@ -79,7 +78,7 @@ namespace ReasnAPI.Services
 
         public IEnumerable<CommentDto?> GetCommentsByFilter(Expression<Func<Comment, bool>> filter)
         {
-            return _context.Comments
+            return context.Comments
                            .Where(filter)
                            .Select(comment => MapToCommentDto(comment))
                            .AsEnumerable();
@@ -87,7 +86,7 @@ namespace ReasnAPI.Services
 
         public IEnumerable<CommentDto?> GetAllComments()
         {
-            return _context.Comments
+            return context.Comments
                            .Select(comment => MapToCommentDto(comment))
                            .AsEnumerable();
         }

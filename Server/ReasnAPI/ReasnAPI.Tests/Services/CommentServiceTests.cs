@@ -37,9 +37,13 @@ namespace ReasnAPI.Tests.Services
                 UserId = user.Id
             };
 
-            mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
-            mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
-            mockContext.Setup(c => c.Comments).ReturnsDbSet([comment]);
+            var fakeComment = new FakeDbSet<Comment> { comment };
+            var fakeEvent = new FakeDbSet<Event> { event1 };
+            var fakeUser = new FakeDbSet<User> { user };
+
+            mockContext.Setup(c => c.Users).Returns(fakeUser);
+            mockContext.Setup(c => c.Events).Returns(fakeEvent);
+            mockContext.Setup(c => c.Comments).Returns(fakeComment);
 
             var commentService = new CommentService(mockContext.Object);
 
