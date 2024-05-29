@@ -6,6 +6,12 @@ namespace ReasnAPI.Services
 {
     public class UserService(ReasnContext context)
     {
+        private readonly ReasnContext _context = context;
+
+        // TODO:
+        // * create, update, delete user's interests
+        // * fix delete service
+
         public UserDto? CreateUser(UserDto? userDto)
         {
             if (userDto is null)
@@ -96,6 +102,7 @@ namespace ReasnAPI.Services
 
             user.Name = userDto.Name;
             user.Surname = userDto.Surname;
+            user.Username = userDto.Username;
             user.Email = userDto.Email;
             user.Phone = userDto.Phone;
             user.Role = userDto.Role;

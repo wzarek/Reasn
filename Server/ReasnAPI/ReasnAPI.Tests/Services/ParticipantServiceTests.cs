@@ -30,6 +30,12 @@ namespace ReasnAPI.Tests.Services
                 Password = "Password"
             };
 
+            var status = new Status
+            {
+                Id = 1,
+                Name = "Status"
+            };
+
             var participant = new Participant
             {
                 Id = 1,
@@ -97,6 +103,12 @@ namespace ReasnAPI.Tests.Services
                 Password = "Password"
             };
 
+            var status = new Status
+            {
+                Id = 1,
+                Name = "Status"
+            };
+
             var participant1 = new Participant
             {
                 Id = 1,
@@ -115,6 +127,7 @@ namespace ReasnAPI.Tests.Services
 
             mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
             mockContext.Setup(c => c.Users).ReturnsDbSet([user1, user2]);
+            mockContext.Setup(c => c.Statuses).ReturnsDbSet([status]);
             mockContext.Setup(c => c.Participants).ReturnsDbSet([participant1, participant2]);
 
             var participantService = new ParticipantService(mockContext.Object);
@@ -167,6 +180,12 @@ namespace ReasnAPI.Tests.Services
                 Password = "Password"
             };
 
+            var status = new Status
+            {
+                Id = 1,
+                Name = "Status"
+            };
+
             var participant1 = new Participant
             {
                 Id = 1,
@@ -185,6 +204,7 @@ namespace ReasnAPI.Tests.Services
 
             mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
             mockContext.Setup(c => c.Users).ReturnsDbSet([user1, user2]);
+            mockContext.Setup(c => c.Statuses).ReturnsDbSet([status]);
             mockContext.Setup(c => c.Participants).ReturnsDbSet([participant1, participant2]);
 
             var participantService = new ParticipantService(mockContext.Object);
@@ -229,8 +249,15 @@ namespace ReasnAPI.Tests.Services
                 Password = "Password"
             };
 
+            var status = new Status
+            {
+                Id = 1,
+                Name = "Status"
+            };
+
             mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
             mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
+            mockContext.Setup(c => c.Statuses).ReturnsDbSet([status]);
             mockContext.Setup(c => c.Participants).ReturnsDbSet([]);
 
             var participantService = new ParticipantService(mockContext.Object);
@@ -283,6 +310,18 @@ namespace ReasnAPI.Tests.Services
                 Password = "Password"
             };
 
+            var status1 = new Status
+            {
+                Id = 1,
+                Name = "Status"
+            };
+
+            var status2 = new Status
+            {
+                Id = 2,
+                Name = "Status"
+            };
+
             var participant = new Participant
             {
                 Id = 1,
@@ -293,6 +332,7 @@ namespace ReasnAPI.Tests.Services
 
             mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
             mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
+            mockContext.Setup(c => c.Statuses).ReturnsDbSet([status1, status2]);
             mockContext.Setup(c => c.Participants).ReturnsDbSet([participant]);
 
             var participantService = new ParticipantService(mockContext.Object);

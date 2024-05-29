@@ -6,6 +6,8 @@ namespace ReasnAPI.Services
 {
     public class CommentService(ReasnContext context)
     {
+        private readonly ReasnContext _context = context;
+
         public CommentDto? CreateComment(CommentDto? commentDto)
         {
             if (commentDto is null)

@@ -25,6 +25,12 @@ namespace ReasnAPI.Tests.Services
                 ZipCode = "ZipCode"
             };
 
+            var role = new Role
+            {
+                Id = 1,
+                Name = "Role"
+            };
+
             var user = new User
             {
                 Id = 1,
@@ -72,6 +78,12 @@ namespace ReasnAPI.Tests.Services
         {
             var mockContext = new Mock<ReasnContext>();
 
+            var role = new Role
+            {
+                Id = 1,
+                Name = "Role"
+            };
+
             var user1 = new User
             {
                 Id = 1,
@@ -93,6 +105,7 @@ namespace ReasnAPI.Tests.Services
             };
 
             mockContext.Setup(c => c.Users).ReturnsDbSet([user1, user2]);
+            mockContext.Setup(c => c.Roles).ReturnsDbSet([role]);
 
             var userService = new UserService(mockContext.Object);
             var result = userService.GetAllUsers();
@@ -119,6 +132,12 @@ namespace ReasnAPI.Tests.Services
         public void GetUsersByFilter_UsersExist_UsersReturned()
         {
             var mockContext = new Mock<ReasnContext>();
+
+            var role = new Role
+            {
+                Id = 1,
+                Name = "Role"
+            };
 
             var user1 = new User
             {
@@ -179,7 +198,14 @@ namespace ReasnAPI.Tests.Services
                 ZipCode = "ZipCode"
             };
 
+            var role = new Role
+            {
+                Id = 1,
+                Name = "Role"
+            };
+
             mockContext.Setup(c => c.Addresses).ReturnsDbSet([address]);
+            mockContext.Setup(c => c.Roles).ReturnsDbSet([role]);
             mockContext.Setup(c => c.Users).ReturnsDbSet([]);
             mockContext.Setup(c => c.Interests).ReturnsDbSet([]);
             mockContext.Setup(c => c.UserInterests).ReturnsDbSet([]);

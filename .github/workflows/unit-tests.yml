@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     defaults:
       run:
-        working-directory: Server/ReasnAPI
+        working-directory: ./Server/ReasnAPI
     steps:
       - uses: actions/checkout@v4
         
@@ -50,7 +50,7 @@ jobs:
         if: ${{ failure() }}
         with:
           name: dotnet-results-${{ matrix.os }}-commit-${{ github.sha }}
-          path: Server/ReasnAPI/TestResults-${{ matrix.os }}-commit-${{ github.sha }}
+          path: TestResults-${{ matrix.os }}-commit-${{ github.sha }}
           retention-days: 14
 
   client-tests:
@@ -60,7 +60,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     defaults:
       run:
-        working-directory: Client/reasn-client
+        working-directory: ./Client/reasn-client
     steps:
       - uses: actions/checkout@v4
       

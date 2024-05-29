@@ -6,6 +6,8 @@ namespace ReasnAPI.Services
 {
     public class ParticipantService(ReasnContext context)
     {
+        private readonly ReasnContext _context = context;
+
         public ParticipantDto? CreateParticipant(ParticipantDto? participantDto)
         {
             if (participantDto is null)
