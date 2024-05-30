@@ -64,7 +64,7 @@ namespace ReasnAPI.Tests.Services
                     AddressId  = 1, 
                     CreatedAt = DateTime.Now,
                     IsActive = true, 
-                    Role = UserRole.Admin;
+                    Role = UserRole.Admin,
                     Password ="test123",
                     Phone = "123123123", 
                     Surname ="test", 
