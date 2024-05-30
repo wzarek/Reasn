@@ -1,6 +1,7 @@
 ﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
+using ReasnAPI.Models.Enums;
 using static System.Net.Mime.MediaTypeNames;
 using Image = ReasnAPI.Models.Database.Image;
 
@@ -13,7 +14,7 @@ public class ImageService(ReasnContext context)
 
         foreach (var imageDto in imageDtos)
         {
-            var image = context.Images.FirstOrDefault(r => r.ObjectId == imageDto.ObjectId && r.ObjectTypeId == imageDto.ObjectTypeId);
+            var image = context.Images.FirstOrDefault(r => r.ObjectId == imageDto.ObjectId && r.ObjectType == imageDto.ObjectType);
             if (image is not null)
             {
                 continue;
@@ -23,7 +24,7 @@ public class ImageService(ReasnContext context)
             {
                 ImageData = imageDto.ImageData,
                 ObjectId = imageDto.ObjectId,
-                ObjectTypeId = imageDto.ObjectTypeId
+                ObjectType = imageDto.ObjectType
             };
 
             newImages.Add(newImage);
@@ -31,18 +32,18 @@ public class ImageService(ReasnContext context)
 
         if (newImages.Any())
         {
-            var objectType = context.ObjectTypes.FirstOrDefault(ot => ot.Id == newImages.First().ObjectTypeId);
-            if (objectType is not null)
+            var objectType = newImages.First().ObjectType;
+          
+        
+            if (objectType == ObjectType.User && newImages.Count == 1)
             {
-                if (objectType.Name == "User" && newImages.Count > 1)
-                {
-                    context.Images.Add(newImages.First());
-                }
-                else if (objectType.Name == "Event")
-                {
-                    context.Images.AddRange(newImages);
-                }
+                context.Images.Add(newImages.First());
             }
+            else if (objectType == ObjectType.Event)
+            {
+                context.Images.AddRange(newImages);
+            }
+        
 
             context.SaveChanges();
         }
@@ -60,7 +61,7 @@ public class ImageService(ReasnContext context)
 
         image.ObjectId = imageDto.ObjectId;
         image.ImageData = imageDto.ImageData;
-        image.ObjectTypeId = imageDto.ObjectTypeId;
+        image.ObjectType = imageDto.ObjectType;
 
         context.Images.Update(image);
         context.SaveChanges();
@@ -92,7 +93,7 @@ public class ImageService(ReasnContext context)
         {
             ImageData = image.ImageData,
             ObjectId = image.ObjectId,
-            ObjectTypeId = image.ObjectTypeId
+            ObjectType = image.ObjectType
         };
 
         return imageDto;
@@ -106,7 +107,7 @@ public class ImageService(ReasnContext context)
         {
             ImageData = image.ImageData,
             ObjectId = image.ObjectId,
-            ObjectTypeId = image.ObjectTypeId
+            ObjectType = image.ObjectType
         }).ToList();
 
         return imageDtos;
@@ -120,7 +121,7 @@ public class ImageService(ReasnContext context)
         {
             ImageData = image.ImageData,
             ObjectId = image.ObjectId,
-            ObjectTypeId = image.ObjectTypeId
+            ObjectType = image.ObjectType
         }).AsEnumerable();
 
         return imageDtos;
@@ -129,14 +130,14 @@ public class ImageService(ReasnContext context)
     public IEnumerable<ImageDto> GetImagesByEventIdAndType(int eventId)
     {
         var images = context.Images
-            .Where(image => image.ObjectType.Name == "event" && image.ObjectId == eventId)
+            .Where(image => image.ObjectType == ObjectType.Event && image.ObjectId == eventId)
             .ToList();
 
         var imageDtos = images.Select(image => new ImageDto
         {
             ImageData = image.ImageData,
             ObjectId = image.ObjectId,
-            ObjectTypeId = image.ObjectTypeId
+            ObjectType = image.ObjectType
         }).AsEnumerable();
 
         return imageDtos;

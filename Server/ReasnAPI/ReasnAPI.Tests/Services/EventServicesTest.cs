@@ -8,6 +8,7 @@ using ReasnAPI.Services;
 using ReasnAPI.Models.Database;
 using Moq;
 using Moq.EntityFrameworkCore;
+using ReasnAPI.Models.Enums;
 
 
 namespace ReasnAPI.Tests.Services
@@ -36,21 +37,14 @@ namespace ReasnAPI.Tests.Services
                 EndAt = DateTime.Now,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                StatusId = 1,
+                Status = EventStatus.Approved,
                 Tags = tagList,
             };
 
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event>());
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag>());
-            mockContext.Setup(c => c.Roles).ReturnsDbSet(new List<Role>
-            {
-                new Role()
-                {
-                    Id = 1,
-                    Name = "test"
-                }
-            });
+            
             mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address>{
                 new Address()
                 {
@@ -70,22 +64,13 @@ namespace ReasnAPI.Tests.Services
                     AddressId  = 1, 
                     CreatedAt = DateTime.Now,
                     IsActive = true, 
-                    RoleId = 1, 
+                    Role = UserRole.Admin;
                     Password ="test123",
                     Phone = "123123123", 
                     Surname ="test", 
                     Username ="test",
                     UpdatedAt =DateTime.Now
                 }});
-            mockContext.Setup(c => c.Statuses).ReturnsDbSet(new List<Status>
-            {
-                new Status()
-                {
-                    Id = 1, 
-                    Name = "TestStatus"
-                }
-            });
-            mockContext.Setup(c => c.EventTags).ReturnsDbSet(new List<EventTag>());
 
             var eventService = new EventService(mockContext.Object);
 

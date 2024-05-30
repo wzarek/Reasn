@@ -3,6 +3,7 @@ using ReasnAPI.Models.DTOs;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Transactions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ReasnAPI.Services;
 public class TagService (ReasnContext context)
@@ -35,10 +36,12 @@ public class TagService (ReasnContext context)
                 return null;
             }
 
-            var eventTags = context.EventTags.Where(r => r.TagId == tagId).ToList();
-            if (eventTags.Any(et => et.EventId != eventId)) // if tag is associated with more than one event
+            var eventsWithTags = context.Events.Include(e => e.Tags).ToList();
+
+            var eventTags = eventsWithTags.Where(e => e.Tags.Any(t => t.Id == tagId) && e.Id != eventId).ToList();
+            if (eventTags.Any()) // if tag is associated with more than one event
             {
-                // Create new tag and event tag, and remove the old one
+                // Create new tag, associate it with the event, and remove the old association
                 var newTag = new Tag
                 {
                     Name = tagDto.Name
@@ -46,18 +49,14 @@ public class TagService (ReasnContext context)
                 context.Tags.Add(newTag);
                 context.SaveChanges();
 
-                var newEventTag = new EventTag
+                var eventToUpdate = eventsWithTags.FirstOrDefault(e => e.Id == eventId);
+                if (eventToUpdate != null)
                 {
-                    EventId = eventId,
-                    TagId = newTag.Id
-                };
-                context.EventTags.Add(newEventTag);
-
-                var tagsToRemove = context.EventTags.Where(r => r.EventId == eventId && r.TagId == tagId).ToList();
-                context.EventTags.RemoveRange(tagsToRemove);
+                    eventToUpdate.Tags.Remove(tag);
+                    eventToUpdate.Tags.Add(newTag);
+                }
             }
-            else if (eventTags.Count == 1 &&
-                     eventTags[0].EventId == eventId) // if tag is associated only with the same event
+            else if (eventTags.Count == 1 && eventTags[0].Id == eventId) // if tag is associated only with the same event
             {
                 tag.Name = tagDto.Name;
                 context.Tags.Update(tag);
@@ -68,6 +67,7 @@ public class TagService (ReasnContext context)
             }
 
             context.SaveChanges();
+            scope.Complete();
             return tagDto;
         }
     }
@@ -76,16 +76,20 @@ public class TagService (ReasnContext context)
     {
         var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
 
-        var eventTag = context.EventTags.FirstOrDefault(r => r.TagId == tagId);
-        if (eventTag is not null) // if tag is associated with an event, it cannot be deleted
-        {
-            return false;
-        }
-
         if (tag == null)
         {
             return false;
         }
+
+        var eventsWithTags = context.Events.Include(e => e.Tags).ToList();
+
+        var isTagAssociatedWithEvent = eventsWithTags.Any(e => e.Tags.Any(t => t.Id == tagId));
+
+        if (isTagAssociatedWithEvent) 
+        {
+            return false;
+        }
+
         context.Tags.Remove(tag);
         context.SaveChanges();
 

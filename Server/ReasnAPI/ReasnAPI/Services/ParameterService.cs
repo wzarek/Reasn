@@ -1,6 +1,7 @@
 ﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ReasnAPI.Services;
 public class ParameterService(ReasnContext context)
@@ -27,7 +28,10 @@ public class ParameterService(ReasnContext context)
     {
         var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
 
-        var parameterCheck = context.EventParameters.FirstOrDefault(r => r.ParameterId == parameterId);
+        var parameters = context.Events.Include(p => p.Parameters);
+
+        var parameterCheck = parameters.FirstOrDefault(r => r.Parameters.Any(p => p.Id == parameterId));
+            
         if (parameterCheck is not null) // if parameter is associated with an event, it cannot be updated
         {
             return null;
@@ -48,16 +52,23 @@ public class ParameterService(ReasnContext context)
     {
         var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
 
-        var parameterCheck = context.EventParameters.FirstOrDefault(r => r.ParameterId == parameterId);
-        if (parameterCheck is not null) // if parameter is associated with an event, it cannot be deleted
+        if (parameter == null)
         {
             return false;
         }
 
-        if (parameter is null)
+        var eventsWithParameters = context.Events
+            .Include(e => e.Parameters)
+            .ToList();
+
+        var parameterCheck = eventsWithParameters
+            .Any(e => e.Parameters.Any(p => p.Id == parameterId));
+
+        if (parameterCheck) 
         {
             return false;
         }
+
         context.Parameters.Remove(parameter);
         context.SaveChanges();
         return true;
