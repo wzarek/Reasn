@@ -23,6 +23,7 @@ public class AuthServiceTests
         _mockContext = new Mock<ReasnContext>();
         _hasher = new PasswordHasher<User>();
         _service = new AuthService(_mockContext.Object);
+
         var user = new User
         {
             Email = "jon.snow@castleblack.com",
@@ -104,7 +105,7 @@ public class AuthServiceTests
             Username = "jstark",
             Phone = "+123 456789"
         };
-
+        
         Assert.ThrowsException<BadRequestException>(() => _service.Register(request));
     }
 
