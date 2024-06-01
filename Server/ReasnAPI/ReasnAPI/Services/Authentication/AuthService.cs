@@ -21,7 +21,7 @@ public class AuthService
     public User Login(LoginRequest request)
     {
         var user = _context.Users.FirstOrDefault(u => 
-            EF.Functions.ILike(u.Email, request.Email));
+            u.Email.ToUpper() == request.Email.ToUpper());
 
         if (user is null)
         {
@@ -42,8 +42,8 @@ public class AuthService
     public User Register(RegisterRequest request)
     {
         var userAlreadyExists = _context.Users.Any(u =>
-            EF.Functions.ILike(u.Email, request.Email) ||
-            EF.Functions.ILike(u.Username, request.Username));
+            u.Email.ToUpper() == request.Email.ToUpper() ||
+            u.Username.ToUpper() == request.Username.ToUpper());
 
         if (userAlreadyExists)
         {

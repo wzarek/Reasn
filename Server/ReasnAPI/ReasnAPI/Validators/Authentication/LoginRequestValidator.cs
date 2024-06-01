@@ -9,8 +9,7 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
     {
         RuleFor(r => r.Email)
             .NotEmpty()
-            .EmailAddress()
-            .WithMessage("Email is not in expected format");
+            .EmailAddress();
 
         RuleFor(r => r.Password)
             .NotEmpty();
