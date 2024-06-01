@@ -52,6 +52,7 @@ public partial class ReasnContext : DbContext
             .HasPostgresEnum("common", "object_type", new[] { "Event", "User" })
             .HasPostgresEnum("common", "participant_status", new[] { "Interested", "Participating" })
             .HasPostgresEnum("users", "role", new[] { "User", "Organizer", "Admin" });
+
         modelBuilder.Entity<Address>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("address_pkey");
