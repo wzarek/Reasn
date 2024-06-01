@@ -74,6 +74,7 @@ public class ServiceExceptionHandlerTests
         var exception = new VerificationException("Verification error");
 
         ProblemDetailsContext? problemDetailsContext = null;
+
         _mockProblemDetailsService.Setup(x =>
                 x.TryWriteAsync(It.IsAny<ProblemDetailsContext>()))
             .Callback<ProblemDetailsContext>(context => problemDetailsContext = context)

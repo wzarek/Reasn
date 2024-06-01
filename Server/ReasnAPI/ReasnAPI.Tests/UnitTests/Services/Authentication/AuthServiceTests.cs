@@ -23,14 +23,12 @@ public class AuthServiceTests
         _mockContext = new Mock<ReasnContext>();
         _hasher = new PasswordHasher<User>();
         _service = new AuthService(_mockContext.Object);
-
         var user = new User
         {
             Email = "jon.snow@castleblack.com",
             Username = "jsnow",
             Password = _hasher.HashPassword(null!, "password")
         };
-
         _mockContext.Setup(c => c.Users)
             .ReturnsDbSet(new List<User> { user });
     }
@@ -45,7 +43,6 @@ public class AuthServiceTests
         };
 
         var result = _service.Login(request);
-
         Assert.IsNotNull(result);
         Assert.IsInstanceOfType(result, typeof(User));
     }
