@@ -9,7 +9,7 @@ public enum UserRole
 
     [PgName("Organizer")]
     Organizer,
-
+    
     [PgName("Admin")]
     Admin
 }
