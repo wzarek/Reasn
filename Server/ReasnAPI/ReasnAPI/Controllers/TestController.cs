@@ -9,7 +9,6 @@ namespace ReasnAPI.Controllers
     [ApiController]
     public class TestController(AddressService addressService, CommentService commentService, ParticipantService participantService, UserService userService) : Controller
     {
-
         /**************************************************************
             ADDRESS SERVICES
          **************************************************************/
@@ -149,26 +148,11 @@ namespace ReasnAPI.Controllers
             return Ok(userService.GetUserById(userId));
         }
 
-        [HttpPost]
-        [Route("users/create")]
-        public IActionResult CreateUser(UserDto userDto)
-        {
-            return Ok(userService.CreateUser(userDto));
-        }
-
         [HttpPut]
         [Route("users/update/{userId}")]
         public IActionResult UpdateUser(int userId, UserDto userDto)
         {
             return Ok(userService.UpdateUser(userId, userDto));
-        }
-
-        [HttpDelete]
-        [Route("users/delete/{userId}")]
-        public IActionResult DeleteUser(int userId)
-        {
-            userService.DeleteUser(userId);
-            return Ok();
         }
     }
 }
