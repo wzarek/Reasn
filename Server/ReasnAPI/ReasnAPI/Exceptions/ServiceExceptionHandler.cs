@@ -43,6 +43,12 @@ public class ServiceExceptionHandler : IExceptionHandler
                 problemDetails.Title = "A verification error occurred";
                 break;
 
+            case UnauthorizedAccessException:
+                httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                problemDetails.Type = "https://datatracker.ietf.org/doc/html/rfc7235#section-3.1";
+                problemDetails.Title = "Unauthorized";
+                break;
+
             default:
                 return false;
         }

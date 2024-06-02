@@ -105,7 +105,7 @@ public class AuthServiceTests
             Username = "jstark",
             Phone = "+123 456789"
         };
-        
+
         Assert.ThrowsException<BadRequestException>(() => _service.Register(request));
     }
 
