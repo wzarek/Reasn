@@ -8,11 +8,12 @@ using System.Text.Json.Serialization;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using ReasnAPI.Common;
 using ReasnAPI.Exceptions;
 using ReasnAPI.Middlewares;
 using ReasnAPI.Models.Database;
+using ReasnAPI.Services;
 using ReasnAPI.Services.Authentication;
-using ReasnAPI.Validators;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 var config = builder.Configuration;
@@ -50,9 +51,11 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
 
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(config.GetConnectionString("DefaultValue"));

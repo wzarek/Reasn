@@ -1,4 +1,4 @@
-namespace ReasnAPI.Validators;
+namespace ReasnAPI.Common;
 
 public interface IAssemblyMarker
 {
