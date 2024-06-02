@@ -6,12 +6,6 @@ namespace ReasnAPI.Services
 {
     public class UserService(ReasnContext context)
     {
-        private readonly ReasnContext _context = context;
-
-        // TODO:
-        // * create, update, delete user's interests
-        // * fix delete service
-
         public UserDto? CreateUser(UserDto? userDto)
         {
             if (userDto is null)
@@ -170,30 +164,7 @@ namespace ReasnAPI.Services
                 return false;
             }
 
-            // Remove all data related to the user
-            //var userInterests = context.UserInterests.Where(ui => ui.UserId == userId);
-            //foreach (var interest in userInterests)
-            //{
-            //    context.UserInterests.Remove(interest);
-            //}
-
-            //var userAddress = context.Addresses.FirstOrDefault(r => r.Id == user.AddressId);
-            //if (userAddress is not null)
-            //{
-            //    context.Addresses.Remove(userAddress);
-            //}
-
-            //var userComments = context.Comments.Where(c => c.UserId == userId);
-            //foreach (var comment in userComments)
-            //{
-            //    context.Comments.Remove(comment);
-            //}
-
-            //var userEvents = context.Events.Where(e => e.OrganizerId == userId);
-            //foreach (var ev in userEvents)
-            //{
-            //    context.Events.Remove(ev);
-            //}
+            // TODO: Remove all data related to the user - address, interests, comments, events
 
             context.Users.Remove(user);
             context.SaveChanges();

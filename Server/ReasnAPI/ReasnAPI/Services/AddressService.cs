@@ -6,8 +6,6 @@ namespace ReasnAPI.Services
 {
     public class AddressService(ReasnContext context)
     {
-        private readonly ReasnContext _context = context;
-
         public AddressDto? CreateAddress(AddressDto? addressDto)
         {
             if (addressDto is null)
