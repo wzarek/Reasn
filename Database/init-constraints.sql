@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION
 common.check_fk_exists(object_id INT, object_type common.object_type)
 RETURNS BOOLEAN AS $$
 BEGIN
-	IF object_type = 'User' THEN
+    IF object_type = 'User' THEN
 	RETURN EXISTS (SELECT 1 FROM users.user WHERE "id" = object_id);
 	ELSIF object_type = 'Event' THEN RETURN EXISTS (SELECT 1 FROM events.event WHERE "id" = object_id);
 	ELSE RETURN FALSE;
@@ -21,7 +21,7 @@ ALTER TABLE common.address ADD CONSTRAINT chk_address_city CHECK (city ~ '^[[:up
 
 ALTER TABLE common.address ADD CONSTRAINT chk_address_state CHECK (state ~ '^[[:upper:]][[:lower:]]+(?:(\s|-)[[:alpha:]]+)*$');
 
-ALTER TABLE common.address ADD CONSTRAINT chk_address_country CHECK (country ~ '^[[:upper:]][[:lower:]]+(?:\s[[:upper:]][[:lower:]]+){0,1}$');
+ALTER TABLE common.address ADD CONSTRAINT chk_address_country CHECK (country ~ '^[[:upper:]][[:alpha:]\s''-]*(?<![\s-])$');
 
 ALTER TABLE users.user ADD CONSTRAINT chk_user_email CHECK (email ~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$');
 
