@@ -29,7 +29,7 @@ ALTER TABLE users.user ADD CONSTRAINT chk_user_phone CHECK (phone ~ '^\+\d{1,3}\
 
 ALTER TABLE users.user ADD CONSTRAINT chk_user_name CHECK (name ~ '^[[:upper:]][[:alpha:]\s''-]+$');
 
-ALTER TABLE users.user ADD CONSTRAINT chk_user_surname CHECK (surname ~ '^[[:alpha:]\s''-]*[^\s''-]+[[:alpha:]\s''-]*$');
+ALTER TABLE users.user ADD CONSTRAINT chk_user_surname CHECK (surname ~ '^[[:alpha:]]+(?:[\s''-][[:alpha:]]+)*$');
 
 ALTER TABLE users.user ADD CONSTRAINT chk_user_username CHECK (username ~ '^[[:alnum:]_-]{4,}$');
 
