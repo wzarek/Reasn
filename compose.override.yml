@@ -47,6 +47,8 @@ services:
           path: ./Server/ReasnAPI/ReasnAPI
         
   postgres:
+    ports:
+      - "5432:5432"
     volumes:
       - ./Database/init-dev-data.sql:/docker-entrypoint-initdb.d/03-init-dev-data.sql
   
