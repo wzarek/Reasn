@@ -20,14 +20,14 @@ public class AuthService
 
     public User Login(LoginRequest request)
     {
-        var user = _context.Users.FirstOrDefault(u => 
+        var user = _context.Users.FirstOrDefault(u =>
             u.Email.ToUpper() == request.Email.ToUpper());
 
         if (user is null)
         {
             throw new NotFoundException("Not found user related with provided email");
         }
-        
+
         var result = _hasher.VerifyHashedPassword(
             user, user.Password, request.Password);
 
@@ -35,10 +35,10 @@ public class AuthService
         {
             throw new VerificationException("Provided password is incorrect");
         }
-        
+
         return user;
     }
-    
+
     public User Register(RegisterRequest request)
     {
         var userAlreadyExists = _context.Users.Any(u =>
@@ -50,7 +50,7 @@ public class AuthService
             throw new BadRequestException(
                 "User with provided email or username already exists");
         }
-        
+
         var user = new User
         {
             Name = request.Name,
@@ -70,10 +70,10 @@ public class AuthService
             }
         };
         _context.Users.Add(user);
-        
+
         user.Password = _hasher.HashPassword(user, request.Password);
         _context.SaveChanges();
-        
+
         return user;
     }
 }

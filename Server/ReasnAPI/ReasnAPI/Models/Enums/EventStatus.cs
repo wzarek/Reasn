@@ -2,8 +2,8 @@
 
 public enum EventStatus
 {
-    Completed, 
-    Inprogress, 
-    Approved, 
+    Completed,
+    Inprogress,
+    Approved,
     WaitingForApproval
 }

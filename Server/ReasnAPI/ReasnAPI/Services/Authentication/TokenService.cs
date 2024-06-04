@@ -10,24 +10,24 @@ namespace ReasnAPI.Services.Authentication;
 public class TokenService
 {
     private readonly IConfiguration _configuration;
-    
-    public TokenService(IConfiguration configuration) => 
+
+    public TokenService(IConfiguration configuration) =>
         _configuration = configuration;
-    
+
     public TokenPayload GenerateToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenLifetime = TimeSpan.FromHours(
             _configuration.GetValue<int>("JwtSettings:DurationInHours"));
-        
+
         var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]!);
         var issuer = _configuration["JwtSettings:Issuer"]!;
         var audiences = _configuration.GetSection("JwtSettings:Audiences")
             .Get<IEnumerable<string>>()!;
-        
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new []
+            Subject = new ClaimsIdentity(new[]
             {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),

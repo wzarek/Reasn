@@ -7,12 +7,12 @@ namespace ReasnAPI.Exceptions;
 public class ValidationExceptionHandler : IExceptionHandler
 {
     private readonly IProblemDetailsService _problemDetailsService;
-    
+
     public ValidationExceptionHandler(IProblemDetailsService problemDetailsService)
     {
         _problemDetailsService = problemDetailsService;
     }
-    
+
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,

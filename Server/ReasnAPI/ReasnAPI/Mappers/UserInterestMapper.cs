@@ -13,7 +13,7 @@ public static class UserInterestMapper
             Level = userInterest.Level
         };
     }
-    
+
     public static List<UserInterestDto> ToDtoList(this IEnumerable<UserInterest> userInterests)
     {
         return userInterests.Select(ToDto).ToList();

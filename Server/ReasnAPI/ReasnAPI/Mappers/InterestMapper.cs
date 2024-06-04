@@ -12,7 +12,7 @@ public static class InterestMapper
             Name = interest.Name
         };
     }
-    
+
     public static List<InterestDto> ToDtoList(this IEnumerable<Interest> interests)
     {
         return interests.Select(ToDto).ToList();

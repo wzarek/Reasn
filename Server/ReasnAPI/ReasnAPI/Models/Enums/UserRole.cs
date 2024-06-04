@@ -6,10 +6,10 @@ public enum UserRole
 {
     [PgName("User")]
     User,
-    
+
     [PgName("Organizer")]
     Organizer,
-    
+
     [PgName("Admin")]
     Admin
 }

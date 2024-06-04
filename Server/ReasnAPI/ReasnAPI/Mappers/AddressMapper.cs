@@ -15,7 +15,7 @@ public static class AddressMapper
             ZipCode = address.ZipCode
         };
     }
-    
+
     public static List<AddressDto> ToDtoList(this IEnumerable<Address> addresses)
     {
         return addresses.Select(ToDto).ToList();

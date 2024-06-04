@@ -26,11 +26,11 @@ public class AuthController : ControllerBase
     {
         validator.ValidateAndThrow(request);
         var user = _authService.Login(request);
-        
+
         var tokenPayload = _tokenService.GenerateToken(user);
         return Ok(tokenPayload);
     }
-    
+
     [HttpPost("register")]
     public IActionResult Register(
         [FromBody] RegisterRequest request,
@@ -43,7 +43,7 @@ public class AuthController : ControllerBase
             action: nameof(UsersController.GetUserByUsername),
             controller: "Users",
             values: new { username = user.Username });
-        
+
         return Created(location, user.ToDto());
     }
 }
