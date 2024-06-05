@@ -6,37 +6,48 @@ namespace ReasnAPI.Validators.Authentication;
 
 public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 {
+    private const int MaxNameLength = 64;
+    private const int MaxSurnameLength = 64;
+    private const int MaxUsernameLength = 64;
+    private const int MaxEmailLength = 255;
+
+    private const string NameRegex = @"^\p{Lu}[\p{Ll}\s'-]+$";
+    private const string SurnameRegex = @"^\p{L}+(?:[\s'-]\p{L}+)*$";
+    private const string UsernameRegex = @"^[\p{L}\d._%+-]{4,}$";
+    private const string PasswordRegex = @"^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,})\S$";
+    private const string PhoneRegex = @"^\+\d{1,3}\s\d{1,15}$";
+
     public RegisterRequestValidator()
     {
         RuleFor(r => r.Name)
             .NotEmpty()
-            .MaximumLength(64)
-            .Matches(@"^\p{Lu}[\p{Ll}\s'-]+$");
+            .MaximumLength(MaxNameLength)
+            .Matches(NameRegex);
 
         RuleFor(r => r.Surname)
             .NotEmpty()
-            .MaximumLength(64)
-            .Matches(@"^\p{L}+(?:[\s'-]\p{L}+)*$");
+            .MaximumLength(MaxSurnameLength)
+            .Matches(SurnameRegex);
 
         RuleFor(r => r.Username)
             .NotEmpty()
-            .MaximumLength(64)
-            .Matches(@"^[\p{L}\d._%+-]{4,}$");
+            .MaximumLength(MaxUsernameLength)
+            .Matches(UsernameRegex);
 
         RuleFor(r => r.Email)
             .NotEmpty()
-            .MaximumLength(255)
+            .MaximumLength(MaxEmailLength)
             .EmailAddress();
 
         RuleFor(r => r.Password)
             .NotEmpty()
-            .Matches(@"^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,})\S$")
+            .Matches(PasswordRegex)
             .WithMessage(
                 "Password must contain at least one uppercase letter, " +
                 "one lowercase letter, one number, and be at least 6 characters long.");
 
         RuleFor(r => r.Phone)
-            .Matches(@"^\+\d{1,3}\s\d{1,15}$")
+            .Matches(PhoneRegex)
             .When(r => !string.IsNullOrEmpty(r.Phone));
 
         RuleFor(r => r.Address)

@@ -5,11 +5,15 @@ namespace ReasnAPI.Validators;
 
 public class InterestValidator : AbstractValidator<InterestDto>
 {
+    private const int MaxNameLength = 32;
+
+    private const string NameRegex = @"^\p{Lu}\p{Ll}+(?:\s\p{L}+)*$";
+
     public InterestValidator()
     {
         RuleFor(i => i.Name)
             .NotEmpty()
-            .MaximumLength(32)
-            .Matches(@"^\p{Lu}\p{Ll}+(?:\s\p{L}+)*$");
+            .MaximumLength(MaxNameLength)
+            .Matches(NameRegex);
     }
 }

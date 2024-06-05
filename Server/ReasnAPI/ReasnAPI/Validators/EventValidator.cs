@@ -5,15 +5,21 @@ namespace ReasnAPI.Validators;
 
 public class EventValidator : AbstractValidator<EventDto>
 {
+    private const int MaxNameLength = 64;
+    private const int MaxDescriptionLength = 4048;
+    private const int MaxSlugLength = 128;
+
+    private const string SlugRegex = @"^[\p{L}\d]+[\p{L}\d-]*$";
+
     public EventValidator()
     {
         RuleFor(e => e.Name)
             .NotEmpty()
-            .MaximumLength(64);
+            .MaximumLength(MaxNameLength);
 
         RuleFor(e => e.Description)
             .NotEmpty()
-            .MaximumLength(4048);
+            .MaximumLength(MaxDescriptionLength);
 
         RuleFor(e => e.StartAt)
             .LessThan(e => e.EndAt)
@@ -21,8 +27,8 @@ public class EventValidator : AbstractValidator<EventDto>
 
         RuleFor(e => e.Slug)
             .NotEmpty()
-            .MaximumLength(128)
-            .Matches(@"^[\p{L}\d]+[\p{L}\d-]*$");
+            .MaximumLength(MaxSlugLength)
+            .Matches(SlugRegex);
 
         RuleForEach(e => e.Tags)
             .SetValidator(new TagValidator())
