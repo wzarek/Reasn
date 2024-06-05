@@ -27,7 +27,8 @@ public class AuthServiceTests
         {
             Email = "jon.snow@castleblack.com",
             Username = "jsnow",
-            Password = _hasher.HashPassword(null!, "password")
+            Password = _hasher.HashPassword(null!, "password"),
+            Phone = "+123 456789"
         };
         _mockContext.Setup(c => c.Users)
             .ReturnsDbSet(new List<User> { user });
@@ -94,6 +95,19 @@ public class AuthServiceTests
     }
 
     [TestMethod]
+    public void Register_WhenUserWithPhoneAlreadyExists_ShouldThrowBadRequestException()
+    {
+        var request = new RegisterRequest
+        {
+            Email = "jon.stark@castleblack.com",
+            Username = "jstark",
+            Phone = "+123 456789"
+        };
+        
+        Assert.ThrowsException<BadRequestException>(() => _service.Register(request));
+    }
+
+    [TestMethod]
     public void Register_WhenUserDoesNotExist_ShouldReturnRegisteredUser()
     {
         var request = new RegisterRequest
@@ -103,7 +117,7 @@ public class AuthServiceTests
             Email = "jon.stark@castleblack.com",
             Username = "jstark",
             Password = "S3cureP@ssword!",
-            Phone = "+123 456789",
+            Phone = "+123 456781",
             Address = new AddressDto
             {
                 Street = "The Wall",
