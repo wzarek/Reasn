@@ -1,30 +1,15 @@
 ﻿using ReasnAPI.Models.DTOs;
-using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+using FluentValidation;
 
-namespace ReasnAPI.Validators
+namespace ReasnAPI.Validators;
+
+public class InterestValidator : AbstractValidator<InterestDto>
 {
-    public class InterestValidator : IValidator<InterestDto>
+    public InterestValidator()
     {
-        private const int NameMaxLength = 32;
-        private const string NameRegexPattern = "^\\p{Lu}\\p{Ll}+(?:\\s\\p{L}+)*$";
-
-        public static IEnumerable<ValidationResult> Validate(InterestDto interest)
-        {
-            if (string.IsNullOrWhiteSpace(interest.Name))
-            {
-                yield return new ValidationResult("Name is required", [nameof(interest.Name)]);
-            }
-
-            if (interest.Name.Length > NameMaxLength)
-            {
-                yield return new ValidationResult("Name is too long", [nameof(interest.Name)]);
-            }
-
-            if (!new Regex(NameRegexPattern).IsMatch(interest.Name))
-            {
-                yield return new ValidationResult("Name is invalid", [nameof(interest.Name)]);
-            }
-        }
+        RuleFor(i => i.Name)
+            .NotEmpty()
+            .MaximumLength(32)
+            .Matches(@"^\p{Lu}\p{Ll}+(?:\s\p{L}+)*$");
     }
 }

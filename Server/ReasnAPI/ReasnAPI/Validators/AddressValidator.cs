@@ -7,22 +7,22 @@ public class AddressValidator : AbstractValidator<AddressDto>
 {
     public AddressValidator()
     {
-        RuleFor(r => r.Country)
+        RuleFor(a => a.Country)
             .NotEmpty()
             .MaximumLength(64)
-            .Matches(@"^\p{Lu}\p{Ll}+(?:(\s|-)(\p{Lu}\p{Ll}+|i|of|and|the)){0,5}$");
+            .Matches(@"^\p{Lu}[\p{L}\s'-]*(?<![\s-])$");
 
-        RuleFor(r => r.City)
+        RuleFor(a => a.City)
             .NotEmpty()
             .MaximumLength(64)
-            .Matches(@"^\p{Lu}\p{Ll}+(?:(\s|-)\p{Lu}\p{Ll}+)*$");
+            .Matches(@"^\p{Lu}[\p{Ll}'.]+(?:[\s-][\p{L}'.]+)*$");
 
-        RuleFor(r => r.Street)
+        RuleFor(a => a.Street)
             .NotEmpty()
             .MaximumLength(64)
-            .Matches(@"^[\p{L}\d]+(?:(\s)\p{L}+)*(\s(?:(\d+\p{L}?(/\d*\p{L}?)?)))?$");
+            .Matches(@"^[\p{L}\d\s\-/.,#']+(?<![-\s#,])$");
 
-        RuleFor(r => r.State)
+        RuleFor(a => a.State)
             .NotEmpty()
             .MaximumLength(64)
             .Matches(@"^\p{Lu}\p{Ll}+(?:(\s|-)\p{L}+)*$");

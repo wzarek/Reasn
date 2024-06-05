@@ -11,17 +11,17 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
         RuleFor(r => r.Name)
             .NotEmpty()
             .MaximumLength(64)
-            .Matches(@"^\p{Lu}\p{Ll}+$");
+            .Matches(@"^\p{Lu}[\p{Ll}\s'-]+$");
 
         RuleFor(r => r.Surname)
             .NotEmpty()
             .MaximumLength(64)
-            .Matches(@"^\p{L}+(?:[\s'-]?\p{L}+)*$");
+            .Matches(@"^\p{L}+(?:[\s'-]\p{L}+)*$");
 
         RuleFor(r => r.Username)
             .NotEmpty()
             .MaximumLength(64)
-            .Matches(@"^[\p{L}\d._%+-]+$");
+            .Matches(@"^[\p{L}\d._%+-]{4,}$");
 
         RuleFor(r => r.Email)
             .NotEmpty()

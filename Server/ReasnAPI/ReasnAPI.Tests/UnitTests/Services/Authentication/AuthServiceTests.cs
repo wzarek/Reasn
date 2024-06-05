@@ -16,21 +16,21 @@ public class AuthServiceTests
     private Mock<ReasnContext> _mockContext = null!;
     private PasswordHasher<User> _hasher = null!;
     private AuthService _service = null!;
-    
+
     [TestInitialize]
     public void Setup()
     {
         _mockContext = new Mock<ReasnContext>();
         _hasher = new PasswordHasher<User>();
         _service = new AuthService(_mockContext.Object);
-        
+
         var user = new User
         {
             Email = "jon.snow@castleblack.com",
             Username = "jsnow",
             Password = _hasher.HashPassword(null!, "password")
         };
-        
+
         _mockContext.Setup(c => c.Users)
             .ReturnsDbSet(new List<User> { user });
     }
@@ -43,9 +43,9 @@ public class AuthServiceTests
             Email = "jon.snow@castleblack.com",
             Password = "password"
         };
-        
+
         var result = _service.Login(request);
-        
+
         Assert.IsNotNull(result);
         Assert.IsInstanceOfType(result, typeof(User));
     }
@@ -80,10 +80,10 @@ public class AuthServiceTests
         {
             Email = "jon.snow@castleblack.com"
         };
-        
+
         Assert.ThrowsException<BadRequestException>(() => _service.Register(request));
     }
-    
+
     [TestMethod]
     public void Register_WhenUserWithUsernameAlreadyExists_ShouldThrowBadRequestException()
     {
@@ -92,7 +92,7 @@ public class AuthServiceTests
             Email = "jon.stark@castleblack.com",
             Username = "jsnow"
         };
-        
+
         Assert.ThrowsException<BadRequestException>(() => _service.Register(request));
     }
 
@@ -116,9 +116,9 @@ public class AuthServiceTests
             },
             Role = "User"
         };
-        
+
         var result = _service.Register(request);
-        
+
         Assert.IsNotNull(result);
         Assert.IsInstanceOfType(result, typeof(User));
     }

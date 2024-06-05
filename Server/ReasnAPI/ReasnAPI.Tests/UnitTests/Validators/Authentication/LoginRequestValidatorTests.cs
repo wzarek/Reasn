@@ -18,7 +18,12 @@ public class LoginRequestValidatorTests
     [TestMethod]
     public void Validate_WhenValidRequest_ShouldReturnTrue()
     {
-        var request = new LoginRequest { Email = "test@example.com", Password = "password" };
+        var request = new LoginRequest
+        {
+            Email = "test@example.com",
+            Password = "password"
+        };
+
         var result = _validator.Validate(request);
 
         Assert.IsTrue(result.IsValid);
@@ -27,7 +32,11 @@ public class LoginRequestValidatorTests
     [TestMethod]
     public void Validate_WhenEmptyEmail_ShouldReturnFalse()
     {
-        var request = new LoginRequest { Email = "", Password = "password" };
+        var request = new LoginRequest
+        {
+            Email = "",
+        };
+
         var result = _validator.Validate(request);
 
         Assert.IsFalse(result.IsValid);
@@ -39,7 +48,11 @@ public class LoginRequestValidatorTests
     [TestMethod]
     public void Validate_WhenInvalidEmail_ShouldReturnFalse()
     {
-        var request = new LoginRequest { Email = "invalid email", Password = "password" };
+        var request = new LoginRequest
+        {
+            Email = "invalid email"
+        };
+
         var result = _validator.Validate(request);
 
         Assert.IsFalse(result.IsValid);
@@ -51,7 +64,11 @@ public class LoginRequestValidatorTests
     [TestMethod]
     public void Validate_WhenEmptyPassword_ShouldReturnFalse()
     {
-        var request = new LoginRequest { Email = "test@example.com", Password = "" };
+        var request = new LoginRequest
+        {
+            Password = ""
+        };
+
         var result = _validator.Validate(request);
 
         Assert.IsFalse(result.IsValid);
