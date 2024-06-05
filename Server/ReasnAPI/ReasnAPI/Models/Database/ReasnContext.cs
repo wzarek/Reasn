@@ -60,7 +60,7 @@ public partial class ReasnContext : DbContext
         modelBuilder
             .Entity<Image>()
             .Property(u => u.ObjectType)
-            .HasConversion<string> ();
+            .HasConversion<string>();
 
         modelBuilder
             .Entity<Participant>()

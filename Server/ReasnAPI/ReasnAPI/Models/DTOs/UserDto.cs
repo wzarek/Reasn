@@ -1,7 +1,9 @@
 using ReasnAPI.Models.Enums;
 
-namespace ReasnAPI.Models.DTOs {
-    public class UserDto {
+namespace ReasnAPI.Models.DTOs
+{
+    public class UserDto
+    {
         public string Username { get; set; } = null!;
         public string Name { get; set; } = null!;
         public string Surname { get; set; } = null!;
