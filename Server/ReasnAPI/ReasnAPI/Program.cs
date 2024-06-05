@@ -26,11 +26,6 @@ builder.Services.AddDbContext<ReasnContext>(options =>
 
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<AddressService>();
-builder.Services.AddScoped<CommentService>();
-builder.Services.AddScoped<ParticipantService>();
-
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
