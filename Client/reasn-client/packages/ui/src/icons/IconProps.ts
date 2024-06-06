@@ -1,5 +1,5 @@
 type IconProps = {
-    className?: string;
-    colors?: string[];
-    gradientTransform?: string;
+  className?: string;
+  colors?: string[];
+  gradientTransform?: string;
 };
