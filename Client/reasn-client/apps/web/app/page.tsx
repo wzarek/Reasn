@@ -2,7 +2,7 @@
 
 import { HeroSection, QuickFilters } from "@reasn/ui/src";
 import { Navbar } from "../components/Navbar";
-import { Footer } from '../components/Footer';
+import { Footer } from "../components/Footer";
 
 export default function Web() {
   return (
@@ -10,6 +10,7 @@ export default function Web() {
       <Navbar/>
       <HeroSection />
       <QuickFilters />
+      <Footer />
     </div>
   );
 }

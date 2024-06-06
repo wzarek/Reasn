@@ -2,20 +2,25 @@ import React from "react";
 
 export const Navbar = () => {
   return (
-    <nav
-      className="flex flex-wrap items-center justify-between w-full h-16 text-base text-white bg-black rounded-b-2xl"
-    >
-      <div className="flex w-4/5 justify-between mx-auto">
+    <nav className="flex h-16 w-full flex-wrap items-center justify-between rounded-b-2xl bg-black text-base text-white">
+      <div className="mx-auto flex w-4/5 justify-between">
         <div>
-          <a href="#" className="font-bold text-2xl hover:text-[#ccc]">Reasn.</a>
+          <a href="#" className="text-2xl font-bold hover:text-[#ccc]">
+            Reasn.
+          </a>
         </div>
         <div className="flex items-center gap-8">
-          <a href="#" className="hover:text-[#ccc]">logowanie</a>
-          <a href="#" className="px-6 py-1.5 border-2 border-white rounded-2xl hover:bg-white hover:text-black">
+          <a href="#" className="hover:text-[#ccc]">
+            logowanie
+          </a>
+          <a
+            href="#"
+            className="rounded-2xl border-2 border-white px-6 py-1.5 hover:bg-white hover:text-black"
+          >
             rejestracja
           </a>
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
