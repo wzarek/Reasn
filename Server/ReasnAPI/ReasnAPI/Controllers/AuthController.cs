@@ -2,12 +2,13 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using ReasnAPI.Mappers;
 using ReasnAPI.Models.Authentication;
+using ReasnAPI.Models.DTOs;
 using ReasnAPI.Services.Authentication;
 
 namespace ReasnAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly AuthService _authService;
@@ -20,6 +21,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [ProducesResponseType<TokenPayload>(StatusCodes.Status200OK)]
     public IActionResult Login(
         [FromBody] LoginRequest request,
         [FromServices] IValidator<LoginRequest> validator)
@@ -32,6 +34,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [ProducesResponseType<UserDto>(StatusCodes.Status201Created)]
     public IActionResult Register(
         [FromBody] RegisterRequest request,
         [FromServices] IValidator<RegisterRequest> validator)
