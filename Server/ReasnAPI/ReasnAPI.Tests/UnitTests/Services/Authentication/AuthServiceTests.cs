@@ -44,6 +44,7 @@ public class AuthServiceTests
         };
 
         var result = _service.Login(request);
+
         Assert.IsNotNull(result);
         Assert.IsInstanceOfType(result, typeof(User));
     }
@@ -103,7 +104,7 @@ public class AuthServiceTests
             Username = "jstark",
             Phone = "+123 456789"
         };
-        
+
         Assert.ThrowsException<BadRequestException>(() => _service.Register(request));
     }
 

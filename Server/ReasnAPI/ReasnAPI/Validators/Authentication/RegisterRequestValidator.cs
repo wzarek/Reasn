@@ -36,6 +36,7 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 
         RuleFor(r => r.Email)
             .NotEmpty()
+            .EmailAddress()
             .MaximumLength(MaxEmailLength);
 
         RuleFor(r => r.Password)
