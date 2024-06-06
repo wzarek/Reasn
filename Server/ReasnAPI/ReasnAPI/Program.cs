@@ -9,6 +9,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ReasnAPI.Exceptions;
+using ReasnAPI.Middlewares;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Services.Authentication;
 using ReasnAPI.Validators;
@@ -102,6 +103,9 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 var app = builder.Build();
+
+app.UseMiddleware<GlobalRoutePrefixMiddleware>("/api/v1");
+app.UsePathBase(new PathString("/api/v1"));
 
 if (app.Environment.IsDevelopment())
 {

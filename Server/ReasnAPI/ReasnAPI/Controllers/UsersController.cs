@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ReasnAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class UsersController : ControllerBase
 {
     [HttpGet]

@@ -43,12 +43,13 @@ public class AuthService
     {
         var userAlreadyExists = _context.Users.Any(u =>
             u.Email.ToUpper() == request.Email.ToUpper() ||
-            u.Username.ToUpper() == request.Username.ToUpper());
+            u.Username.ToUpper() == request.Username.ToUpper() ||
+            u.Phone == request.Phone);
 
         if (userAlreadyExists)
         {
             throw new BadRequestException(
-                "User with provided email or username already exists");
+                "User with provided email, username or phone already exists");
         }
 
         var user = new User
