@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReasnAPI.Models.Enums;
 
 namespace ReasnAPI.Models.Database;
@@ -37,7 +38,12 @@ public partial class ReasnContext : DbContext
     public virtual DbSet<UserInterest> UserInterests { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("name=ConnectionStrings:DefaultValue");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseNpgsql("name=ConnectionStrings:DefaultValue");
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -46,26 +52,6 @@ public partial class ReasnContext : DbContext
             .HasPostgresEnum("common", "object_type", new[] { "Event", "User" })
             .HasPostgresEnum("common", "participant_status", new[] { "Interested", "Participating" })
             .HasPostgresEnum("users", "role", new[] { "User", "Organizer", "Admin" });
-
-        modelBuilder
-            .Entity<User>()
-            .Property(u => u.Role)
-            .HasConversion<string>();
-
-        modelBuilder
-            .Entity<Event>()
-            .Property(u => u.Status)
-            .HasConversion<string>();
-
-        modelBuilder
-            .Entity<Image>()
-            .Property(u => u.ObjectType)
-            .HasConversion<string>();
-
-        modelBuilder
-            .Entity<Participant>()
-            .Property(u => u.Status)
-            .HasConversion<string>();
 
         modelBuilder.Entity<Address>(entity =>
         {
