@@ -7,7 +7,7 @@ import { Footer } from "../components/Footer";
 export default function Web() {
   return (
     <div className="min-h-screen bg-[#161618] text-white">
-      <Navbar/>
+      <Navbar />
       <HeroSection />
       <QuickFilters />
       <Footer />
