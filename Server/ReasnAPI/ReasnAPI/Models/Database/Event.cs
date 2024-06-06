@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using NpgsqlTypes;
 
 namespace ReasnAPI.Models.Database;
 
@@ -25,9 +26,9 @@ public partial class Event
 
     public DateTime UpdatedAt { get; set; }
 
-    public string Slug { get; set; } = null!;
-
     public EventStatus Status { get; set; }
+
+    public string Slug { get; set; } = null!;
 
     public virtual Address Address { get; set; } = null!;
 

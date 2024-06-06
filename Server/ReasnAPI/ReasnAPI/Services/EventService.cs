@@ -4,6 +4,7 @@ using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 using System.Linq;
 using System.Transactions;
+using ReasnAPI.Models.Enums;
 
 namespace ReasnAPI.Services;
 public class EventService(ReasnContext context)
@@ -13,7 +14,7 @@ public class EventService(ReasnContext context)
         using (var scope = new TransactionScope())
         {
             eventDto.Slug = CreateSlug(eventDto);
-            var nowTime = DateTime.Now;
+            var nowTime = DateTime.UtcNow;
             var newEvent = new Event
             {
                 Name = eventDto.Name,
@@ -25,7 +26,7 @@ public class EventService(ReasnContext context)
                 CreatedAt = nowTime,
                 UpdatedAt = nowTime,
                 Slug = eventDto.Slug,
-                Status = eventDto.Status,
+                Status = eventDto.Status
             };
 
             context.Events.Add(newEvent);
@@ -61,6 +62,7 @@ public class EventService(ReasnContext context)
             }
 
             context.SaveChanges();
+            scope.Complete();
         }
 
         return eventDto;
@@ -168,7 +170,7 @@ public class EventService(ReasnContext context)
 
                 context.SaveChanges();
             }
-
+            scope.Complete();
         }
 
         return eventDto;
@@ -187,6 +189,7 @@ public class EventService(ReasnContext context)
 
             context.Events.Remove(eventToDelete);
             context.SaveChanges();
+            scope.Complete();
         }
 
         return true;

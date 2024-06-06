@@ -7,6 +7,9 @@ using System.Text.Json.Serialization;
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Services;
+using Npgsql;
+using ReasnAPI.Models.Enums;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
@@ -29,7 +32,6 @@ builder.Services.AddScoped<ParameterService>();
 builder.Services.AddScoped<EventService>();
 builder.Services.AddScoped<ParticipantService>();
 builder.Services.AddScoped<ImageService>();
-
 
 builder.Services.AddControllers();
 

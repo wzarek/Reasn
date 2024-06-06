@@ -38,8 +38,10 @@ public class TagService (ReasnContext context)
 
             var eventsWithTags = context.Events.Include(e => e.Tags).ToList();
 
-            var eventTags = eventsWithTags.Where(e => e.Tags.Any(t => t.Id == tagId) && e.Id != eventId).ToList();
-            if (eventTags.Any()) // if tag is associated with more than one event
+            var eventTags = eventsWithTags.Where(e => e.Tags.Any(t => t.Id == tagId)).ToList();
+            var eventToUpdate = eventsWithTags.FirstOrDefault(e => e.Id == eventId);
+
+            if (eventTags.Count > 1 || (eventTags.Count == 1 && eventTags[0].Id != eventId))
             {
                 // Create new tag, associate it with the event, and remove the old association
                 var newTag = new Tag
@@ -49,14 +51,14 @@ public class TagService (ReasnContext context)
                 context.Tags.Add(newTag);
                 context.SaveChanges();
 
-                var eventToUpdate = eventsWithTags.FirstOrDefault(e => e.Id == eventId);
                 if (eventToUpdate != null)
                 {
                     eventToUpdate.Tags.Remove(tag);
                     eventToUpdate.Tags.Add(newTag);
+                    context.Events.Update(eventToUpdate);
                 }
             }
-            else if (eventTags.Count == 1 && eventTags[0].Id == eventId) // if tag is associated only with the same event
+            else if (eventTags.Count == 1 && eventTags[0].Id == eventId)
             {
                 tag.Name = tagDto.Name;
                 context.Tags.Update(tag);

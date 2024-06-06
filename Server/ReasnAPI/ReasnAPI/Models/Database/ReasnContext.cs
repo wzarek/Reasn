@@ -38,6 +38,7 @@ public partial class ReasnContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        
         if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder.UseNpgsql("name=ConnectionStrings:DefaultValue");
@@ -47,7 +48,7 @@ public partial class ReasnContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .HasPostgresEnum("common", "event_status", new[] { "Completed", "In progress", "Approved", "Waiting for approval" })
+            .HasPostgresEnum("common", "event_status", new[] { "Completed", "InProgress", "Approved", "WaitingForApproval" })
             .HasPostgresEnum("common", "object_type", new[] { "Event", "User" })
             .HasPostgresEnum("common", "participant_status", new[] { "Interested", "Participating" })
             .HasPostgresEnum("users", "role", new[] { "User", "Organizer", "Admin" });
@@ -146,7 +147,7 @@ public partial class ReasnContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.ImageData).HasColumnName("image_data");
             entity.Property(e => e.ObjectId).HasColumnName("object_id");
-            entity.Property(e => e.ObjectType).HasColumnName("object_type");
+            entity.Property(i => i.ObjectType).HasColumnName("object_type");
         });
 
         modelBuilder.Entity<Interest>(entity =>
@@ -252,7 +253,7 @@ public partial class ReasnContext : DbContext
             entity.Property(e => e.Surname).HasColumnName("surname");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             entity.Property(e => e.Username).HasColumnName("username");
-            entity.Property(e => e.Role).HasColumnName("role");
+            entity.Property(u => u.Role).HasColumnName("role");
 
             entity.HasOne(d => d.Address).WithMany(p => p.Users)
                 .HasForeignKey(d => d.AddressId)

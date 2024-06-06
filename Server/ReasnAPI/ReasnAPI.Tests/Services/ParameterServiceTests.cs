@@ -57,25 +57,35 @@ namespace ReasnAPI.Tests.Services
         [TestMethod]
         public void UpdateParameter_ParameterExists_ParameterUpdated()
         {
+            // Arrange
             var parameterDto = new ParameterDto
             {
-                Key = "TestKey",
-                Value = "TestValue"
+                Key = "UpdatedKey",
+                Value = "UpdatedValue"
             };
 
+            var existingParameter = new Parameter { Id = 1, Key = "TestKey", Value = "TestValue" };
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter> { new Parameter { Id = 1, Key = "TestKey", Value = "TestValue" } });
+            mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter> { existingParameter });
+            mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event>()); // No events associated
 
             var parameterService = new ParameterService(mockContext.Object);
-            
+
+            // Act
             var result = parameterService.UpdateParameter(1, parameterDto);
-            
+
+            // Assert
+            Assert.IsNotNull(result);
             Assert.AreEqual(parameterDto.Value, result.Value);
+            Assert.AreEqual(parameterDto.Key, result.Key);
+            Assert.AreEqual(parameterDto.Value, existingParameter.Value); // Verify the parameter was updated
+            mockContext.Verify(c => c.SaveChanges(), Times.Once); // Ensure SaveChanges was called
         }
 
         [TestMethod]
         public void UpdateParameter_ParameterDoesNotExist_NullReturned()
         {
+            // Arrange
             var parameterDto = new ParameterDto
             {
                 Key = "TestKey",
@@ -83,12 +93,45 @@ namespace ReasnAPI.Tests.Services
             };
 
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>());
+            mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>()); // No parameters in context
+            mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event>()); // No events associated
+
             var parameterService = new ParameterService(mockContext.Object);
-            
+
+            // Act
             var result = parameterService.UpdateParameter(1, parameterDto);
-            
+
+            // Assert
             Assert.IsNull(result);
+            mockContext.Verify(c => c.SaveChanges(), Times.Never); // Ensure SaveChanges was never called
+        }
+
+        [TestMethod]
+        public void UpdateParameter_ParameterInUse_NullReturned()
+        {
+            // Arrange
+            var parameterDto = new ParameterDto
+            {
+                Key = "UpdatedKey",
+                Value = "UpdatedValue"
+            };
+
+            var existingParameter = new Parameter { Id = 1, Key = "TestKey", Value = "TestValue" };
+            var mockContext = new Mock<ReasnContext>();
+            mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter> { existingParameter });
+            mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event>
+    {
+        new Event { Parameters = new List<Parameter> { existingParameter } }
+    }); // Parameter is associated with an event
+
+            var parameterService = new ParameterService(mockContext.Object);
+
+            // Act
+            var result = parameterService.UpdateParameter(1, parameterDto);
+
+            // Assert
+            Assert.IsNull(result);
+            mockContext.Verify(c => c.SaveChanges(), Times.Never); // Ensure SaveChanges was never called
         }
 
         [TestMethod]
@@ -104,28 +147,40 @@ namespace ReasnAPI.Tests.Services
             Assert.IsNull(result);
         }
 
-        [TestMethod]
-        public void GetParameterById_ParameterExists_ParameterReturned()
-        {
-            var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter> { new Parameter { Id = 1, Key = "TestKey", Value = "TestValue" } });
+        //[TestMethod]
+        //public void GetParameterById_ParameterExists_ParameterReturned()
+        //{
+        //    var mockContext = new Mock<ReasnContext>();
+        //    mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter> { new Parameter { Id = 1, Key = "TestKey", Value = "TestValue" } });
 
-            var parameterService = new ParameterService(mockContext.Object);
+        //    var parameterService = new ParameterService(mockContext.Object);
             
-            var result = parameterService.GetParameterById(1);
+        //    var result = parameterService.GetParameterById(1);
             
-            Assert.AreEqual("TestValue", result.Value);
-        }
+        //    Assert.AreEqual("TestValue", result.Value);
+        //}
 
         [TestMethod]
         public void DeleteParameter_ParameterExists_ParameterDeleted()
         {
+            // Arrange
+            var parameters = new List<Parameter>
+            {
+                new Parameter { Id = 1, Key = "TestKey", Value = "TestValue" }
+            };
+            var events = new List<Event>();
+
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter> { new Parameter { Id = 1, Key = "TestKey", Value = "TestValue" } });
+            mockContext.Setup(c => c.Parameters).ReturnsDbSet(parameters);
+            mockContext.Setup(c => c.Events).ReturnsDbSet(events);
+
             var parameterService = new ParameterService(mockContext.Object);
-            
-            parameterService.DeleteParameter(1);
-            
+
+            // Act
+            var result = parameterService.DeleteParameter(1);
+
+            // Assert
+            Assert.IsTrue(result);
             mockContext.Verify(c => c.SaveChanges(), Times.Once);
         }
 

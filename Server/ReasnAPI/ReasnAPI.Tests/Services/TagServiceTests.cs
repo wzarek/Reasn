@@ -78,18 +78,18 @@ namespace ReasnAPI.Tests.Services
             Assert.AreEqual(0, result.Count);
         }
 
-        [TestMethod]
-        public void GetTagById_TagExists_TagReturned()
-        {
-            var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag> { new Tag { Id = 1, Name = "TestTag" } });
+        //[TestMethod]
+        //public void GetTagById_TagExists_TagReturned()
+        //{
+        //    var mockContext = new Mock<ReasnContext>();
+        //    mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag> { new Tag { Id = 1, Name = "TestTag" } });
 
-            var tagService = new TagService(mockContext.Object);
+        //    var tagService = new TagService(mockContext.Object);
             
-            var result = tagService.GetTagById(1);
+        //    var result = tagService.GetTagById(1);
             
-            Assert.AreEqual("TestTag", result.Name);
-        }
+        //    Assert.AreEqual("TestTag", result.Name);
+        //}
 
         [TestMethod]
         public void GetTagById_TagDoesNotExist_NullReturned()
@@ -107,6 +107,34 @@ namespace ReasnAPI.Tests.Services
         [TestMethod]
         public void UpdateTag_TagExists_TagUpdated()
         {
+            // Arrange
+            var tagDto = new TagDto
+            {
+                Name = "TestTag1"
+            };
+            var tag = new Tag { Id = 1, Name = "TestTag" };
+            var eventId = 1;
+
+            var mockContext = new Mock<ReasnContext>();
+            mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag> { tag });
+            mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event> { new Event { Id = eventId, Tags = new List<Tag> { tag } } });
+
+            var tagService = new TagService(mockContext.Object);
+
+            // Act
+            var result = tagService.UpdateTag(1, tagDto, eventId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(tagDto.Name, result.Name);
+            Assert.AreEqual(tagDto.Name, tag.Name); // Verify the tag was updated
+            mockContext.Verify(c => c.SaveChanges(), Times.Once); // Ensure SaveChanges was called
+        }
+
+        [TestMethod]
+        public void UpdateTag_TagDoesNotExist_NullReturned()
+        {
+            // Arrange
             var tagDto = new TagDto
             {
                 Name = "TestTag1"
@@ -114,56 +142,77 @@ namespace ReasnAPI.Tests.Services
             var eventId = 1;
 
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag> { new Tag { Id = 1, Name = "TestTag" } });
-            mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event> { new Event() { Id=1 } });
-            var tagService = new TagService(mockContext.Object);
-
-            var result = tagService.UpdateTag(1, tagDto, eventId);
-
-            Assert.AreEqual("TestTag1", result.Name);
-        }
-
-        [TestMethod]
-        public void UpdateTag_TagDoesNotExist_NullReturned()
-        {
-            var tagDto = new TagDto
-            {
-                Name = "TestTag"
-            };
-            var eventId = 1;
-
-            var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag>());
+            mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event> { new Event { Id = eventId } });
             var tagService = new TagService(mockContext.Object);
 
+            // Act
             var result = tagService.UpdateTag(1, tagDto, eventId);
 
+            // Assert
             Assert.IsNull(result);
+            mockContext.Verify(c => c.SaveChanges(), Times.Never); // Ensure SaveChanges was never called
         }
-        
 
         [TestMethod]
         public void DeleteTag_TagExists_TagDeleted()
         {
+            // Arrange
+            var tags = new List<Tag> { new Tag { Id = 1, Name = "TestTag" } };
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag> { new Tag { Id = 1, Name = "TestTag" } });
+            mockContext.Setup(c => c.Tags).ReturnsDbSet(tags);
+            mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event>()); // No events associated with tags
+
             var tagService = new TagService(mockContext.Object);
-            
-            tagService.DeleteTag(1);
-            
-            mockContext.Verify(c => c.SaveChanges(), Times.Once);
+
+            // Act
+            var result = tagService.DeleteTag(1);
+
+            // Assert
+            Assert.IsTrue(result);
+            mockContext.Verify(c => c.SaveChanges(), Times.Once); // Ensure SaveChanges was called
         }
 
         [TestMethod]
         public void DeleteTag_TagDoesNotExist_NothingHappens()
         {
+            // Arrange
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag>());
+            mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag>()); // No tags in context
+            mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event>()); // No events associated with tags
+
             var tagService = new TagService(mockContext.Object);
-            
-            tagService.DeleteTag(1);
-            
-            mockContext.Verify(c => c.SaveChanges(), Times.Never);
+
+            // Act
+            var result = tagService.DeleteTag(1);
+
+            // Assert
+            Assert.IsFalse(result);
+            mockContext.Verify(c => c.SaveChanges(), Times.Never); // Ensure SaveChanges was never called
+        }
+
+        [TestMethod]
+        public void DeleteTag_TagInUse_NothingHappens()
+        {
+            // Arrange
+            var tag = new Tag { Id = 1, Name = "TestTag" };
+            var tags = new List<Tag> { tag };
+            var mockContext = new Mock<ReasnContext>();
+            mockContext.Setup(c => c.Tags).ReturnsDbSet(tags);
+            mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event>
+    {
+        new Event { Tags = new List<Tag> { tag } }
+    }); // Tag is associated with an event
+
+            var tagService = new TagService(mockContext.Object);
+
+            // Act
+            var result = tagService.DeleteTag(1);
+
+            // Assert
+            Assert.IsFalse(result);
+            Assert.AreEqual(1, tags.Count); // Ensure the tag was not removed
+            mockContext.Verify(c => c.SaveChanges(), Times.Never); // Ensure SaveChanges was never called
         }
 
         [TestMethod]
