@@ -1,4 +1,4 @@
-﻿namespace ReasnAPI.Models.DTOs
+namespace ReasnAPI.Models.DTOs
 {
     public class TagDto
     {

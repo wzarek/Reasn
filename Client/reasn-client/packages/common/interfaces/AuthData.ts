@@ -1,9 +1,9 @@
-import { UserRole } from "@reasn/common/enums/serviceEnums"
+import { UserRole } from "@reasn/common/enums/serviceEnums";
 
 /**
  * Represents the authentication data.
  */
 export interface AuthData {
-    token: string
-    role: UserRole
+  token: string;
+  role: UserRole;
 }
