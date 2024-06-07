@@ -121,6 +121,22 @@ public class EventsController : ControllerBase
         throw new NotImplementedException();
     }
 
+    [HttpPost]
+    [Authorize(Roles = "Admin, Organizer")]
+    [Route("{slug}/tags")]
+    public IActionResult AddEventTag(string slug)
+    {
+        throw new NotImplementedException();
+    }
+
+    [HttpDelete]
+    [Authorize(Roles = "Admin, Organizer")]
+    [Route("{slug}/tags/{tagId:int}")]
+    public IActionResult DeleteEventTag(string slug, int tagId)
+    {
+        throw new NotImplementedException();
+    }
+
     [HttpGet]
     [Authorize(Roles = "Admin, Organizer")]
     [Route("parameters")]
@@ -133,6 +149,22 @@ public class EventsController : ControllerBase
     [Authorize(Roles = "Admin")]
     [Route("parameters/{parameterId:int}")]
     public IActionResult DeleteEventsParameter(int parameterId)
+    {
+        throw new NotImplementedException();
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Admin, Organizer")]
+    [Route("tags")]
+    public IActionResult GetEventsTags(string slug)
+    {
+        throw new NotImplementedException();
+    }
+
+    [HttpDelete]
+    [Authorize(Roles = "Admin")]
+    [Route("tags/{tagId:int}")]
+    public IActionResult DeleteEventsTag(int tagId)
     {
         throw new NotImplementedException();
     }
