@@ -2,6 +2,7 @@
 using Moq.EntityFrameworkCore;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
+using ReasnAPI.Models.Enums;
 using ReasnAPI.Services;
 
 namespace ReasnAPI.Tests.Services
@@ -284,7 +285,7 @@ namespace ReasnAPI.Tests.Services
             {
                 Content = "UpdatedContent",
                 EventId = 2,
-                UserId = 2
+                UserId = 1
             });
 
             Assert.IsNotNull(result);
@@ -329,19 +330,28 @@ namespace ReasnAPI.Tests.Services
         {
             var mockContext = new Mock<ReasnContext>();
 
+            var user = new User
+            {
+                Id = 1,
+                Username = "Username",
+                Email = "Email",
+                Password = "Password"
+            };
+
             var comment = new Comment
             {
                 Id = 1,
                 Content = "Content",
                 EventId = 1,
-                UserId = 1
+                UserId = user.Id
             };
 
+            mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
             mockContext.Setup(c => c.Comments).ReturnsDbSet([comment]);
 
             var commentService = new CommentService(mockContext.Object);
 
-            commentService.DeleteComment(1);
+            commentService.DeleteComment(1, 1);
 
             mockContext.Verify(c => c.SaveChanges(), Times.Once);
         }
@@ -354,7 +364,7 @@ namespace ReasnAPI.Tests.Services
 
             var commentService = new CommentService(mockContext.Object);
 
-            commentService.DeleteComment(1);
+            commentService.DeleteComment(1, 1);
 
             mockContext.Verify(c => c.SaveChanges(), Times.Never);
         }

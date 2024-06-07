@@ -1,3 +1,4 @@
+using ReasnAPI.Mappers;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
@@ -13,15 +14,7 @@ namespace ReasnAPI.Services
                 return null;
             }
 
-            var comment = new Comment
-            {
-                EventId = commentDto.EventId,
-                Content = commentDto.Content,
-                UserId = commentDto.UserId,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            context.Comments.Add(comment);
+            context.Comments.Add(commentDto.FromDto());
             context.SaveChanges();
 
             return commentDto;
@@ -41,19 +34,43 @@ namespace ReasnAPI.Services
                 return null;
             }
 
+            var user = context.Users.FirstOrDefault(r => r.Id == commentDto.UserId);
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            if (comment.UserId != commentDto.UserId && user.Role != Models.Enums.UserRole.Admin)
+            {
+                return null;
+            }
+
             comment.Content = commentDto.Content;
 
             context.Comments.Update(comment);
             context.SaveChanges();
 
-            return MapToCommentDto(comment);
+            return comment.ToDto();
         }
 
-        public bool DeleteComment(int commentId)
+        public bool DeleteComment(int commentId, int userId)
         {
             var comment = context.Comments.FirstOrDefault(r => r.Id == commentId);
 
             if (comment is null)
+            {
+                return false;
+            }
+
+            var user = context.Users.FirstOrDefault(r => r.Id == userId);
+
+            if (user is null)
+            {
+                return false;
+            }
+
+            if (comment.UserId != userId && user.Role != Models.Enums.UserRole.Admin)
             {
                 return false;
             }
@@ -73,33 +90,22 @@ namespace ReasnAPI.Services
                 return null;
             }
 
-            return MapToCommentDto(comment);
+            return comment.ToDto();
         }
 
         public IEnumerable<CommentDto?> GetCommentsByFilter(Expression<Func<Comment, bool>> filter)
         {
             return context.Comments
                            .Where(filter)
-                           .Select(comment => MapToCommentDto(comment))
+                           .ToDtoList()
                            .AsEnumerable();
         }
 
         public IEnumerable<CommentDto?> GetAllComments()
         {
             return context.Comments
-                           .Select(comment => MapToCommentDto(comment))
+                           .ToDtoList()
                            .AsEnumerable();
-        }
-
-        private static CommentDto MapToCommentDto(Comment comment)
-        {
-            return new CommentDto
-            {
-                EventId = comment.EventId,
-                UserId = comment.UserId,
-                Content = comment.Content,
-                CreatedAt = comment.CreatedAt
-            };
         }
     }
 }

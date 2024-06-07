@@ -1,3 +1,4 @@
+using ReasnAPI.Mappers;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
@@ -28,17 +29,10 @@ namespace ReasnAPI.Services
                 return null;
             }
 
-            var participant = new Participant
-            {
-                EventId = participantDto.EventId,
-                UserId = participantDto.UserId,
-                Status = participantDto.Status
-            };
-
-            context.Participants.Add(participant);
+            context.Participants.Add(participantDto.FromDto());
             context.SaveChanges();
 
-            return MapToParticipantDto(participant);
+            return participantDto;
         }
 
         public ParticipantDto? UpdateParticipant(int participantId, ParticipantDto? participantDto)
@@ -59,7 +53,7 @@ namespace ReasnAPI.Services
             context.Participants.Update(participant);
             context.SaveChanges();
 
-            return MapToParticipantDto(participant);
+            return participant.ToDto();
         }
 
         public bool DeleteParticipant(int participantId)
@@ -82,36 +76,26 @@ namespace ReasnAPI.Services
             var participant = context.Participants.Find(participantId);
 
             if (participant is null)
-            { 
+            {
                 return null;
             }
 
-            return MapToParticipantDto(participant);
+            return participant.ToDto();
         }
 
         public IEnumerable<ParticipantDto?> GetParticipantsByFilter(Expression<Func<Participant, bool>> filter)
         {
             return context.Participants
                            .Where(filter)
-                           .Select(participant => MapToParticipantDto(participant))
+                            .ToDtoList()
                            .AsEnumerable();
         }
 
         public IEnumerable<ParticipantDto?> GetAllParticipants()
         {
             return context.Participants
-                           .Select(participant => MapToParticipantDto(participant))
+                           .ToDtoList()
                            .AsEnumerable();
-        }
-
-        private static ParticipantDto MapToParticipantDto(Participant participant)
-        {
-            return new ParticipantDto
-            {
-                EventId = participant.EventId,
-                UserId = participant.UserId,
-                Status = participant.Status
-            };
         }
     }
 }

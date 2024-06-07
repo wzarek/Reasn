@@ -1,3 +1,4 @@
+using ReasnAPI.Mappers;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
@@ -13,16 +14,7 @@ namespace ReasnAPI.Services
                 return null;
             }
 
-            var address = new Address
-            {
-                City = addressDto.City,
-                Country = addressDto.Country,
-                State = addressDto.State,
-                Street = addressDto.Street,
-                ZipCode = addressDto.ZipCode
-            };
-
-            context.Addresses.Add(address);
+            context.Addresses.Add(addressDto.FromDto());
             context.SaveChanges();
 
             return addressDto;
@@ -51,7 +43,7 @@ namespace ReasnAPI.Services
             context.Addresses.Update(address);
             context.SaveChanges();
 
-            return MapToAddressDto(address);
+            return address.ToDto();
         }
 
         public bool DeleteAddress(int addressId)
@@ -78,34 +70,22 @@ namespace ReasnAPI.Services
                 return null;
             }
 
-            return MapToAddressDto(address);
+            return address.ToDto();
         }
 
         public IEnumerable<AddressDto?> GetAddressesByFilter(Expression<Func<Address, bool>> filter)
         {
             return context.Addresses
                            .Where(filter)
-                           .Select(address => MapToAddressDto(address))
+                           .ToDtoList()
                            .AsEnumerable();
         }
 
         public IEnumerable<AddressDto?> GetAllAddresses()
         {
             return context.Addresses
-                           .Select(address => MapToAddressDto(address))
+                           .ToDtoList()
                            .AsEnumerable();
-        }
-
-        private static AddressDto MapToAddressDto(Address address)
-        {
-            return new AddressDto
-            {
-                Country = address.Country,
-                City = address.City,
-                Street = address.Street,
-                State = address.State,
-                ZipCode = address.ZipCode
-            };
         }
     }
 }
