@@ -58,7 +58,7 @@ const CardTile = ({ event }: { event: string }) => {
       <img
         src={MOCK_IMG_URL}
         alt=""
-        className="absolute left-0 top-0 -z-10 h-full object-cover"
+        className="absolute left-0 top-0 h-full object-cover"
       />
       <div className="relative flex h-1/2 w-full flex-col gap-2 bg-[#232326ee] p-4 text-[#F7F8F8]">
         <div className="flex flex-wrap gap-1 text-xs text-[#cacaca]">
@@ -86,11 +86,7 @@ const CardTile = ({ event }: { event: string }) => {
 const CardList = ({ event }: { event: string }) => {
   return (
     <div className="group relative h-36 w-full overflow-hidden rounded-3xl">
-      <img
-        src={MOCK_IMG_URL}
-        alt=""
-        className="absolute left-0 top-0 -z-10 w-full"
-      />
+      <img src={MOCK_IMG_URL} alt="" className="absolute left-0 top-0 w-full" />
       <div className="relative flex h-full w-2/3 flex-col gap-2 bg-[#232326ee] p-4 text-[#F7F8F8]">
         <div className="flex gap-2 text-xs text-[#cacaca]">
           <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
