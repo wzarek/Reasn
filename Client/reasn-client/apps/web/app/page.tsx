@@ -1,6 +1,10 @@
 "use client";
 
-import { HeroSection, QuickFilters } from "@reasn/ui/src/components/web";
+import {
+  CTASection,
+  HeroSection,
+  QuickFilters,
+} from "@reasn/ui/src/components/web";
 import { Navbar, Footer } from "@reasn/ui/src/components/shared";
 
 export default function Web() {
@@ -9,6 +13,7 @@ export default function Web() {
       <Navbar />
       <HeroSection />
       <QuickFilters />
+      <CTASection />
       <Footer />
     </div>
   );
