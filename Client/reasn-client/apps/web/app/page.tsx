@@ -1,8 +1,7 @@
 "use client";
 
-import { HeroSection, QuickFilters } from "@reasn/ui/src";
-import { Navbar } from "../components/Navbar";
-import { Footer } from "../components/Footer";
+import { HeroSection, QuickFilters } from "@reasn/ui/src/components/web";
+import { Navbar, Footer } from "@reasn/ui/src/components/shared";
 
 export default function Web() {
   return (

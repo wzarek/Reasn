@@ -2,7 +2,7 @@ import React from "react";
 
 export const Navbar = () => {
   return (
-    <nav className="flex h-16 w-full flex-wrap items-center justify-between rounded-b-2xl bg-black text-base text-white">
+    <nav className="sticky top-0 z-[50] flex h-16 w-full flex-wrap items-center justify-between rounded-b-2xl bg-black text-base text-white">
       <div className="mx-auto flex w-4/5 justify-between">
         <div>
           <a href="#" className="text-2xl font-bold hover:text-[#ccc]">
