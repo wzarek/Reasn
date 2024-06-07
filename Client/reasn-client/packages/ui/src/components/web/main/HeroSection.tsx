@@ -1,6 +1,6 @@
 import React from "react";
-import { Fire } from "../../icons/Fire";
-import { Card, CardVariant } from "../Card";
+import { Fire } from "@reasn/ui/src/icons";
+import { Card, CardVariant } from "@reasn/ui/src/components/shared";
 
 export const HeroSection = () => {
   return (

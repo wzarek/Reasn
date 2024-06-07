@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React, { useState } from "react";
-import { Card, CardVariant } from "../Card";
+import { Card, CardVariant } from "@reasn/ui/src/components/shared";
 
 interface QuickFiltersButtonProps {
   title: string;
