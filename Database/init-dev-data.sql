@@ -26,14 +26,14 @@ SELECT setval('users.user_id_seq', (SELECT MAX(id) FROM users.user));
 
 INSERT INTO events.event ("id", "name", "address_id", "description", "organizer_id", "start_at", "end_at", "created_at", "updated_at", "slug", "status") VALUES
 (1, 'Tech Conference', 1, 'Annual tech conference', 1, '2023-10-01 09:00:00', '2023-10-02 17:00:00', '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'tech-conference', 'Approved'),
-(2, 'Health Symposium', 2, 'Health and wellness symposium', 2, '2023-11-05 09:00:00', '2023-11-06 17:00:00', '2023-10-05 08:00:00', '2023-10-05 08:00:00', 'health-symposium', 'In progress'),
-(3, 'Koncert Rockowy', 3, 'Występ ulubionych zespołów rockowych', 2, CURRENT_TIMESTAMP - '1 day'::INTERVAL, CURRENT_TIMESTAMP + '4 hours'::INTERVAL, '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'koncert-rockowy', 'Waiting for approval'),
+(2, 'Health Symposium', 2, 'Health and wellness symposium', 2, '2023-11-05 09:00:00', '2023-11-06 17:00:00', '2023-10-05 08:00:00', '2023-10-05 08:00:00', 'health-symposium', 'Ongoing'),
+(3, 'Koncert Rockowy', 3, 'Występ ulubionych zespołów rockowych', 2, CURRENT_TIMESTAMP - '1 day'::INTERVAL, CURRENT_TIMESTAMP + '4 hours'::INTERVAL, '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'koncert-rockowy', 'Pending approval'),
 (4, 'Konferencja IT', 4, 'Coroczna konferencja technologiczna', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + '3 hours'::INTERVAL, '2023-10-02 17:00:00', '2023-10-02 18:00:00', 'konferencja-it', 'Completed'),
-(5, 'Mecz Piłki Nożnej', 5, 'Mecz drużynowej rywalizacji w piłce nożnej', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + '3 hours'::INTERVAL, '2022-12-01 08:00:00', '2023-09-01 08:30:00', 'mecz-pilki-noznej', 'In progress'),
-(6, 'Festiwal Elektroniczny', 6, 'Największe hity muzyki elektronicznej', 4, CURRENT_TIMESTAMP - '4 day'::INTERVAL, CURRENT_TIMESTAMP - '2 days'::INTERVAL, '2023-09-01 08:00:00', '2023-09-02 08:00:00', 'festiwal-elektroniczny', 'Waiting for approval'),
+(5, 'Mecz Piłki Nożnej', 5, 'Mecz drużynowej rywalizacji w piłce nożnej', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + '3 hours'::INTERVAL, '2022-12-01 08:00:00', '2023-09-01 08:30:00', 'mecz-pilki-noznej', 'Ongoing'),
+(6, 'Festiwal Elektroniczny', 6, 'Największe hity muzyki elektronicznej', 4, CURRENT_TIMESTAMP - '4 day'::INTERVAL, CURRENT_TIMESTAMP - '2 days'::INTERVAL, '2023-09-01 08:00:00', '2023-09-02 08:00:00', 'festiwal-elektroniczny', 'Pending approval'),
 (7, 'Koncert Hip-Hopowy', 7, 'Najnowsze hity hip-hopu w wykonaniu gwiazd', 6, CURRENT_TIMESTAMP + '2 days'::INTERVAL, CURRENT_TIMESTAMP + '2 days'::INTERVAL + '4 hours'::INTERVAL, '2023-10-08 17:00:00', '2023-11-01 09:19:22', 'koncert-hip-hopowy', 'Completed'),
-(8, 'Wieczór Jazzowy', 8, 'Relaksujące dźwięki jazzu w kameralnej atmosferze', 8, CURRENT_TIMESTAMP + '1 day'::INTERVAL, CURRENT_TIMESTAMP + '1 day'::INTERVAL + '5 hours'::INTERVAL, '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'wieczor-jazzowy', 'In progress'),
-(9, 'Koncert Klasyczny', 9, 'Muzyka klasyczna w wykonaniu renomowanych artystów', 10, CURRENT_TIMESTAMP + '1 day'::INTERVAL, CURRENT_TIMESTAMP + '1 day'::INTERVAL + '3 hours'::INTERVAL, '2023-01-01 15:00:00', '2023-02-01 08:00:00', 'koncert-klasyczny', 'Waiting for approval'),
+(8, 'Wieczór Jazzowy', 8, 'Relaksujące dźwięki jazzu w kameralnej atmosferze', 8, CURRENT_TIMESTAMP + '1 day'::INTERVAL, CURRENT_TIMESTAMP + '1 day'::INTERVAL + '5 hours'::INTERVAL, '2023-09-01 08:00:00', '2023-09-01 08:00:00', 'wieczor-jazzowy', 'Ongoing'),
+(9, 'Koncert Klasyczny', 9, 'Muzyka klasyczna w wykonaniu renomowanych artystów', 10, CURRENT_TIMESTAMP + '1 day'::INTERVAL, CURRENT_TIMESTAMP + '1 day'::INTERVAL + '3 hours'::INTERVAL, '2023-01-01 15:00:00', '2023-02-01 08:00:00', 'koncert-klasyczny', 'Pending approval'),
 (10, 'Turniej w League of Legends', 10, 'Turniej LAN dla miłośnikow esportu i gry League of Legends', 10, CURRENT_TIMESTAMP - '1 day'::INTERVAL, CURRENT_TIMESTAMP - '3 hours'::INTERVAL, '2023-01-01 15:00:00', '2023-02-01 08:00:00', 'turniej-lol', 'Completed');
 SELECT setval('events.event_id_seq', (SELECT MAX(id) FROM events.event));
 
