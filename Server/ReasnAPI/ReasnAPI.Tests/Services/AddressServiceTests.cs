@@ -3,301 +3,292 @@ using Moq.EntityFrameworkCore;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Services;
+using ReasnAPI.Services.Exceptions;
 
-namespace ReasnAPI.Tests.Services
+namespace ReasnAPI.Tests.Services;
+
+[TestClass]
+public class AddressServiceTests
 {
-    [TestClass]
-    public class AddressServiceTests
+    [TestMethod]
+    public void GetAddressById_AddressExists_AddressReturned()
     {
-        [TestMethod]
-        public void GetAddressById_AddressExists_AddressReturned()
+        var mockContext = new Mock<ReasnContext>();
+
+        var address = new Address
         {
-            var mockContext = new Mock<ReasnContext>();
+            Id = 1,
+            City = "City",
+            Country = "Country",
+            State = "State",
+            Street = "Street",
+            ZipCode = "ZipCode"
+        };
 
-            var address = new Address
-            {
-                Id = 1,
-                City = "City",
-                Country = "Country",
-                State = "State",
-                Street = "Street",
-                ZipCode = "ZipCode"
-            };
+        var fakeAddress = new FakeDbSet<Address> { address };
 
-            var fakeAddress = new FakeDbSet<Address> { address };
+        mockContext.Setup(c => c.Addresses).Returns(fakeAddress);
 
-            mockContext.Setup(c => c.Addresses).Returns(fakeAddress);
+        var addressService = new AddressService(mockContext.Object);
 
-            var addressService = new AddressService(mockContext.Object);
+        var result = addressService.GetAddressById(1);
 
-            var result = addressService.GetAddressById(1);
+        Assert.IsNotNull(result);
+        Assert.AreEqual("City", result.City);
+        Assert.AreEqual("Country", result.Country);
+        Assert.AreEqual("State", result.State);
+        Assert.AreEqual("Street", result.Street);
+        Assert.AreEqual("ZipCode", result.ZipCode);
+    }
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual("City", result.City);
-            Assert.AreEqual("Country", result.Country);
-            Assert.AreEqual("State", result.State);
-            Assert.AreEqual("Street", result.Street);
-            Assert.AreEqual("ZipCode", result.ZipCode);
-        }
+    [TestMethod]
+    public void GetAddressById_AddressDoesNotExist_NullReturned()
+    {
+        var mockContext = new Mock<ReasnContext>();
+        mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
-        [TestMethod]
-        public void GetAddressById_AddressDoesNotExist_NullReturned()
+        var addressService = new AddressService(mockContext.Object);
+
+        Assert.ThrowsException<NotFoundException>(() => addressService.GetAddressById(1));
+    }
+
+    [TestMethod]
+    public void GetAllAddresses_AddressesExist_AddressesReturned()
+    {
+        var mockContext = new Mock<ReasnContext>();
+
+        var address1 = new Address
         {
-            var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
+            Id = 1,
+            City = "City",
+            Country = "Country",
+            State = "State",
+            Street = "Street",
+            ZipCode = "ZipCode"
+        };
 
-            var addressService = new AddressService(mockContext.Object);
-
-            var result = addressService.GetAddressById(1);
-
-            Assert.IsNull(result);
-        }
-
-        [TestMethod]
-        public void GetAllAddresses_AddressesExist_AddressesReturned()
+        var address2 = new Address
         {
-            var mockContext = new Mock<ReasnContext>();
+            Id = 2,
+            City = "City",
+            Country = "Country",
+            State = "State",
+            Street = "Street",
+            ZipCode = "ZipCode"
+        };
 
-            var address1 = new Address
-            {
-                Id = 1,
-                City = "City",
-                Country = "Country",
-                State = "State",
-                Street = "Street",
-                ZipCode = "ZipCode"
-            };
+        mockContext.Setup(c => c.Addresses).ReturnsDbSet([address1, address2]);
 
-            var address2 = new Address
-            {
-                Id = 2,
-                City = "City",
-                Country = "Country",
-                State = "State",
-                Street = "Street",
-                ZipCode = "ZipCode"
-            };
+        var addressService = new AddressService(mockContext.Object);
 
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet([address1, address2]);
+        var result = addressService.GetAllAddresses();
 
-            var addressService = new AddressService(mockContext.Object);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(2, result.Count());
+    }
 
-            var result = addressService.GetAllAddresses();
+    [TestMethod]
+    public void GetAllAddresses_NoAddresses_EmptyListReturned()
+    {
+        var mockContext = new Mock<ReasnContext>();
+        mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(2, result.Count());
-        }
+        var addressService = new AddressService(mockContext.Object);
 
-        [TestMethod]
-        public void GetAllAddresses_NoAddresses_EmptyListReturned()
+        var result = addressService.GetAllAddresses();
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(0, result.Count());
+    }
+
+    [TestMethod]
+    public void GetAddressesByFilter_AddressesExist_AddressesReturned()
+    {
+        var mockContext = new Mock<ReasnContext>();
+
+        var address1 = new Address
         {
-            var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
+            Id = 1,
+            City = "City",
+            Country = "Country",
+            State = "State",
+            Street = "Street",
+            ZipCode = "ZipCode"
+        };
 
-            var addressService = new AddressService(mockContext.Object);
-
-            var result = addressService.GetAllAddresses();
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.Count());
-        }
-
-        [TestMethod]
-        public void GetAddressesByFilter_AddressesExist_AddressesReturned()
+        var address2 = new Address
         {
-            var mockContext = new Mock<ReasnContext>();
+            Id = 2,
+            City = "City",
+            Country = "Country",
+            State = "State",
+            Street = "Street",
+            ZipCode = "ZipCode"
+        };
 
-            var address1 = new Address
-            {
-                Id = 1,
-                City = "City",
-                Country = "Country",
-                State = "State",
-                Street = "Street",
-                ZipCode = "ZipCode"
-            };
+        mockContext.Setup(c => c.Addresses).ReturnsDbSet([address1, address2]);
+        var addressService = new AddressService(mockContext.Object);
 
-            var address2 = new Address
-            {
-                Id = 2,
-                City = "City",
-                Country = "Country",
-                State = "State",
-                Street = "Street",
-                ZipCode = "ZipCode"
-            };
+        var result = addressService.GetAddressesByFilter(r => r.Id == 1).ToList();
 
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet([address1, address2]);
-            var addressService = new AddressService(mockContext.Object);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.Count);
+    }
 
-            var result = addressService.GetAddressesByFilter(r => r.Id == 1).ToList();
+    [TestMethod]
+    public void GetAddressesByFilter_NoAddresses_EmptyListReturned()
+    {
+        var mockContext = new Mock<ReasnContext>();
+        mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.Count);
-        }
+        var addressService = new AddressService(mockContext.Object);
 
-        [TestMethod]
-        public void GetAddressesByFilter_NoAddresses_EmptyListReturned()
+        var result = addressService.GetAddressesByFilter(r => r.Id == 1);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(0, result.Count());
+    }
+
+    [TestMethod]
+    public void CreateAddress_AddressCreated_AddressReturned()
+    {
+        var mockContext = new Mock<ReasnContext>();
+        mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
+
+        var addressService = new AddressService(mockContext.Object);
+
+        var addressDto = new AddressDto
         {
-            var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
+            City = "City",
+            Country = "Country",
+            State = "State",
+            Street = "Street",
+            ZipCode = "ZipCode"
+        };
 
-            var addressService = new AddressService(mockContext.Object);
+        var result = addressService.CreateAddress(addressDto);
 
-            var result = addressService.GetAddressesByFilter(r => r.Id == 1);
+        Assert.IsNotNull(result);
+        Assert.AreEqual("City", result.City);
+        Assert.AreEqual("Country", result.Country);
+        Assert.AreEqual("State", result.State);
+        Assert.AreEqual("Street", result.Street);
+        Assert.AreEqual("ZipCode", result.ZipCode);
+    }
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.Count());
-        }
+    [TestMethod]
+    public void CreateAddress_AddressDtoIsNull_NullReturned()
+    {
+        var mockContext = new Mock<ReasnContext>();
+        mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
-        [TestMethod]
-        public void CreateAddress_AddressCreated_AddressReturned()
+        var addressService = new AddressService(mockContext.Object);
+
+        Assert.ThrowsException<ArgumentNullException>(() => addressService.CreateAddress(null));
+    }
+
+    [TestMethod]
+    public void UpdateAddress_AddressUpdated_AddressReturned()
+    {
+        var mockContext = new Mock<ReasnContext>();
+
+        var address = new Address
         {
-            var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
+            Id = 1,
+            City = "City",
+            Country = "Country",
+            State = "State",
+            Street = "Street",
+            ZipCode = "ZipCode"
+        };
 
-            var addressService = new AddressService(mockContext.Object);
+        mockContext.Setup(c => c.Addresses).ReturnsDbSet([address]);
 
-            var addressDto = new AddressDto
-            {
-                City = "City",
-                Country = "Country",
-                State = "State",
-                Street = "Street",
-                ZipCode = "ZipCode"
-            };
+        var addressService = new AddressService(mockContext.Object);
 
-            var result = addressService.CreateAddress(addressDto);
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual("City", result.City);
-            Assert.AreEqual("Country", result.Country);
-            Assert.AreEqual("State", result.State);
-            Assert.AreEqual("Street", result.Street);
-            Assert.AreEqual("ZipCode", result.ZipCode);
-        }
-
-        [TestMethod]
-        public void CreateAddress_AddressDtoIsNull_NullReturned()
+        var addressDto = new AddressDto
         {
-            var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
+            City = "City2",
+            Country = "Country2",
+            State = "State2",
+            Street = "Street2",
+            ZipCode = "ZipCode2"
+        };
 
-            var addressService = new AddressService(mockContext.Object);
+        var result = addressService.UpdateAddress(1, addressDto);
 
-            var result = addressService.CreateAddress(null);
+        Assert.IsNotNull(result);
+        Assert.AreEqual("City2", result.City);
+        Assert.AreEqual("Country2", result.Country);
+        Assert.AreEqual("State2", result.State);
+        Assert.AreEqual("Street2", result.Street);
+        Assert.AreEqual("ZipCode2", result.ZipCode);
+    }
 
-            Assert.IsNull(result);
-        }
+    [TestMethod]
+    public void UpdateAddress_AddressDoesNotExist_NullReturned()
+    {
+        var mockContext = new Mock<ReasnContext>();
+        mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
-        [TestMethod]
-        public void UpdateAddress_AddressUpdated_AddressReturned()
+        var addressService = new AddressService(mockContext.Object);
+
+        var addressDto = new AddressDto
         {
-            var mockContext = new Mock<ReasnContext>();
+            City = "City2",
+            Country = "Country2",
+            State = "State2",
+            Street = "Street2",
+            ZipCode = "ZipCode2"
+        };
 
-            var address = new Address
-            {
-                Id = 1,
-                City = "City",
-                Country = "Country",
-                State = "State",
-                Street = "Street",
-                ZipCode = "ZipCode"
-            };
+        Assert.ThrowsException<NotFoundException>(() => addressService.UpdateAddress(1, addressDto));
+    }
 
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet([address]);
+    [TestMethod]
+    public void UpdateAddress_AddressDtoIsNull_NullReturned()
+    {
+        var mockContext = new Mock<ReasnContext>();
+        mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
-            var addressService = new AddressService(mockContext.Object);
+        var addressService = new AddressService(mockContext.Object);
 
-            var addressDto = new AddressDto
-            {
-                City = "City2",
-                Country = "Country2",
-                State = "State2",
-                Street = "Street2",
-                ZipCode = "ZipCode2"
-            };
+        Assert.ThrowsException<ArgumentNullException>(() => addressService.UpdateAddress(1, null));
+    }
 
-            var result = addressService.UpdateAddress(1, addressDto);
+    [TestMethod]
+    public void DeleteAddress_AdddressExists_AddressDeleted()
+    {
+        var mockContext = new Mock<ReasnContext>();
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual("City2", result.City);
-            Assert.AreEqual("Country2", result.Country);
-            Assert.AreEqual("State2", result.State);
-            Assert.AreEqual("Street2", result.Street);
-            Assert.AreEqual("ZipCode2", result.ZipCode);
-        }
-
-        [TestMethod]
-        public void UpdateAddress_AddressDoesNotExist_NullReturned()
+        var address = new Address
         {
-            var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
+            Id = 1,
+            City = "City",
+            Country = "Country",
+            State = "State",
+            Street = "Street",
+            ZipCode = "ZipCode"
+        };
 
-            var addressService = new AddressService(mockContext.Object);
+        mockContext.Setup(c => c.Addresses).ReturnsDbSet([address]);
 
-            var addressDto = new AddressDto
-            {
-                City = "City2",
-                Country = "Country2",
-                State = "State2",
-                Street = "Street2",
-                ZipCode = "ZipCode2"
-            };
+        var addressService = new AddressService(mockContext.Object);
 
-            var result = addressService.UpdateAddress(1, addressDto);
+        addressService.DeleteAddress(1);
 
-            Assert.IsNull(result);
-        }
+        mockContext.Verify(c => c.SaveChanges(), Times.Once);
+    }
 
-        [TestMethod]
-        public void UpdateAddress_AddressDtoIsNull_NullReturned()
-        {
-            var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
+    [TestMethod]
+    public void DeleteAddress_AddressDoesNotExist_NothingHappens()
+    {
+        var mockContext = new Mock<ReasnContext>();
+        mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
 
-            var addressService = new AddressService(mockContext.Object);
+        var addressService = new AddressService(mockContext.Object);
 
-            var result = addressService.UpdateAddress(1, null);
-
-            Assert.IsNull(result);
-        }
-
-        [TestMethod]
-        public void DeleteAddress_AdddressExists_AddressDeleted()
-        {
-            var mockContext = new Mock<ReasnContext>();
-
-            var address = new Address
-            {
-                Id = 1,
-                City = "City",
-                Country = "Country",
-                State = "State",
-                Street = "Street",
-                ZipCode = "ZipCode"
-            };
-
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet([address]);
-
-            var addressService = new AddressService(mockContext.Object);
-
-            addressService.DeleteAddress(1);
-
-            mockContext.Verify(c => c.SaveChanges(), Times.Once);
-        }
-
-        [TestMethod]
-        public void DeleteAddress_AddressDoesNotExist_NothingHappens()
-        {
-            var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Addresses).ReturnsDbSet([]);
-
-            var addressService = new AddressService(mockContext.Object);
-
-            addressService.DeleteAddress(1);
-
-            mockContext.Verify(c => c.SaveChanges(), Times.Never);
-        }
+        Assert.ThrowsException<NotFoundException>(() => addressService.DeleteAddress(1));
+        mockContext.Verify(c => c.SaveChanges(), Times.Never);
     }
 }

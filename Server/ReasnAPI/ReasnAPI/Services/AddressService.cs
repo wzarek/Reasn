@@ -1,91 +1,83 @@
 using ReasnAPI.Mappers;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
+using ReasnAPI.Services.Exceptions;
 using System.Linq.Expressions;
 
-namespace ReasnAPI.Services
+namespace ReasnAPI.Services;
+
+public class AddressService(ReasnContext context)
 {
-    public class AddressService(ReasnContext context)
+    public AddressDto? CreateAddress(AddressDto? addressDto)
     {
-        public AddressDto? CreateAddress(AddressDto? addressDto)
+        ArgumentNullException.ThrowIfNull(addressDto);
+
+        context.Addresses.Add(addressDto.FromDto());
+        context.SaveChanges();
+
+        return addressDto;
+    }
+
+    public AddressDto? UpdateAddress(int addressId, AddressDto? addressDto)
+    {
+        ArgumentNullException.ThrowIfNull(addressDto);
+
+        var address = context.Addresses.FirstOrDefault(r => r.Id == addressId);
+
+        if (address is null)
         {
-            if (addressDto is null)
-            {
-                return null;
-            }
-
-            context.Addresses.Add(addressDto.FromDto());
-            context.SaveChanges();
-
-            return addressDto;
+            throw new NotFoundException("Address not found");
         }
 
-        public AddressDto? UpdateAddress(int addressId, AddressDto? addressDto)
+        address.City = addressDto.City;
+        address.Country = addressDto.Country;
+        address.Street = addressDto.Street;
+        address.State = addressDto.State;
+        address.ZipCode = addressDto.ZipCode;
+
+        context.Addresses.Update(address);
+        context.SaveChanges();
+
+        return address.ToDto();
+    }
+
+    public void DeleteAddress(int addressId)
+    {
+        var address = context.Addresses.FirstOrDefault(r => r.Id == addressId);
+
+        if (address is null)
         {
-            if (addressDto is null)
-            {
-                return null;
-            }
-
-            var address = context.Addresses.FirstOrDefault(r => r.Id == addressId);
-
-            if (address is null)
-            {
-                return null;
-            }
-
-            address.City = addressDto.City;
-            address.Country = addressDto.Country;
-            address.Street = addressDto.Street;
-            address.State = addressDto.State;
-            address.ZipCode = addressDto.ZipCode;
-
-            context.Addresses.Update(address);
-            context.SaveChanges();
-
-            return address.ToDto();
+            throw new NotFoundException("Address not found");
         }
 
-        public bool DeleteAddress(int addressId)
+        context.Addresses.Remove(address);
+        context.SaveChanges();
+    }
+
+    public AddressDto? GetAddressById(int addressId)
+    {
+        var address = context.Addresses.Find(addressId);
+
+        if (address is null)
         {
-            var address = context.Addresses.FirstOrDefault(r => r.Id == addressId);
-
-            if (address is null)
-            {
-                return false;
-            }
-
-            context.Addresses.Remove(address);
-            context.SaveChanges();
-
-            return true;
+            throw new NotFoundException("Address not found");
         }
 
-        public AddressDto? GetAddressById(int addressId)
-        {
-            var address = context.Addresses.Find(addressId);
+        return address.ToDto();
+    }
 
-            if (address is null)
-            {
-                return null;
-            }
+    public IEnumerable<AddressDto?> GetAddressesByFilter(Expression<Func<Address, bool>> filter)
+    {
+        return context.Addresses
+                        .Where(filter)
+                        .ToDtoList()
+                        .AsEnumerable();
+    }
 
-            return address.ToDto();
-        }
-
-        public IEnumerable<AddressDto?> GetAddressesByFilter(Expression<Func<Address, bool>> filter)
-        {
-            return context.Addresses
-                           .Where(filter)
-                           .ToDtoList()
-                           .AsEnumerable();
-        }
-
-        public IEnumerable<AddressDto?> GetAllAddresses()
-        {
-            return context.Addresses
-                           .ToDtoList()
-                           .AsEnumerable();
-        }
+    public IEnumerable<AddressDto?> GetAllAddresses()
+    {
+        return context.Addresses
+                        .ToDtoList()
+                        .AsEnumerable();
     }
 }

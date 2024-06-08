@@ -1,111 +1,103 @@
 using ReasnAPI.Mappers;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
+using ReasnAPI.Services.Exceptions;
 using System.Linq.Expressions;
 
-namespace ReasnAPI.Services
+namespace ReasnAPI.Services;
+
+public class CommentService(ReasnContext context)
 {
-    public class CommentService(ReasnContext context)
+    public CommentDto? CreateComment(CommentDto? commentDto)
     {
-        public CommentDto? CreateComment(CommentDto? commentDto)
+        ArgumentNullException.ThrowIfNull(commentDto);
+
+        context.Comments.Add(commentDto.FromDto());
+        context.SaveChanges();
+
+        return commentDto;
+    }
+
+    public CommentDto? UpdateComment(int commentId, CommentDto? commentDto)
+    {
+        ArgumentNullException.ThrowIfNull(commentDto);
+
+        var comment = context.Comments.FirstOrDefault(r => r.Id == commentId);
+
+        if (comment is null)
         {
-            if (commentDto is null)
-            {
-                return null;
-            }
-
-            context.Comments.Add(commentDto.FromDto());
-            context.SaveChanges();
-
-            return commentDto;
+            throw new NotFoundException("Comment not found");
         }
 
-        public CommentDto? UpdateComment(int commentId, CommentDto? commentDto)
+        var user = context.Users.FirstOrDefault(r => r.Id == commentDto.UserId);
+
+        if (user is null)
         {
-            if (commentDto is null)
-            {
-                return null;
-            }
-
-            var comment = context.Comments.FirstOrDefault(r => r.Id == commentId);
-
-            if (comment is null)
-            {
-                return null;
-            }
-
-            var user = context.Users.FirstOrDefault(r => r.Id == commentDto.UserId);
-
-            if (user is null)
-            {
-                return null;
-            }
-
-            if (comment.UserId != commentDto.UserId && user.Role != Models.Enums.UserRole.Admin)
-            {
-                return null;
-            }
-
-            comment.Content = commentDto.Content;
-
-            context.Comments.Update(comment);
-            context.SaveChanges();
-
-            return comment.ToDto();
+            throw new NotFoundException("User not found");
         }
 
-        public bool DeleteComment(int commentId, int userId)
+        if (comment.UserId != commentDto.UserId && user.Role != Models.Enums.UserRole.Admin)
         {
-            var comment = context.Comments.FirstOrDefault(r => r.Id == commentId);
-
-            if (comment is null)
-            {
-                return false;
-            }
-
-            var user = context.Users.FirstOrDefault(r => r.Id == userId);
-
-            if (user is null)
-            {
-                return false;
-            }
-
-            if (comment.UserId != userId && user.Role != Models.Enums.UserRole.Admin)
-            {
-                return false;
-            }
-
-            context.Comments.Remove(comment);
-            context.SaveChanges();
-
-            return true;
+            throw new BadRequestException("User is not authorized to update this comment");
         }
 
-        public CommentDto? GetCommentById(int commentId)
+        comment.Content = commentDto.Content;
+
+        context.Comments.Update(comment);
+        context.SaveChanges();
+
+        return comment.ToDto();
+    }
+
+    public void DeleteComment(int commentId, int userId)
+    {
+        var comment = context.Comments.FirstOrDefault(r => r.Id == commentId);
+
+        if (comment is null)
         {
-            var comment = context.Comments.Find(commentId);
-
-            if (comment is null)
-            {
-                return null;
-            }
-
-            return comment.ToDto();
+            throw new NotFoundException("Comment not found");
         }
 
-        public IEnumerable<CommentDto?> GetCommentsByFilter(Expression<Func<Comment, bool>> filter)
+        var user = context.Users.FirstOrDefault(r => r.Id == userId);
+
+        if (user is null)
         {
-            return context.Comments
-                           .Where(filter)
-                           .ToDtoList()
-                           .AsEnumerable();
+            throw new NotFoundException("User not found");
         }
 
-        public IEnumerable<CommentDto?> GetAllComments()
+        if (comment.UserId != userId && user.Role != Models.Enums.UserRole.Admin)
         {
-            return context.Comments
-                           .ToDtoList()
-                           .AsEnumerable();
+            throw new BadRequestException("User is not authorized to delete this comment");
         }
+
+        context.Comments.Remove(comment);
+        context.SaveChanges();
+    }
+
+    public CommentDto? GetCommentById(int commentId)
+    {
+        var comment = context.Comments.Find(commentId);
+
+        if (comment is null)
+        {
+            throw new NotFoundException("Comment not found");
+        }
+
+        return comment.ToDto();
+    }
+
+    public IEnumerable<CommentDto?> GetCommentsByFilter(Expression<Func<Comment, bool>> filter)
+    {
+        return context.Comments
+                        .Where(filter)
+                        .ToDtoList()
+                        .AsEnumerable();
+    }
+
+    public IEnumerable<CommentDto?> GetAllComments()
+    {
+        return context.Comments
+                        .ToDtoList()
+                        .AsEnumerable();
     }
 }
