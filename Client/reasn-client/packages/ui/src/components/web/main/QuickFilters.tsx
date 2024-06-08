@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import React, { useState } from "react";
 import { Card, CardVariant } from "@reasn/ui/src/components/shared";
+import { ButtonBase } from "@reasn/ui/src/components/shared/form";
 
 interface QuickFiltersButtonProps {
   title: string;
@@ -69,9 +70,7 @@ export const QuickFilters = () => {
         <Card variant={CardVariant.Tile} event="Abc" />
       </div>
       <div className="flex justify-center py-10">
-        <button className="w-36 rounded-2xl bg-gradient-to-r from-[#32346A] to-[#4E4F75] px-4 py-2">
-          więcej
-        </button>
+        <ButtonBase text="więcej" onClick={() => console.log("wiecej")} />
       </div>
     </div>
   );
