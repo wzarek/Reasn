@@ -1,10 +1,11 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
+import { ParticipantStatus } from '@reasn/common/enums/modelsEnums'
 import { z } from "zod"
 
 export const ParticipantDtoSchema = z.object({
     EventId: z.number(),
     UserId: z.number(),
-    StatusId: z.number()
+    Status: z.nativeEnum(ParticipantStatus)
 })
 
 export type ParticipantDto = z.infer<typeof ParticipantDtoSchema>

@@ -1,17 +1,18 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
 import { ParticipantDto, ParticipantDtoMapper } from '@reasn/common/models/ParticipantDto'
+import { ParticipantStatus } from "@reasn/common/enums/modelsEnums"
 
 describe('ParticipantDto', () => {
     const eventId = 1
     const userId = 2
-    const statusId = 3
+    const status = ParticipantStatus.INTERESTED
 
     describe('fromJson', () => {
         it('should create an instance of ParticipantDto from JSON string', () => {
             const json = `{
                 "EventId": ${eventId},
                 "UserId": ${userId},
-                "StatusId": ${statusId}
+                "Status": "${status}"
             }`
 
             let participant = ParticipantDtoMapper.fromJSON(json)
@@ -19,7 +20,7 @@ describe('ParticipantDto', () => {
 
             expect(participant.EventId).toBe(eventId)
             expect(participant.UserId).toBe(userId)
-            expect(participant.StatusId).toBe(statusId)
+            expect(participant.Status).toBe(status)
         })
 
         it('should return null if the JSON string is empty', () => {
@@ -29,12 +30,12 @@ describe('ParticipantDto', () => {
         it('should throw an error when providing JSON without each property individually', () => {  
             const jsonWithoutEventId = `{
                 "UserId": ${userId},
-                "StatusId": ${statusId}
+                "Status": "${status}"
             }`
 
             const jsonWithoutUserId = `{
                 "EventId": ${eventId},
-                "StatusId": ${statusId}
+                "Status": "${status}"
             }`
 
             const jsonWithoutStatusId = `{
@@ -53,7 +54,7 @@ describe('ParticipantDto', () => {
             const object = {
                 EventId: eventId,
                 UserId: userId,
-                StatusId: statusId
+                Status: status
             }
 
             let participant = ParticipantDtoMapper.fromObject(object)
@@ -61,24 +62,24 @@ describe('ParticipantDto', () => {
 
             expect(participant.EventId).toBe(eventId)
             expect(participant.UserId).toBe(userId)
-            expect(participant.StatusId).toBe(statusId)
+            expect(participant.Status).toBe(status)
         })
 
         it('should throw an error if the object is invalid', () => {
             const object = {
                 EventId: true,
                 UserId: null,
-                StatusId: 'invalid'
+                Status: 'invalid'
             }
 
             const objectWithoutEventId = {
                 UserId: userId,
-                StatusId: statusId
+                Status: status
             }
 
             const objectWithoutUserId = {
                 EventId: eventId,
-                StatusId: statusId
+                Status: status
             }
 
             const objectWithoutStatusId = {

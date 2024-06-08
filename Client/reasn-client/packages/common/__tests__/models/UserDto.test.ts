@@ -1,6 +1,7 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
 import { UserDto, UserDtoMapper } from '@reasn/common/models/UserDto'
-import { InterestDto } from '@reasn/common/models/InterestDto'
+import { UserInterestDto } from '@reasn/common/models/UserInterestDto'
+import { UserRole } from "@reasn/common/enums/modelsEnums"
 
 describe('UserDto', () => {
     const username = 'john_doe'
@@ -8,11 +9,11 @@ describe('UserDto', () => {
     const surname = 'Doe'
     const email = 'john.doe@example.com'
     const phone = '+1234567890'
-    const roleId = 1
+    const role = UserRole.USER
     const addressId = 2
-    const interests: InterestDto[] = [
-        { Name: 'Programming', Level: 5 },
-        { Name: 'Music', Level: 3 }
+    const interests: UserInterestDto[] = [
+        { Interest: { Name: 'Programming' }, Level: 5 },
+        { Interest: { Name: 'Music' }, Level: 3 }
     ]
 
     describe('fromJson', () => {
@@ -23,7 +24,7 @@ describe('UserDto', () => {
                 "Surname": "${surname}",
                 "Email": "${email}",
                 "Phone": "${phone}",
-                "RoleId": ${roleId},
+                "Role": "${role}",
                 "AddressId": ${addressId},
                 "Intrests": ${JSON.stringify(interests)}
             }`
@@ -36,7 +37,7 @@ describe('UserDto', () => {
             expect(user.Surname).toBe(surname)
             expect(user.Email).toBe(email)
             expect(user.Phone).toBe(phone)
-            expect(user.RoleId).toBe(roleId)
+            expect(user.Role).toBe(role)
             expect(user.AddressId).toBe(addressId)
             expect(user.Intrests).toEqual(interests)
         })
@@ -51,7 +52,7 @@ describe('UserDto', () => {
                 "Surname": "${surname}",
                 "Email": "${email}",
                 "Phone": "${phone}",
-                "RoleId": ${roleId},
+                "Role": "${role}",
                 "AddressId": ${addressId},
                 "Intrests": ${JSON.stringify(interests)}
             }`
@@ -61,7 +62,7 @@ describe('UserDto', () => {
                 "Surname": "${surname}",
                 "Email": "${email}",
                 "Phone": "${phone}",
-                "RoleId": ${roleId},
+                "Role": "${role}",
                 "AddressId": ${addressId},
                 "Intrests": ${JSON.stringify(interests)}
             }`
@@ -71,7 +72,7 @@ describe('UserDto', () => {
                 "Name": "${name}",
                 "Email": "${email}",
                 "Phone": "${phone}",
-                "RoleId": ${roleId},
+                "Role": "${role}",
                 "AddressId": ${addressId},
                 "Intrests": ${JSON.stringify(interests)}
             }`
@@ -81,7 +82,7 @@ describe('UserDto', () => {
                 "Name": "${name}",
                 "Surname": "${surname}",
                 "Phone": "${phone}",
-                "RoleId": ${roleId},
+                "Role": "${role}",
                 "AddressId": ${addressId},
                 "Intrests": ${JSON.stringify(interests)}
             }`
@@ -91,12 +92,12 @@ describe('UserDto', () => {
                 "Name": "${name}",
                 "Surname": "${surname}",
                 "Email": "${email}",
-                "RoleId": ${roleId},
+                "Role": "${role}",
                 "AddressId": ${addressId},
                 "Intrests": ${JSON.stringify(interests)}
             }`
 
-            const jsonWithoutRoleId = `{
+            const jsonWithoutRole = `{
                 "Username": "${username}",
                 "Name": "${name}",
                 "Surname": "${surname}",
@@ -112,7 +113,7 @@ describe('UserDto', () => {
                 "Surname": "${surname}",
                 "Email": "${email}",
                 "Phone": "${phone}",
-                "RoleId": ${roleId},
+                "Role": "${role}",
                 "Intrests": ${JSON.stringify(interests)}
             }`
 
@@ -122,7 +123,7 @@ describe('UserDto', () => {
                 "Surname": "${surname}",
                 "Email": "${email}",
                 "Phone": "${phone}",
-                "RoleId": ${roleId},
+                "Role": "${role}",
                 "AddressId": ${addressId}
             }`
 
@@ -131,7 +132,7 @@ describe('UserDto', () => {
             expect(() => UserDtoMapper.fromJSON(jsonWithoutSurname)).toThrow(ModelMappingError)
             expect(() => UserDtoMapper.fromJSON(jsonWithoutEmail)).toThrow(ModelMappingError)
             expect(() => UserDtoMapper.fromJSON(jsonWithoutPhone)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromJSON(jsonWithoutRoleId)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromJSON(jsonWithoutRole)).toThrow(ModelMappingError)
             expect(() => UserDtoMapper.fromJSON(jsonWithoutAddressId)).toThrow(ModelMappingError)
             expect(() => UserDtoMapper.fromJSON(jsonWithoutInterests)).toThrow(ModelMappingError)
         })
@@ -145,7 +146,7 @@ describe('UserDto', () => {
                 Surname: surname,
                 Email: email,
                 Phone: phone,
-                RoleId: roleId,
+                Role: role,
                 AddressId: addressId,
                 Intrests: interests
             }
@@ -158,7 +159,7 @@ describe('UserDto', () => {
             expect(user.Surname).toBe(surname)
             expect(user.Email).toBe(email)
             expect(user.Phone).toBe(phone)
-            expect(user.RoleId).toBe(roleId)
+            expect(user.Role).toBe(role)
             expect(user.AddressId).toBe(addressId)
             expect(user.Intrests).toEqual(interests)
         })
@@ -170,7 +171,7 @@ describe('UserDto', () => {
                 Surname: 'Doe',
                 Email: 'john.doe@example.com',
                 Phone: '+1234567890',
-                RoleId: 1,
+                Role: UserRole.USER,
                 AddressId: 2,
                 Intrests: interests
             }
@@ -180,7 +181,7 @@ describe('UserDto', () => {
                 Surname: surname,
                 Email: email,
                 Phone: phone,
-                RoleId: roleId,
+                Role: role,
                 AddressId: addressId,
                 Intrests: interests
             }
@@ -190,7 +191,7 @@ describe('UserDto', () => {
                 Surname: surname,
                 Email: email,
                 Phone: phone,
-                RoleId: roleId,
+                Role: role,
                 AddressId: addressId,
                 Intrests: interests
             }
@@ -200,7 +201,7 @@ describe('UserDto', () => {
                 Name: name,
                 Email: email,
                 Phone: phone,
-                RoleId: roleId,
+                Role: role,
                 AddressId: addressId,
                 Intrests: interests
             }
@@ -210,7 +211,7 @@ describe('UserDto', () => {
                 Name: name,
                 Surname: surname,
                 Phone: phone,
-                RoleId: roleId,
+                Role: role,
                 AddressId: addressId,
                 Intrests: interests
             }
@@ -220,12 +221,12 @@ describe('UserDto', () => {
                 Name: name,
                 Surname: surname,
                 Email: email,
-                RoleId: roleId,
+                Role: role,
                 AddressId: addressId,
                 Intrests: interests
             }
 
-            const objectWithoutRoleId = {
+            const objectWithoutRole = {
                 Username: username,
                 Name: name,
                 Surname: surname,
@@ -241,7 +242,7 @@ describe('UserDto', () => {
                 Surname: surname,
                 Email: email,
                 Phone: phone,
-                RoleId: roleId,
+                Role: role,
                 Intrests: interests
             }
 
@@ -251,7 +252,7 @@ describe('UserDto', () => {
                 Surname: surname,
                 Email: email,
                 Phone: phone,
-                RoleId: roleId,
+                Role: role,
                 AddressId: addressId,
             }
 
@@ -261,7 +262,7 @@ describe('UserDto', () => {
             expect(() => UserDtoMapper.fromObject(objectWithoutSurname)).toThrow(ModelMappingError)
             expect(() => UserDtoMapper.fromObject(objectWithoutEmail)).toThrow(ModelMappingError)
             expect(() => UserDtoMapper.fromObject(objectWithoutPhone)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromObject(objectWithoutRoleId)).toThrow(ModelMappingError)
+            expect(() => UserDtoMapper.fromObject(objectWithoutRole)).toThrow(ModelMappingError)
             expect(() => UserDtoMapper.fromObject(objectWithoutAddressId)).toThrow(ModelMappingError)
             expect(() => UserDtoMapper.fromObject(objectWithoutInterests)).toThrow(ModelMappingError)
         })

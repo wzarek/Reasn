@@ -3,7 +3,6 @@ import { z } from "zod"
 
 export const InterestDtoSchema = z.object({
     Name: z.string(),
-    Level: z.number()
 })
 
 export type InterestDto = z.infer<typeof InterestDtoSchema>

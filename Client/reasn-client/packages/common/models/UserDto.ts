@@ -1,5 +1,6 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
-import { InterestDtoSchema } from '@reasn/common/models/InterestDto'
+import { UserInterestDtoSchema } from '@reasn/common/models/UserInterestDto'
+import { UserRole } from "@reasn/common/enums/modelsEnums"
 import { z } from "zod"
 
 export const UserDtoSchema = z.object({
@@ -8,9 +9,9 @@ export const UserDtoSchema = z.object({
     Surname: z.string(),
     Email: z.string(),
     Phone: z.string().nullable(),
-    RoleId: z.number(),
+    Role: z.nativeEnum(UserRole),
     AddressId: z.number(),
-    Intrests: z.array(InterestDtoSchema)
+    Intrests: z.array(UserInterestDtoSchema)
 })
 
 export type UserDto = z.infer<typeof UserDtoSchema>

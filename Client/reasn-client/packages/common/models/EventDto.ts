@@ -1,5 +1,6 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
 import { TagDtoSchema } from '@reasn/common/models/TagDto'
+import { EventStatus } from '@reasn/common/enums/modelsEnums'
 import { z } from "zod"
 
 export const EventDtoSchema = z.object({
@@ -12,7 +13,7 @@ export const EventDtoSchema = z.object({
     CreatedAt: z.string().datetime({ offset: true }).or(z.date()).transform(arg => new Date(arg)),
     UpdatedAt: z.string().datetime({ offset: true }).or(z.date()).transform(arg => new Date(arg)),
     Slug: z.string().nullable(),
-    StatusId: z.number(),
+    Status: z.nativeEnum(EventStatus),
     Tags: z.array(TagDtoSchema)
 })
 

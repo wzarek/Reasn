@@ -1,4 +1,5 @@
 import { EventDto, EventDtoMapper } from '@reasn/common/models/EventDto'
+import { EventStatus } from '@reasn/common/enums/modelsEnums'
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
 import { TagDto } from '@reasn/common/models/TagDto'
 
@@ -12,7 +13,7 @@ describe('EventDto', () => {
     const createdAt = new Date('2022-01-01')
     const updatedAt = new Date('2022-01-01')
     const slug = 'test-event'
-    const statusId = 1
+    const status = EventStatus.APPROVED;
     const tags: TagDto[] = [{ Name: 'Tag 1' }, { Name: 'Tag 2' }]
 
     describe('fromJson', () => {
@@ -27,7 +28,7 @@ describe('EventDto', () => {
                 "CreatedAt": "${createdAt.toISOString()}",
                 "UpdatedAt": "${updatedAt.toISOString()}",
                 "Slug": "${slug}",
-                "StatusId": ${statusId},
+                "Status": "${status}",
                 "Tags": ${JSON.stringify(tags)}
             }`
 
@@ -43,7 +44,7 @@ describe('EventDto', () => {
             expect(event.CreatedAt).toEqual(createdAt)
             expect(event.UpdatedAt).toEqual(updatedAt)
             expect(event.Slug).toBe(slug)
-            expect(event.StatusId).toBe(statusId)
+            expect(event.Status).toBe(status)
             expect(event.Tags).toEqual(tags)
         })
 
@@ -61,7 +62,7 @@ describe('EventDto', () => {
                 "CreatedAt": "${createdAt.toISOString()}",
                 "UpdatedAt": "${updatedAt.toISOString()}",
                 "Slug": "${slug}",
-                "StatusId": ${statusId},
+                "Status": "${status}",
                 "Tags": ${JSON.stringify(tags)}
             }`
 
@@ -74,7 +75,7 @@ describe('EventDto', () => {
                 "CreatedAt": "${createdAt.toISOString()}",
                 "UpdatedAt": "${updatedAt.toISOString()}",
                 "Slug": "${slug}",
-                "StatusId": ${statusId},
+                "Status": "${status}",
                 "Tags": ${JSON.stringify(tags)}
             }`
 
@@ -87,7 +88,7 @@ describe('EventDto', () => {
                 "CreatedAt": "${createdAt.toISOString()}",
                 "UpdatedAt": "${updatedAt.toISOString()}",
                 "Slug": "${slug}",
-                "StatusId": ${statusId},
+                "Status": "${status}",
                 "Tags": ${JSON.stringify(tags)}
             }`
 
@@ -100,7 +101,7 @@ describe('EventDto', () => {
                 "CreatedAt": "${createdAt.toISOString()}",
                 "UpdatedAt": "${updatedAt.toISOString()}",
                 "Slug": "${slug}",
-                "StatusId": ${statusId},
+                "Status": "${status}",
                 "Tags": ${JSON.stringify(tags)}
             }`
 
@@ -113,7 +114,7 @@ describe('EventDto', () => {
                 "CreatedAt": "${createdAt.toISOString()}",
                 "UpdatedAt": "${updatedAt.toISOString()}",
                 "Slug": "${slug}",
-                "StatusId": ${statusId},
+                "Status": "${status}",
                 "Tags": ${JSON.stringify(tags)}
             }`
 
@@ -126,7 +127,7 @@ describe('EventDto', () => {
                 "CreatedAt": "${createdAt.toISOString()}",
                 "UpdatedAt": "${updatedAt.toISOString()}",
                 "Slug": "${slug}",
-                "StatusId": ${statusId},
+                "Status": "${status}",
                 "Tags": ${JSON.stringify(tags)}
             }`
 
@@ -139,7 +140,7 @@ describe('EventDto', () => {
                 "EndAt": "${endAt.toISOString()}",
                 "UpdatedAt": "${updatedAt.toISOString()}",
                 "Slug": "${slug}",
-                "StatusId": ${statusId},
+                "Status": "${status}",
                 "Tags": ${JSON.stringify(tags)}
             }`
 
@@ -152,7 +153,7 @@ describe('EventDto', () => {
                 "EndAt": "${endAt.toISOString()}",
                 "CreatedAt": "${createdAt.toISOString()}",
                 "Slug": "${slug}",
-                "StatusId": ${statusId},
+                "Status": "${status}",
                 "Tags": ${JSON.stringify(tags)}
             }`
 
@@ -165,11 +166,11 @@ describe('EventDto', () => {
                 "EndAt": "${endAt.toISOString()}",
                 "CreatedAt": "${createdAt.toISOString()}",
                 "UpdatedAt": "${updatedAt.toISOString()}",
-                "StatusId": ${statusId},
+                "Status": "${status}",
                 "Tags": ${JSON.stringify(tags)}
             }`
 
-            const jsonWithoutStatusId = `{
+            const jsonWithoutStatus = `{
                 "Name": "${name}",
                 "AddressId": ${addressId},
                 "Description": "${description}",
@@ -192,7 +193,7 @@ describe('EventDto', () => {
                 "CreatedAt": "${createdAt.toISOString()}",
                 "UpdatedAt": "${updatedAt.toISOString()}",
                 "Slug": "${slug}",
-                "StatusId": ${statusId}
+                "Status": "${status}"
             }`
 
             expect(() => {
@@ -223,7 +224,7 @@ describe('EventDto', () => {
                 EventDtoMapper.fromJSON(jsonWithoutSlug)
             }).toThrow(ModelMappingError)
             expect(() => {
-                EventDtoMapper.fromJSON(jsonWithoutStatusId)
+                EventDtoMapper.fromJSON(jsonWithoutStatus)
             }).toThrow(ModelMappingError)
             expect(() => {
                 EventDtoMapper.fromJSON(jsonWithoutTags)
@@ -243,7 +244,7 @@ describe('EventDto', () => {
                 CreatedAt: createdAt,
                 UpdatedAt: updatedAt,
                 Slug: slug,
-                StatusId: statusId,
+                Status: status,
                 Tags: tags
             }
 
@@ -259,7 +260,7 @@ describe('EventDto', () => {
             expect(event.CreatedAt).toEqual(createdAt)
             expect(event.UpdatedAt).toEqual(updatedAt)
             expect(event.Slug).toBe(slug)
-            expect(event.StatusId).toBe(statusId)
+            expect(event.Status).toBe(status)
             expect(event.Tags).toEqual(tags)
         })
 
@@ -287,7 +288,7 @@ describe('EventDto', () => {
                 CreatedAt: createdAt,
                 UpdatedAt: updatedAt,
                 Slug: slug,
-                StatusId: statusId,
+                Status: status,
                 Tags: tags
             }
 
@@ -300,7 +301,7 @@ describe('EventDto', () => {
                 CreatedAt: createdAt,
                 UpdatedAt: updatedAt,
                 Slug: slug,
-                StatusId: statusId,
+                Status: status,
                 Tags: tags
             }
 
@@ -313,7 +314,7 @@ describe('EventDto', () => {
                 CreatedAt: createdAt,
                 UpdatedAt: updatedAt,
                 Slug: slug,
-                StatusId: statusId,
+                Status: status,
                 Tags: tags
             }
 
@@ -326,7 +327,7 @@ describe('EventDto', () => {
                 CreatedAt: createdAt,
                 UpdatedAt: updatedAt,
                 Slug: slug,
-                StatusId: statusId,
+                Status: status,
                 Tags: tags
             }
 
@@ -339,7 +340,7 @@ describe('EventDto', () => {
                 CreatedAt: createdAt,
                 UpdatedAt: updatedAt,
                 Slug: slug,
-                StatusId: statusId,
+                Status: status,
                 Tags: tags
             }
 
@@ -352,7 +353,7 @@ describe('EventDto', () => {
                 CreatedAt: createdAt,
                 UpdatedAt: updatedAt,
                 Slug: slug,
-                StatusId: statusId,
+                Status: status,
                 Tags: tags
             }
 
@@ -365,7 +366,7 @@ describe('EventDto', () => {
                 EndAt: endAt,
                 UpdatedAt: updatedAt,
                 Slug: slug,
-                StatusId: statusId,
+                Status: status,
                 Tags: tags
             }
 
@@ -378,7 +379,7 @@ describe('EventDto', () => {
                 EndAt: endAt,
                 CreatedAt: createdAt,
                 Slug: slug,
-                StatusId: statusId,
+                Status: status,
                 Tags: tags
             }
 
@@ -391,7 +392,7 @@ describe('EventDto', () => {
                 EndAt: endAt,
                 CreatedAt: createdAt,
                 UpdatedAt: updatedAt,
-                StatusId: statusId,
+                Status: status,
                 Tags: tags
             }
 
@@ -418,7 +419,7 @@ describe('EventDto', () => {
                 CreatedAt: createdAt,
                 UpdatedAt: updatedAt,
                 Slug: slug,
-                StatusId: statusId
+                Status: status
             }
 
             expect(() => {

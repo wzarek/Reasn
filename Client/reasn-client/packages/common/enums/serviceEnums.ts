@@ -7,12 +7,3 @@ export enum HttpMethod {
     DELETE = "DELETE",
     PUT = "PUT"
 }
-
-/**
- * Enum representing available user roles.
- */
-export enum UserRole {
-    ADMIN = 'admin',
-    USER = 'user',
-    ORGANIZER = 'organizer'
-}

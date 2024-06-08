@@ -1,10 +1,11 @@
 import ModelMappingError from '@reasn/common/errors/ModelMappingError'
+import { ObjectType } from "@reasn/common/enums/modelsEnums"
 import { z } from "zod"
 
 export const ImageDtoSchema = z.object({
     ImageData: z.string(),
     ObjectId: z.number(),
-    ObjectTypeId: z.number()
+    ObjectType: z.nativeEnum(ObjectType)
 })
 
 export type ImageDto = z.infer<typeof ImageDtoSchema>
