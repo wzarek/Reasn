@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using ReasnAPI.Models.Authentication;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.Enums;
@@ -44,7 +43,7 @@ public class AuthService
         var userAlreadyExists = _context.Users.Any(u =>
             u.Email.ToUpper() == request.Email.ToUpper() ||
             u.Username.ToUpper() == request.Username.ToUpper() ||
-            u.Phone == request.Phone);
+            (!string.IsNullOrEmpty(request.Phone) && u.Phone == request.Phone));
 
         if (userAlreadyExists)
         {
@@ -59,6 +58,7 @@ public class AuthService
             Email = request.Email,
             Username = request.Username,
             Role = Enum.Parse<UserRole>(request.Role),
+            Phone = !string.IsNullOrEmpty(request.Phone) ? request.Phone : null,
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
@@ -68,6 +68,8 @@ public class AuthService
                 City = request.Address.City,
                 Street = request.Address.Street,
                 State = request.Address.State,
+                ZipCode = !string.IsNullOrEmpty(request.Address.ZipCode) ?
+                    request.Address.ZipCode : null
             }
         };
         _context.Users.Add(user);

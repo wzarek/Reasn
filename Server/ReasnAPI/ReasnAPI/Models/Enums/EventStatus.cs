@@ -9,7 +9,7 @@ public enum EventStatus
 
     [PgName("Ongoing")]
     Ongoing,
-    
+
     [PgName("Cancelled")]
     Cancelled,
 
