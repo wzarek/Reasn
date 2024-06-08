@@ -1,5 +1,7 @@
-﻿using System;
+﻿using ReasnAPI.Models.Enums;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ReasnAPI.Models.Database;
 
@@ -19,13 +21,13 @@ public partial class User
 
     public DateTime UpdatedAt { get; set; }
 
-    public int RoleId { get; set; }
-
     public string Email { get; set; } = null!;
 
     public bool IsActive { get; set; }
 
     public int AddressId { get; set; }
+
+    public UserRole Role { get; set; }
 
     public string? Phone { get; set; }
 
@@ -37,5 +39,5 @@ public partial class User
 
     public virtual ICollection<Participant> Participants { get; set; } = new List<Participant>();
 
-    public virtual Role Role { get; set; } = null!;
+    public virtual ICollection<UserInterest> UserInterests { get; set; } = new List<UserInterest>();
 }

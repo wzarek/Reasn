@@ -1,24 +1,24 @@
-import ModelMappingError from '@reasn/common/errors/ModelMappingError'
-import { UserDto, UserDtoMapper } from '@reasn/common/models/UserDto'
-import { UserInterestDto } from '@reasn/common/models/UserInterestDto'
-import { UserRole } from "@reasn/common/enums/modelsEnums"
+import ModelMappingError from "@reasn/common/errors/ModelMappingError";
+import { UserDto, UserDtoMapper } from "@reasn/common/models/UserDto";
+import { UserInterestDto } from "@reasn/common/models/UserInterestDto";
+import { UserRole } from "@reasn/common/enums/modelsEnums";
 
-describe('UserDto', () => {
-    const username = 'john_doe'
-    const name = 'John'
-    const surname = 'Doe'
-    const email = 'john.doe@example.com'
-    const phone = '+1234567890'
-    const role = UserRole.USER
-    const addressId = 2
-    const interests: UserInterestDto[] = [
-        { Interest: { Name: 'Programming' }, Level: 5 },
-        { Interest: { Name: 'Music' }, Level: 3 }
-    ]
+describe("UserDto", () => {
+  const username = "john_doe";
+  const name = "John";
+  const surname = "Doe";
+  const email = "john.doe@example.com";
+  const phone = "+1234567890";
+  const role = UserRole.USER;
+  const addressId = 2;
+  const interests: UserInterestDto[] = [
+    { Interest: { Name: "Programming" }, Level: 5 },
+    { Interest: { Name: "Music" }, Level: 3 },
+  ];
 
-    describe('fromJson', () => {
-        it('should create an instance of UserDto from JSON string', () => {
-            const json = `{
+  describe("fromJson", () => {
+    it("should create an instance of UserDto from JSON string", () => {
+      const json = `{
                 "Username": "${username}",
                 "Name": "${name}",
                 "Surname": "${surname}",
@@ -27,27 +27,27 @@ describe('UserDto', () => {
                 "Role": "${role}",
                 "AddressId": ${addressId},
                 "Intrests": ${JSON.stringify(interests)}
-            }`
+            }`;
 
-            let user = UserDtoMapper.fromJSON(json)
-            user = user as UserDto
+      let user = UserDtoMapper.fromJSON(json);
+      user = user as UserDto;
 
-            expect(user.Username).toBe(username)
-            expect(user.Name).toBe(name)
-            expect(user.Surname).toBe(surname)
-            expect(user.Email).toBe(email)
-            expect(user.Phone).toBe(phone)
-            expect(user.Role).toBe(role)
-            expect(user.AddressId).toBe(addressId)
-            expect(user.Intrests).toEqual(interests)
-        })
+      expect(user.Username).toBe(username);
+      expect(user.Name).toBe(name);
+      expect(user.Surname).toBe(surname);
+      expect(user.Email).toBe(email);
+      expect(user.Phone).toBe(phone);
+      expect(user.Role).toBe(role);
+      expect(user.AddressId).toBe(addressId);
+      expect(user.Intrests).toEqual(interests);
+    });
 
-        it('should return null if the JSON string is empty', () => {
-            expect(() => UserDtoMapper.fromJSON('')).toThrow(ModelMappingError)
-        })
+    it("should return null if the JSON string is empty", () => {
+      expect(() => UserDtoMapper.fromJSON("")).toThrow(ModelMappingError);
+    });
 
-        it('should throw an error when providing JSON without each property individually', () => {
-            const jsonWithoutUsername = `{
+    it("should throw an error when providing JSON without each property individually", () => {
+      const jsonWithoutUsername = `{
                 "Name": "${name}",
                 "Surname": "${surname}",
                 "Email": "${email}",
@@ -55,9 +55,9 @@ describe('UserDto', () => {
                 "Role": "${role}",
                 "AddressId": ${addressId},
                 "Intrests": ${JSON.stringify(interests)}
-            }`
+            }`;
 
-            const jsonWithoutName = `{
+      const jsonWithoutName = `{
                 "Username": "${username}",
                 "Surname": "${surname}",
                 "Email": "${email}",
@@ -65,9 +65,9 @@ describe('UserDto', () => {
                 "Role": "${role}",
                 "AddressId": ${addressId},
                 "Intrests": ${JSON.stringify(interests)}
-            }`
+            }`;
 
-            const jsonWithoutSurname = `{
+      const jsonWithoutSurname = `{
                 "Username": "${username}",
                 "Name": "${name}",
                 "Email": "${email}",
@@ -75,9 +75,9 @@ describe('UserDto', () => {
                 "Role": "${role}",
                 "AddressId": ${addressId},
                 "Intrests": ${JSON.stringify(interests)}
-            }`
+            }`;
 
-            const jsonWithoutEmail = `{
+      const jsonWithoutEmail = `{
                 "Username": "${username}",
                 "Name": "${name}",
                 "Surname": "${surname}",
@@ -85,9 +85,9 @@ describe('UserDto', () => {
                 "Role": "${role}",
                 "AddressId": ${addressId},
                 "Intrests": ${JSON.stringify(interests)}
-            }`
+            }`;
 
-            const jsonWithoutPhone = `{
+      const jsonWithoutPhone = `{
                 "Username": "${username}",
                 "Name": "${name}",
                 "Surname": "${surname}",
@@ -95,9 +95,9 @@ describe('UserDto', () => {
                 "Role": "${role}",
                 "AddressId": ${addressId},
                 "Intrests": ${JSON.stringify(interests)}
-            }`
+            }`;
 
-            const jsonWithoutRole = `{
+      const jsonWithoutRole = `{
                 "Username": "${username}",
                 "Name": "${name}",
                 "Surname": "${surname}",
@@ -105,9 +105,9 @@ describe('UserDto', () => {
                 "Phone": "${phone}",
                 "AddressId": ${addressId},
                 "Intrests": ${JSON.stringify(interests)}
-            }`
+            }`;
 
-            const jsonWithoutAddressId = `{
+      const jsonWithoutAddressId = `{
                 "Username": "${username}",
                 "Name": "${name}",
                 "Surname": "${surname}",
@@ -115,9 +115,9 @@ describe('UserDto', () => {
                 "Phone": "${phone}",
                 "Role": "${role}",
                 "Intrests": ${JSON.stringify(interests)}
-            }`
+            }`;
 
-            const jsonWithoutInterests = `{
+      const jsonWithoutInterests = `{
                 "Username": "${username}",
                 "Name": "${name}",
                 "Surname": "${surname}",
@@ -125,146 +125,178 @@ describe('UserDto', () => {
                 "Phone": "${phone}",
                 "Role": "${role}",
                 "AddressId": ${addressId}
-            }`
+            }`;
 
-            expect(() => UserDtoMapper.fromJSON(jsonWithoutUsername)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromJSON(jsonWithoutName)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromJSON(jsonWithoutSurname)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromJSON(jsonWithoutEmail)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromJSON(jsonWithoutPhone)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromJSON(jsonWithoutRole)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromJSON(jsonWithoutAddressId)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromJSON(jsonWithoutInterests)).toThrow(ModelMappingError)
-        })
-    })
+      expect(() => UserDtoMapper.fromJSON(jsonWithoutUsername)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromJSON(jsonWithoutName)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromJSON(jsonWithoutSurname)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromJSON(jsonWithoutEmail)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromJSON(jsonWithoutPhone)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromJSON(jsonWithoutRole)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromJSON(jsonWithoutAddressId)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromJSON(jsonWithoutInterests)).toThrow(
+        ModelMappingError,
+      );
+    });
+  });
 
-    describe('fromObject', () => {
-        it('should create an instance of UserDto from an object', () => {
-            const object = {
-                Username: username,
-                Name: name,
-                Surname: surname,
-                Email: email,
-                Phone: phone,
-                Role: role,
-                AddressId: addressId,
-                Intrests: interests
-            }
+  describe("fromObject", () => {
+    it("should create an instance of UserDto from an object", () => {
+      const object = {
+        Username: username,
+        Name: name,
+        Surname: surname,
+        Email: email,
+        Phone: phone,
+        Role: role,
+        AddressId: addressId,
+        Intrests: interests,
+      };
 
-            let user = UserDtoMapper.fromObject(object)
-            user = user as UserDto
+      let user = UserDtoMapper.fromObject(object);
+      user = user as UserDto;
 
-            expect(user.Username).toBe(username)
-            expect(user.Name).toBe(name)
-            expect(user.Surname).toBe(surname)
-            expect(user.Email).toBe(email)
-            expect(user.Phone).toBe(phone)
-            expect(user.Role).toBe(role)
-            expect(user.AddressId).toBe(addressId)
-            expect(user.Intrests).toEqual(interests)
-        })
+      expect(user.Username).toBe(username);
+      expect(user.Name).toBe(name);
+      expect(user.Surname).toBe(surname);
+      expect(user.Email).toBe(email);
+      expect(user.Phone).toBe(phone);
+      expect(user.Role).toBe(role);
+      expect(user.AddressId).toBe(addressId);
+      expect(user.Intrests).toEqual(interests);
+    });
 
-        it('should throw an error if the object is invalid', () => {
-            const object = {
-                Username: true,
-                Name: null,
-                Surname: 'Doe',
-                Email: 'john.doe@example.com',
-                Phone: '+1234567890',
-                Role: UserRole.USER,
-                AddressId: 2,
-                Intrests: interests
-            }
+    it("should throw an error if the object is invalid", () => {
+      const object = {
+        Username: true,
+        Name: null,
+        Surname: "Doe",
+        Email: "john.doe@example.com",
+        Phone: "+1234567890",
+        Role: UserRole.USER,
+        AddressId: 2,
+        Intrests: interests,
+      };
 
-            const objectWithoutUsername = {
-                Name: name,
-                Surname: surname,
-                Email: email,
-                Phone: phone,
-                Role: role,
-                AddressId: addressId,
-                Intrests: interests
-            }
+      const objectWithoutUsername = {
+        Name: name,
+        Surname: surname,
+        Email: email,
+        Phone: phone,
+        Role: role,
+        AddressId: addressId,
+        Intrests: interests,
+      };
 
-            const objectWithoutName = {
-                Username: username,
-                Surname: surname,
-                Email: email,
-                Phone: phone,
-                Role: role,
-                AddressId: addressId,
-                Intrests: interests
-            }
+      const objectWithoutName = {
+        Username: username,
+        Surname: surname,
+        Email: email,
+        Phone: phone,
+        Role: role,
+        AddressId: addressId,
+        Intrests: interests,
+      };
 
-            const objectWithoutSurname = {
-                Username: username,
-                Name: name,
-                Email: email,
-                Phone: phone,
-                Role: role,
-                AddressId: addressId,
-                Intrests: interests
-            }
+      const objectWithoutSurname = {
+        Username: username,
+        Name: name,
+        Email: email,
+        Phone: phone,
+        Role: role,
+        AddressId: addressId,
+        Intrests: interests,
+      };
 
-            const objectWithoutEmail = {
-                Username: username,
-                Name: name,
-                Surname: surname,
-                Phone: phone,
-                Role: role,
-                AddressId: addressId,
-                Intrests: interests
-            }
+      const objectWithoutEmail = {
+        Username: username,
+        Name: name,
+        Surname: surname,
+        Phone: phone,
+        Role: role,
+        AddressId: addressId,
+        Intrests: interests,
+      };
 
-            const objectWithoutPhone = {
-                Username: username,
-                Name: name,
-                Surname: surname,
-                Email: email,
-                Role: role,
-                AddressId: addressId,
-                Intrests: interests
-            }
+      const objectWithoutPhone = {
+        Username: username,
+        Name: name,
+        Surname: surname,
+        Email: email,
+        Role: role,
+        AddressId: addressId,
+        Intrests: interests,
+      };
 
-            const objectWithoutRole = {
-                Username: username,
-                Name: name,
-                Surname: surname,
-                Email: email,
-                Phone: phone,
-                AddressId: addressId,
-                Intrests: interests
-            }
+      const objectWithoutRole = {
+        Username: username,
+        Name: name,
+        Surname: surname,
+        Email: email,
+        Phone: phone,
+        AddressId: addressId,
+        Intrests: interests,
+      };
 
-            const objectWithoutAddressId = {
-                Username: username,
-                Name: name,
-                Surname: surname,
-                Email: email,
-                Phone: phone,
-                Role: role,
-                Intrests: interests
-            }
+      const objectWithoutAddressId = {
+        Username: username,
+        Name: name,
+        Surname: surname,
+        Email: email,
+        Phone: phone,
+        Role: role,
+        Intrests: interests,
+      };
 
-            const objectWithoutInterests = {
-                Username: username,
-                Name: name,
-                Surname: surname,
-                Email: email,
-                Phone: phone,
-                Role: role,
-                AddressId: addressId,
-            }
+      const objectWithoutInterests = {
+        Username: username,
+        Name: name,
+        Surname: surname,
+        Email: email,
+        Phone: phone,
+        Role: role,
+        AddressId: addressId,
+      };
 
-            expect(() => UserDtoMapper.fromObject(object)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromObject(objectWithoutUsername)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromObject(objectWithoutName)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromObject(objectWithoutSurname)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromObject(objectWithoutEmail)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromObject(objectWithoutPhone)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromObject(objectWithoutRole)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromObject(objectWithoutAddressId)).toThrow(ModelMappingError)
-            expect(() => UserDtoMapper.fromObject(objectWithoutInterests)).toThrow(ModelMappingError)
-        })
-    })
-})
+      expect(() => UserDtoMapper.fromObject(object)).toThrow(ModelMappingError);
+      expect(() => UserDtoMapper.fromObject(objectWithoutUsername)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromObject(objectWithoutName)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromObject(objectWithoutSurname)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromObject(objectWithoutEmail)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromObject(objectWithoutPhone)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromObject(objectWithoutRole)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromObject(objectWithoutAddressId)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromObject(objectWithoutInterests)).toThrow(
+        ModelMappingError,
+      );
+    });
+  });
+});

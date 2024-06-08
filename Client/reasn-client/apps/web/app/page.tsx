@@ -1,14 +1,20 @@
 "use client";
 
-import { Button } from "@reasn/ui";
-
-import styles from "../styles/index.module.css";
+import {
+  CTASection,
+  HeroSection,
+  QuickFilters,
+} from "@reasn/ui/src/components/web";
+import { Navbar, Footer } from "@reasn/ui/src/components/shared";
 
 export default function Web() {
   return (
-    <div className={styles.container}>
-      <h1>Web</h1>
-      <Button onClick={() => console.log("Pressed!")} text="Boop" />
+    <div className="min-h-screen bg-[#161618] text-white">
+      <Navbar />
+      <HeroSection />
+      <QuickFilters />
+      <CTASection />
+      <Footer />
     </div>
   );
 }

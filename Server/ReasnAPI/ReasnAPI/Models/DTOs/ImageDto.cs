@@ -1,9 +1,11 @@
-using System;
+using ReasnAPI.Models.Enums;
 
-namespace ReasnAPI.Models.DTOs {
-    public class ImageDto {
+namespace ReasnAPI.Models.DTOs
+{
+    public class ImageDto
+    {
         public byte[] ImageData { get; set; } = null!;
         public int ObjectId { get; set; }
-        public int ObjectTypeId { get; set; }
+        public ObjectType ObjectType { get; set; }
     }
 }

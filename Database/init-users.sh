@@ -16,6 +16,6 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
   GRANT SELECT ON ALL TABLES IN SCHEMA events TO $POSTGRES_CLIENT_USER;
   GRANT SELECT ON ALL TABLES IN SCHEMA common TO $POSTGRES_CLIENT_USER;
   GRANT SELECT, UPDATE, INSERT, DELETE ON ALL TABLES IN SCHEMA users TO $POSTGRES_CLIENT_USER;
-  GRANT UPDATE, INSERT ON events.event, events.tag, events.parameter, common.status, common.image TO $POSTGRES_CLIENT_USER;
+  GRANT UPDATE, INSERT ON events.event, events.tag, events.parameter, common.image TO $POSTGRES_CLIENT_USER;
   
 EOSQL

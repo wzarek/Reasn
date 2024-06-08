@@ -1,4 +1,4 @@
-import '../styles/global.css';
+import "../styles/global.css";
 import "@reasn/ui/src/styles.css";
 
 export default function RootLayout({
