@@ -32,7 +32,7 @@ public class ParticipantService(ReasnContext context)
             throw new NotFoundException("Event not found");
         }
 
-        context.Participants.Add(participantDto.FromDto());
+        context.Participants.Add(participantDto.ToEntity());
         context.SaveChanges();
 
         return participantDto;

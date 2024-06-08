@@ -20,7 +20,7 @@ namespace ReasnAPI.Mappers
             return participants.Select(ToDto).ToList();
         }
 
-        public static Participant FromDto(this ParticipantDto participantDto)
+        public static Participant ToEntity(this ParticipantDto participantDto)
         {
             return new Participant
             {

@@ -19,11 +19,11 @@ public static class UserInterestMapper
         return userInterests.Select(ToDto).ToList();
     }
 
-    public static UserInterest FromDto(this UserInterestDto userInterestDto)
+    public static UserInterest ToEntity(this UserInterestDto userInterestDto)
     {
         return new UserInterest
         {
-            Interest = userInterestDto.Interest.FromDto(),
+            Interest = userInterestDto.Interest.ToEntity(),
             Level = userInterestDto.Level
         };
     }

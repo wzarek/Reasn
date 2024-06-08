@@ -12,7 +12,7 @@ public class CommentService(ReasnContext context)
     {
         ArgumentNullException.ThrowIfNull(commentDto);
 
-        context.Comments.Add(commentDto.FromDto());
+        context.Comments.Add(commentDto.ToEntity());
         context.SaveChanges();
 
         return commentDto;

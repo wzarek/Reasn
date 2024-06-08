@@ -22,7 +22,7 @@ public static class AddressMapper
         return addresses.Select(ToDto).ToList();
     }
 
-    public static Address FromDto(this AddressDto addressDto)
+    public static Address ToEntity(this AddressDto addressDto)
     {
         return new Address
         {

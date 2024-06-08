@@ -12,7 +12,7 @@ public class AddressService(ReasnContext context)
     {
         ArgumentNullException.ThrowIfNull(addressDto);
 
-        context.Addresses.Add(addressDto.FromDto());
+        context.Addresses.Add(addressDto.ToEntity());
         context.SaveChanges();
 
         return addressDto;

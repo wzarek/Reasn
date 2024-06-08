@@ -21,7 +21,7 @@ namespace ReasnAPI.Mappers
             return comments.Select(ToDto).ToList();
         }
 
-        public static Comment FromDto(this CommentDto commentDto)
+        public static Comment ToEntity(this CommentDto commentDto)
         {
             return new Comment
             {

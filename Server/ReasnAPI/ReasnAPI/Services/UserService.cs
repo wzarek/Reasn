@@ -71,7 +71,7 @@ public class UserService(ReasnContext context)
 
             var interestsToAdd = userDto.Interests
                                         .Where(uid => !user.UserInterests.Any(ui => ui.Interest.Name == uid.Interest.Name))
-                                        .Select(uid => uid.FromDto())
+                                        .Select(uid => uid.ToEntity())
                                         .ToList();
 
             context.UserInterests.AddRange(interestsToAdd);
