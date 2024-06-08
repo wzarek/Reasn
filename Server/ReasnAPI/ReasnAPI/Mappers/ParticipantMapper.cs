@@ -1,33 +1,31 @@
 ﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 
-namespace ReasnAPI.Mappers
+namespace ReasnAPI.Mappers;
+public static class ParticipantMapper
 {
-    public static class ParticipantMapper
+    public static ParticipantDto ToDto(this Participant participant)
     {
-        public static ParticipantDto ToDto(this Participant participant)
+        return new ParticipantDto
         {
-            return new ParticipantDto
-            {
-                EventId = participant.EventId,
-                UserId = participant.UserId,
-                Status = participant.Status
-            };
-        }
+            EventId = participant.EventId,
+            UserId = participant.UserId,
+            Status = participant.Status
+        };
+    }
 
-        public static List<ParticipantDto> ToDtoList(this IEnumerable<Participant> participants)
-        {
-            return participants.Select(ToDto).ToList();
-        }
+    public static List<ParticipantDto> ToDtoList(this IEnumerable<Participant> participants)
+    {
+        return participants.Select(ToDto).ToList();
+    }
 
-        public static Participant ToEntity(this ParticipantDto participantDto)
+    public static Participant ToEntity(this ParticipantDto participantDto)
+    {
+        return new Participant
         {
-            return new Participant
-            {
-                EventId = participantDto.EventId,
-                UserId = participantDto.UserId,
-                Status = participantDto.Status
-            };
-        }
+            EventId = participantDto.EventId,
+            UserId = participantDto.UserId,
+            Status = participantDto.Status
+        };
     }
 }

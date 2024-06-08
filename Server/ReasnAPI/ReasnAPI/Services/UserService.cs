@@ -10,7 +10,7 @@ namespace ReasnAPI.Services;
 
 public class UserService(ReasnContext context)
 {
-    public UserDto? UpdateUser(int userId, UserDto? userDto)
+    public UserDto UpdateUser(int userId, UserDto userDto)
     {
         using (var scope = new TransactionScope())
         {
@@ -27,22 +27,24 @@ public class UserService(ReasnContext context)
             }
 
             var usernameExists = context.Users.Any(r => r.Username == userDto.Username && r.Id != userId);
-            var emailExists = context.Users.Any(r => r.Email == userDto.Email && r.Id != userId);
-            var phoneExists = context.Users.Any(r => r.Phone == userDto.Phone && r.Id != userId);
 
             if (usernameExists)
             {
-                throw new BadRequestException("Username already exists");
+                throw new BadRequestException("User with given username already exists");
             }
+
+            var emailExists = context.Users.Any(r => r.Email == userDto.Email && r.Id != userId);
 
             if (emailExists)
             {
-                throw new BadRequestException("Email already exists");
+                throw new BadRequestException("User with given email already exists");
             }
+
+            var phoneExists = context.Users.Any(r => r.Phone == userDto.Phone && r.Id != userId);
 
             if (phoneExists)
             {
-                throw new BadRequestException("Phone already exists");
+                throw new BadRequestException("User with given phone number already exists");
             }
 
             user.Username = userDto.Username;
@@ -100,7 +102,7 @@ public class UserService(ReasnContext context)
         return userDto;
     }
 
-    public UserDto? GetUserById(int userId)
+    public UserDto GetUserById(int userId)
     {
         var user = context.Users
                             .Include(u => u.UserInterests)
@@ -114,7 +116,7 @@ public class UserService(ReasnContext context)
         return user.ToDto();
     }
 
-    public IEnumerable<UserDto?> GetUsersByFilter(Expression<Func<User, bool>> filter)
+    public IEnumerable<UserDto> GetUsersByFilter(Expression<Func<User, bool>> filter)
     {
         return context.Users
                         .Include(u => u.UserInterests)
@@ -124,7 +126,7 @@ public class UserService(ReasnContext context)
                         .AsEnumerable();
     }
 
-    public IEnumerable<UserDto?> GetAllUsers()
+    public IEnumerable<UserDto> GetAllUsers()
     {
         var users = context.Users
                             .Include(u => u.UserInterests)

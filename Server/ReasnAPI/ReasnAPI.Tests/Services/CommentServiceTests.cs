@@ -344,7 +344,7 @@ public class CommentServiceTests
 
         var commentService = new CommentService(mockContext.Object);
 
-        commentService.DeleteComment(1, 1);
+        commentService.DeleteComment(1);
 
         mockContext.Verify(c => c.SaveChanges(), Times.Once);
     }
@@ -357,6 +357,6 @@ public class CommentServiceTests
 
         var commentService = new CommentService(mockContext.Object);
 
-        Assert.ThrowsException<NotFoundException>(() => commentService.DeleteComment(1, 1));
+        Assert.ThrowsException<NotFoundException>(() => commentService.DeleteComment(1));
     }
 }

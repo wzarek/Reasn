@@ -8,7 +8,7 @@ namespace ReasnAPI.Services;
 
 public class AddressService(ReasnContext context)
 {
-    public AddressDto? CreateAddress(AddressDto? addressDto)
+    public AddressDto CreateAddress(AddressDto addressDto)
     {
         ArgumentNullException.ThrowIfNull(addressDto);
 
@@ -18,7 +18,7 @@ public class AddressService(ReasnContext context)
         return addressDto;
     }
 
-    public AddressDto? UpdateAddress(int addressId, AddressDto? addressDto)
+    public AddressDto UpdateAddress(int addressId, AddressDto addressDto)
     {
         ArgumentNullException.ThrowIfNull(addressDto);
 
@@ -54,7 +54,7 @@ public class AddressService(ReasnContext context)
         context.SaveChanges();
     }
 
-    public AddressDto? GetAddressById(int addressId)
+    public AddressDto GetAddressById(int addressId)
     {
         var address = context.Addresses.Find(addressId);
 
@@ -66,7 +66,7 @@ public class AddressService(ReasnContext context)
         return address.ToDto();
     }
 
-    public IEnumerable<AddressDto?> GetAddressesByFilter(Expression<Func<Address, bool>> filter)
+    public IEnumerable<AddressDto> GetAddressesByFilter(Expression<Func<Address, bool>> filter)
     {
         return context.Addresses
                         .Where(filter)
@@ -74,7 +74,7 @@ public class AddressService(ReasnContext context)
                         .AsEnumerable();
     }
 
-    public IEnumerable<AddressDto?> GetAllAddresses()
+    public IEnumerable<AddressDto> GetAllAddresses()
     {
         return context.Addresses
                         .ToDtoList()

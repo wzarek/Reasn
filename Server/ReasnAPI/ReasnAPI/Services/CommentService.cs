@@ -8,9 +8,11 @@ namespace ReasnAPI.Services;
 
 public class CommentService(ReasnContext context)
 {
-    public CommentDto? CreateComment(CommentDto? commentDto)
+    public CommentDto CreateComment(CommentDto commentDto)
     {
         ArgumentNullException.ThrowIfNull(commentDto);
+
+        commentDto.CreatedAt = DateTime.UtcNow;
 
         context.Comments.Add(commentDto.ToEntity());
         context.SaveChanges();
@@ -18,7 +20,7 @@ public class CommentService(ReasnContext context)
         return commentDto;
     }
 
-    public CommentDto? UpdateComment(int commentId, CommentDto? commentDto)
+    public CommentDto UpdateComment(int commentId, CommentDto commentDto)
     {
         ArgumentNullException.ThrowIfNull(commentDto);
 
@@ -36,11 +38,6 @@ public class CommentService(ReasnContext context)
             throw new NotFoundException("User not found");
         }
 
-        if (comment.UserId != commentDto.UserId && user.Role != Models.Enums.UserRole.Admin)
-        {
-            throw new BadRequestException("User is not authorized to update this comment");
-        }
-
         comment.Content = commentDto.Content;
 
         context.Comments.Update(comment);
@@ -49,7 +46,7 @@ public class CommentService(ReasnContext context)
         return comment.ToDto();
     }
 
-    public void DeleteComment(int commentId, int userId)
+    public void DeleteComment(int commentId)
     {
         var comment = context.Comments.FirstOrDefault(r => r.Id == commentId);
 
@@ -58,23 +55,11 @@ public class CommentService(ReasnContext context)
             throw new NotFoundException("Comment not found");
         }
 
-        var user = context.Users.FirstOrDefault(r => r.Id == userId);
-
-        if (user is null)
-        {
-            throw new NotFoundException("User not found");
-        }
-
-        if (comment.UserId != userId && user.Role != Models.Enums.UserRole.Admin)
-        {
-            throw new BadRequestException("User is not authorized to delete this comment");
-        }
-
         context.Comments.Remove(comment);
         context.SaveChanges();
     }
 
-    public CommentDto? GetCommentById(int commentId)
+    public CommentDto GetCommentById(int commentId)
     {
         var comment = context.Comments.Find(commentId);
 
@@ -86,7 +71,7 @@ public class CommentService(ReasnContext context)
         return comment.ToDto();
     }
 
-    public IEnumerable<CommentDto?> GetCommentsByFilter(Expression<Func<Comment, bool>> filter)
+    public IEnumerable<CommentDto> GetCommentsByFilter(Expression<Func<Comment, bool>> filter)
     {
         return context.Comments
                         .Where(filter)
@@ -94,7 +79,7 @@ public class CommentService(ReasnContext context)
                         .AsEnumerable();
     }
 
-    public IEnumerable<CommentDto?> GetAllComments()
+    public IEnumerable<CommentDto> GetAllComments()
     {
         return context.Comments
                         .ToDtoList()

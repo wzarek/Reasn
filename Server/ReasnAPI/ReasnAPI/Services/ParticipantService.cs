@@ -8,7 +8,7 @@ namespace ReasnAPI.Services;
 
 public class ParticipantService(ReasnContext context)
 {
-    public ParticipantDto? CreateParticipant(ParticipantDto? participantDto)
+    public ParticipantDto CreateParticipant(ParticipantDto participantDto)
     {
         ArgumentNullException.ThrowIfNull(participantDto);
 
@@ -20,12 +20,13 @@ public class ParticipantService(ReasnContext context)
         }
 
         var userInDb = context.Users.FirstOrDefault(r => r.Id == participantDto.UserId);
-        var eventInDb = context.Events.FirstOrDefault(r => r.Id == participantDto.EventId);
 
         if (userInDb is null)
         {
             throw new NotFoundException("User not found");
         }
+
+        var eventInDb = context.Events.FirstOrDefault(r => r.Id == participantDto.EventId);
 
         if (eventInDb is null)
         {
@@ -38,7 +39,7 @@ public class ParticipantService(ReasnContext context)
         return participantDto;
     }
 
-    public ParticipantDto? UpdateParticipant(int participantId, ParticipantDto? participantDto)
+    public ParticipantDto UpdateParticipant(int participantId, ParticipantDto participantDto)
     {
         ArgumentNullException.ThrowIfNull(participantDto);
 
@@ -69,7 +70,7 @@ public class ParticipantService(ReasnContext context)
         context.SaveChanges();
     }
 
-    public ParticipantDto? GetParticipantById(int participantId)
+    public ParticipantDto GetParticipantById(int participantId)
     {
         var participant = context.Participants.Find(participantId);
 
@@ -81,7 +82,7 @@ public class ParticipantService(ReasnContext context)
         return participant.ToDto();
     }
 
-    public IEnumerable<ParticipantDto?> GetParticipantsByFilter(Expression<Func<Participant, bool>> filter)
+    public IEnumerable<ParticipantDto> GetParticipantsByFilter(Expression<Func<Participant, bool>> filter)
     {
         return context.Participants
                         .Where(filter)
@@ -89,7 +90,7 @@ public class ParticipantService(ReasnContext context)
                         .AsEnumerable();
     }
 
-    public IEnumerable<ParticipantDto?> GetAllParticipants()
+    public IEnumerable<ParticipantDto> GetAllParticipants()
     {
         return context.Participants
                         .ToDtoList()
