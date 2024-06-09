@@ -14,11 +14,7 @@ public class ParameterService(ReasnContext context)
             return null;
         }
 
-        var newParameter = new Parameter
-        {
-            Key = parameterDto.Key,
-            Value = parameterDto.Value
-        };
+        var newParameter = MapParameterFromParameterDto(parameterDto);
         context.Parameters.Add(newParameter);
         context.SaveChanges();
         return parameterDto;
@@ -32,15 +28,11 @@ public class ParameterService(ReasnContext context)
 
         var parameterCheck = parameters.FirstOrDefault(r => r.Parameters.Any(p => p.Id == parameterId));
             
-        if (parameterCheck is not null) // if parameter is associated with an event, it cannot be updated
+        if (parameterCheck is not null && parameter is null) // if parameter is associated with an event, it cannot be updated
         {
             return null;
         }
-
-        if (parameter is null)
-        {
-            return null;
-        }
+    
         parameter.Key = parameterDto.Key;
         parameter.Value = parameterDto.Value;
         context.Parameters.Update(parameter);
@@ -82,11 +74,7 @@ public class ParameterService(ReasnContext context)
             return null;
         }
 
-        var parameterDto = new ParameterDto
-        {
-            Key = parameter.Key,
-            Value = parameter.Value
-        };
+        var parameterDto = MapParameterDtoFromParameter(parameter);
 
         return parameterDto;
     }
@@ -95,15 +83,34 @@ public class ParameterService(ReasnContext context)
     {
         var parameters = context.Parameters.ToList();
 
-        return parameters.Select(parameter => new ParameterDto { Key = parameter.Key, Value = parameter.Value }).AsEnumerable();
+        return parameters.Select(parameter => MapParameterDtoFromParameter(parameter))
+            .AsEnumerable();
     }
 
     public IEnumerable<ParameterDto> GetParametersByFilter(Expression<Func<Parameter, bool>> filter)
     {
         var parameters = context.Parameters.Where(filter).ToList();
 
-        return parameters.Select(parameter => new ParameterDto { Key = parameter.Key, Value = parameter.Value })
+        return parameters.Select(parameter => MapParameterDtoFromParameter(parameter))
             .AsEnumerable();
+    }
+
+    private Parameter MapParameterFromParameterDto(ParameterDto parameterDto)
+    {
+        return new Parameter
+        {
+            Key = parameterDto.Key,
+            Value = parameterDto.Value
+        };
+    }
+
+    private ParameterDto MapParameterDtoFromParameter(Parameter parameter)
+    {
+        return new ParameterDto
+        {
+            Key = parameter.Key,
+            Value = parameter.Value
+        };
     }
 
 }

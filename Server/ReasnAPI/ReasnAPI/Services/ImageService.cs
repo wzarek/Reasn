@@ -20,13 +20,8 @@ public class ImageService(ReasnContext context)
                 continue;
             }
 
-            var newImage = new Image
-            {
-                ImageData = imageDto.ImageData,
-                ObjectId = imageDto.ObjectId,
-                ObjectType = imageDto.ObjectType
-            };
-
+            var newImage = MapImageFromImageDto(imageDto);
+            
             newImages.Add(newImage);
         }
 
@@ -89,13 +84,8 @@ public class ImageService(ReasnContext context)
             return null;
         }
 
-        var imageDto = new ImageDto
-        {
-            ImageData = image.ImageData,
-            ObjectId = image.ObjectId,
-            ObjectType = image.ObjectType
-        };
-
+        var imageDto = MapImageDtoFromImage(image);
+        
         return imageDto;
     }
 
@@ -103,12 +93,7 @@ public class ImageService(ReasnContext context)
     {
         var images = context.Images.ToList();
 
-        var imageDtos = images.Select(image => new ImageDto
-        {
-            ImageData = image.ImageData,
-            ObjectId = image.ObjectId,
-            ObjectType = image.ObjectType
-        }).ToList();
+        var imageDtos = images.Select(image => MapImageDtoFromImage(image)).AsEnumerable();
 
         return imageDtos;
     }
@@ -117,12 +102,7 @@ public class ImageService(ReasnContext context)
     {
         var images = context.Images.Where(filter).ToList();
 
-        var imageDtos = images.Select(image => new ImageDto
-        {
-            ImageData = image.ImageData,
-            ObjectId = image.ObjectId,
-            ObjectType = image.ObjectType
-        }).AsEnumerable();
+        var imageDtos = images.Select(image => MapImageDtoFromImage(image)).AsEnumerable();
 
         return imageDtos;
     }
@@ -133,14 +113,29 @@ public class ImageService(ReasnContext context)
             .Where(image => image.ObjectType == ObjectType.Event && image.ObjectId == eventId)
             .ToList();
 
-        var imageDtos = images.Select(image => new ImageDto
+        var imageDtos = images.Select(image => MapImageDtoFromImage(image)).AsEnumerable();
+
+        return imageDtos;
+    }
+
+    private ImageDto MapImageDtoFromImage(Image image)
+    {
+        return new ImageDto
         {
             ImageData = image.ImageData,
             ObjectId = image.ObjectId,
             ObjectType = image.ObjectType
-        }).AsEnumerable();
+        };
+    }
 
-        return imageDtos;
+    private Image MapImageFromImageDto(ImageDto imageDto)
+    {
+        return new Image
+        {
+            ImageData = imageDto.ImageData,
+            ObjectId = imageDto.ObjectId,
+            ObjectType = imageDto.ObjectType
+        };
     }
 
 }

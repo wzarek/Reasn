@@ -58,20 +58,6 @@ public class InterestService(ReasnContext context)
         return true;
     }
 
-    //public bool DeleteInterestFromUserInterests(int interestId, int userId)
-    //{
-    //    var userInterest = context.UserInterests.FirstOrDefault(r => r.InterestId == interestId && r.UserId == userId);
-    //    if (userInterest == null)
-    //    {
-    //        return false;
-    //    }
-
-    //    context.UserInterests.Remove(userInterest);
-    //    context.SaveChanges();
-
-    //    return true;
-    //}
-
     public InterestDto? GetInterestById(int interestId)
     {
         var interest = context.Interests.Find(interestId);
