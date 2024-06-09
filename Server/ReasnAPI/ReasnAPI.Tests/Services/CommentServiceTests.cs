@@ -1,10 +1,10 @@
 ﻿using Moq;
 using Moq.EntityFrameworkCore;
+using ReasnAPI.Exceptions;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Models.Enums;
 using ReasnAPI.Services;
-using ReasnAPI.Services.Exceptions;
 
 namespace ReasnAPI.Tests.Services;
 
