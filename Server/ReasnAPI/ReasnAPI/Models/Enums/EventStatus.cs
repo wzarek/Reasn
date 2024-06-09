@@ -1,9 +1,24 @@
-﻿namespace ReasnAPI.Models.Enums;
+﻿using NpgsqlTypes;
+
+namespace ReasnAPI.Models.Enums;
 
 public enum EventStatus
 {
+    [PgName("Completed")]
     Completed,
-    Inprogress,
+
+    [PgName("Ongoing")]
+    Ongoing,
+
+    [PgName("Cancelled")]
+    Cancelled,
+
+    [PgName("Approved")]
     Approved,
-    WaitingForApproval
+
+    [PgName("Pending approval")]
+    PendingApproval,
+
+    [PgName("Rejected")]
+    Rejected
 }

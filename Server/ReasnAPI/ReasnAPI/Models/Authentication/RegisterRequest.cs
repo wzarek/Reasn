@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using ReasnAPI.Models.DTOs;
 
 namespace ReasnAPI.Models.Authentication;
 
+[ValidateNever]
 public class RegisterRequest
 {
     public string Name { get; set; } = null!;
