@@ -28,7 +28,7 @@ public class ParameterService(ReasnContext context)
 
         var parameterCheck = parameters.FirstOrDefault(r => r.Parameters.Any(p => p.Id == parameterId));
             
-        if (parameterCheck is not null && parameter is null) // if parameter is associated with an event, it cannot be updated
+        if (parameterCheck is not null || parameter is null) // if parameter is associated with an event, it cannot be updated
         {
             return null;
         }

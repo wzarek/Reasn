@@ -16,10 +16,7 @@ public class TagService (ReasnContext context)
             return null;
         }
 
-        var newTag = new Tag
-        {
-            Name = tagDto.Name
-        };
+        var newTag = MapTagFromTagDto(tagDto);
         context.Tags.Add(newTag);
         context.SaveChanges();
         return tagDto;
@@ -44,10 +41,7 @@ public class TagService (ReasnContext context)
             if (eventTags.Count > 1 || (eventTags.Count == 1 && eventTags[0].Id != eventId))
             {
                 // Create new tag, associate it with the event, and remove the old association
-                var newTag = new Tag
-                {
-                    Name = tagDto.Name
-                };
+                var newTag = MapTagFromTagDto(tagDto);
                 context.Tags.Add(newTag);
                 context.SaveChanges();
 
@@ -106,22 +100,35 @@ public class TagService (ReasnContext context)
             return null;
         }
 
+        return MapTagDtoFromTag(tag);
+    }
+
+    public IEnumerable<TagDto> GetAllTags()
+    {
+        var tags = context.Tags.ToList();
+        return tags.Select(tag => MapTagDtoFromTag(tag)).AsEnumerable();
+    }
+
+    public IEnumerable<TagDto> GetTagsByFilter(Expression<Func<Tag, bool>> filter)
+    {
+        var tags = context.Tags.Where(filter).ToList();
+        return tags.Select(tag => MapTagDtoFromTag(tag)).AsEnumerable();
+    }
+
+    private TagDto MapTagDtoFromTag(Tag tag)
+    {
         return new TagDto
         {
             Name = tag.Name
         };
     }
 
-    public IEnumerable<TagDto> GetAllTags()
+    private Tag MapTagFromTagDto(TagDto tagDto)
     {
-        var tags = context.Tags.ToList();
-        return tags.Select(tag => new TagDto { Name = tag.Name }).AsEnumerable();
-    }
-
-    public IEnumerable<TagDto> GetTagsByFilter(Expression<Func<Tag, bool>> filter)
-    {
-        var tags = context.Tags.Where(filter).ToList();
-        return tags.Select(tag => new TagDto { Name = tag.Name }).AsEnumerable();
+        return new Tag
+        {
+            Name = tagDto.Name
+        };
     }
 
 }

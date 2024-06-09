@@ -14,10 +14,7 @@ public class InterestService(ReasnContext context)
             return null;
         }
 
-        var newInterest = new Interest
-        {
-            Name = interestDto.Name
-        };
+        var newInterest = MapInterestFromInterestDto(interestDto);
 
         context.Interests.Add(newInterest);
         context.SaveChanges();
@@ -66,10 +63,7 @@ public class InterestService(ReasnContext context)
             return null;
         }
 
-        var interestDto = new InterestDto
-        {
-            Name = interest.Name
-        };
+        var interestDto = MapInterestDtoFromInterest(interest);
 
         return interestDto;
     }
@@ -78,19 +72,32 @@ public class InterestService(ReasnContext context)
     {
         var interests = context.Interests.ToList();
 
-        return interests.Select(interest => new InterestDto { Name = interest.Name }).AsEnumerable();
+        return interests.Select(interest => MapInterestDtoFromInterest(interest)).AsEnumerable();
     }
 
     public IEnumerable<InterestDto> GetInterestsByFilter(Expression<Func<Interest, bool>> filter)
     {
         var interests = context.Interests.Where(filter).ToList();
 
-        var interestDtos = interests.Select(interest => new InterestDto
-        {
-            Name = interest.Name
-        }).AsEnumerable();
+        var interestDtos = interests.Select(interest => MapInterestDtoFromInterest(interest)).AsEnumerable();
 
         return interestDtos;
+    }
+
+    private InterestDto MapInterestDtoFromInterest(Interest interest)
+    {
+        return new InterestDto
+        {
+            Name = interest.Name
+        };
+    }
+
+    private Interest MapInterestFromInterestDto(InterestDto interestDto)
+    {
+        return new Interest
+        {
+            Name = interestDto.Name
+        };
     }
 
 }
