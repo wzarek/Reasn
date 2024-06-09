@@ -16,7 +16,7 @@ public class TagService (ReasnContext context)
         var tag = context.Tags.FirstOrDefault(r => r.Name == tagDto.Name);
         if (tag is not null)
         {
-            throw new ObjectExistsException("Tag already exists");
+            throw new BadRequestException("Tag already exists");
         }
 
         context.Tags.Add(tagDto.ToEntity());
@@ -85,7 +85,7 @@ public class TagService (ReasnContext context)
 
         if (isTagAssociatedWithEvent) 
         {
-            throw new ObjectInUseException("Tag is associated with an event");
+            throw new BadRequestException("Tag is associated with an event");
         }
 
         context.Tags.Remove(tag);
@@ -117,7 +117,4 @@ public class TagService (ReasnContext context)
             .ToDtoList()
             .AsEnumerable();
     }
-
-  
-
 }

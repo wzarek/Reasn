@@ -5,7 +5,6 @@ using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using ReasnAPI.Models.Mappers;
-using ReasnAPI.Exceptions;
 
 namespace ReasnAPI.Services;
 public class ParameterService(ReasnContext context)
@@ -15,7 +14,7 @@ public class ParameterService(ReasnContext context)
         var parameter = context.Parameters.FirstOrDefault(r => r.Key == parameterDto.Key && r.Value == parameterDto.Value);
         if (parameter is not null)
         {
-            throw new ObjectExistsException("Parameter already exists");
+            throw new BadRequestException("Parameter already exists");
         }
 
         var newParameter = parameterDto.ToEntity();
@@ -39,7 +38,7 @@ public class ParameterService(ReasnContext context)
 
         if (parameterCheck is not null) // if parameter is associated with an event, it cannot be updated
         {
-            throw new ObjectInUseException("Parameter is associated with an event");
+            throw new BadRequestException("Parameter is associated with an event");
         }
 
         parameter.Key = parameterDto.Key;
@@ -67,7 +66,7 @@ public class ParameterService(ReasnContext context)
 
         if (parameterCheck)
         {
-            throw new ObjectInUseException("Parameter is associated with an event");
+            throw new BadRequestException("Parameter is associated with an event");
         }
 
         context.Parameters.Remove(parameter);
