@@ -48,10 +48,10 @@ public partial class ReasnContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .HasPostgresEnum<EventStatus>("common", "event_status")
-            .HasPostgresEnum<ObjectType>("common", "object_type")
-            .HasPostgresEnum<ParticipantStatus>("common", "participant_status")
-            .HasPostgresEnum<UserRole>("users", "role");
+            .HasPostgresEnum("common", "event_status", new[] { "Completed", "Ongoing", "Cancelled", "Approved", "Pending approval", "Rejected" })
+            .HasPostgresEnum("common", "object_type", new[] { "Event", "User" })
+            .HasPostgresEnum("common", "participant_status", new[] { "Interested", "Participating" })
+            .HasPostgresEnum("users", "role", new[] { "User", "Organizer", "Admin" });
 
         modelBuilder.Entity<Address>(entity =>
         {

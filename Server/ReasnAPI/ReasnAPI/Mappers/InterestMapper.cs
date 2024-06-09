@@ -17,4 +17,12 @@ public static class InterestMapper
     {
         return interests.Select(ToDto).ToList();
     }
+
+    public static Interest ToEntity(this InterestDto interestDto)
+    {
+        return new Interest
+        {
+            Name = interestDto.Name
+        };
+    }
 }

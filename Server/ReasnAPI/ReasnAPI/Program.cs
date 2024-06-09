@@ -13,6 +13,7 @@ using ReasnAPI.Middlewares;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Services.Authentication;
 using ReasnAPI.Validators;
+using ReasnAPI.Services;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 var config = builder.Configuration;
@@ -65,6 +66,8 @@ var dataSource = dataSourceBuilder.Build();
 builder.Services.AddDbContext<ReasnContext>(options =>
     options.UseNpgsql(dataSource)
         .EnableDetailedErrors());
+
+builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen(options =>
 {
