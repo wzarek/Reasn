@@ -23,6 +23,71 @@ public class UserServiceTests
     }
 
     [TestMethod]
+    public void GetUserById_UserExists_UserReturned()
+    {
+        var mockContext = new Mock<ReasnContext>();
+
+        var user = new User
+        {
+            Id = 1,
+            Name = "John",
+            Surname = "Doe",
+            Username = "Username",
+            Email = "Email"
+        };
+
+        mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
+
+        var userService = new UserService(mockContext.Object);
+
+        var result = userService.GetUserById(1);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("John", result.Name);
+        Assert.AreEqual("Doe", result.Surname);
+        Assert.AreEqual("Username", result.Username);
+        Assert.AreEqual("Email", result.Email);
+    }
+
+    [TestMethod]
+    public void GetUserByUsername_UserDoesNotExist_NullReturned()
+    {
+        var mockContext = new Mock<ReasnContext>();
+        mockContext.Setup(c => c.Users).ReturnsDbSet([]);
+
+        var userService = new UserService(mockContext.Object);
+
+        Assert.ThrowsException<NotFoundException>(() => userService.GetUserByUsername("username"));
+    }
+
+    [TestMethod]
+    public void GetUserByUsername_UserExists_UserReturned()
+    {
+        var mockContext = new Mock<ReasnContext>();
+
+        var user = new User
+        {
+            Id = 1,
+            Name = "John",
+            Surname = "Doe",
+            Username = "Username",
+            Email = "Email"
+        };
+
+        mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
+
+        var userService = new UserService(mockContext.Object);
+
+        var result = userService.GetUserByUsername("Username");
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("John", result.Name);
+        Assert.AreEqual("Doe", result.Surname);
+        Assert.AreEqual("Username", result.Username);
+        Assert.AreEqual("Email", result.Email);
+    }
+
+    [TestMethod]
     public void GetAllUsers_NoUsers_EmptyListReturned()
     {
         var mockContext = new Mock<ReasnContext>();

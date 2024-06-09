@@ -116,6 +116,20 @@ public class UserService(ReasnContext context)
         return user.ToDto();
     }
 
+    public UserDto GetUserByUsername(string username)
+    {
+        var user = context.Users
+                            .Include(u => u.UserInterests)
+                            .FirstOrDefault(u => u.Username == username);
+
+        if (user is null)
+        {
+            throw new NotFoundException("User not found");
+        }
+
+        return user.ToDto();
+    }
+
     public IEnumerable<UserDto> GetUsersByFilter(Expression<Func<User, bool>> filter)
     {
         return context.Users
