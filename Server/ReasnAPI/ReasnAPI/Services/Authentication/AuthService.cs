@@ -3,6 +3,7 @@ using ReasnAPI.Models.Authentication;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.Enums;
 using ReasnAPI.Services.Exceptions;
+using Exception = System.Exception;
 
 namespace ReasnAPI.Services.Authentication;
 
@@ -58,7 +59,7 @@ public class AuthService
             Email = request.Email,
             Username = request.Username,
             Role = Enum.Parse<UserRole>(request.Role),
-            Phone = !string.IsNullOrEmpty(request.Phone) ? request.Phone : null,
+            Phone = request.Phone,
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
@@ -68,8 +69,7 @@ public class AuthService
                 City = request.Address.City,
                 Street = request.Address.Street,
                 State = request.Address.State,
-                ZipCode = !string.IsNullOrEmpty(request.Address.ZipCode) ?
-                    request.Address.ZipCode : null
+                ZipCode = request.Address.ZipCode
             }
         };
         _context.Users.Add(user);
