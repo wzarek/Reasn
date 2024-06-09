@@ -73,7 +73,6 @@ jobs:
         run: yarn set version 4.1
       
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
+        run: yarn install --immutable
       - name: Test with jest
         run: yarn test --coverage --ci
