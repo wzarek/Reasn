@@ -5,7 +5,7 @@ using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using ReasnAPI.Models.Mappers;
-using ReasnAPI.Services.Exceptions;
+using ReasnAPI.Exceptions;
 
 namespace ReasnAPI.Services;
 public class ParameterService(ReasnContext context)

@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Transactions;
 using ReasnAPI.Models.Enums;
 using ReasnAPI.Models.Mappers;
-using ReasnAPI.Services.Exceptions;
+using ReasnAPI.Exceptions;
 
 namespace ReasnAPI.Services;
 public class EventService(ReasnContext context)

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
-using ReasnAPI.Services.Exceptions;
+using ReasnAPI.Exceptions;
 using System.Net;
 using ReasnAPI.Models.Mappers;
 

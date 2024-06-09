@@ -1,7 +1,7 @@
 ﻿using ReasnAPI.Exceptions;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
-using ReasnAPI.Services.Exceptions;
+using ReasnAPI.Exceptions;
 using System.Linq.Expressions;
 using ReasnAPI.Models.Mappers;
 
