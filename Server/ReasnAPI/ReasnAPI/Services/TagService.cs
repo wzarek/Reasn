@@ -5,6 +5,8 @@ using System.Linq.Expressions;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using ReasnAPI.Services.Exceptions;
+using System.Net;
+using ReasnAPI.Models.Mappers;
 
 namespace ReasnAPI.Services;
 public class TagService (ReasnContext context)
@@ -17,8 +19,7 @@ public class TagService (ReasnContext context)
             throw new ObjectExistsException("Tag already exists");
         }
 
-        var newTag = MapTagFromTagDto(tagDto);
-        context.Tags.Add(newTag);
+        context.Tags.Add(tagDto.ToEntity());
         context.SaveChanges();
         return tagDto;
     }
@@ -42,7 +43,7 @@ public class TagService (ReasnContext context)
             if (eventTags.Count > 1 || (eventTags.Count == 1 && eventTags[0].Id != eventId))
             {
                 // Create new tag, associate it with the event, and remove the old association
-                var newTag = MapTagFromTagDto(tagDto);
+                var newTag = tagDto.ToEntity();
                 context.Tags.Add(newTag);
                 context.SaveChanges();
 
@@ -99,35 +100,24 @@ public class TagService (ReasnContext context)
             throw new NotFoundException("Tag not found");
         }
 
-        return MapTagDtoFromTag(tag);
+        return tag.ToDto();
     }
 
     public IEnumerable<TagDto> GetAllTags()
     {
-        var tags = context.Tags.ToList();
-        return tags.Select(tag => MapTagDtoFromTag(tag)).AsEnumerable();
+        return context.Tags
+            .ToDtoList()
+            .AsEnumerable();
     }
 
     public IEnumerable<TagDto> GetTagsByFilter(Expression<Func<Tag, bool>> filter)
     {
-        var tags = context.Tags.Where(filter).ToList();
-        return tags.Select(tag => MapTagDtoFromTag(tag)).AsEnumerable();
+        return context.Tags
+            .Where(filter)
+            .ToDtoList()
+            .AsEnumerable();
     }
 
-    private TagDto MapTagDtoFromTag(Tag tag)
-    {
-        return new TagDto
-        {
-            Name = tag.Name
-        };
-    }
-
-    private Tag MapTagFromTagDto(TagDto tagDto)
-    {
-        return new Tag
-        {
-            Name = tagDto.Name
-        };
-    }
+  
 
 }

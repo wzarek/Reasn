@@ -2,6 +2,7 @@
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 using ReasnAPI.Models.Enums;
+using ReasnAPI.Models.Mappers;
 using static System.Net.Mime.MediaTypeNames;
 using Image = ReasnAPI.Models.Database.Image;
 using ReasnAPI.Services.Exceptions;
@@ -21,7 +22,7 @@ public class ImageService(ReasnContext context)
                 continue;
             }
 
-            var newImage = MapImageFromImageDto(imageDto);
+            var newImage = imageDto.ToEntity();
             
             newImages.Add(newImage);
         }
@@ -84,58 +85,35 @@ public class ImageService(ReasnContext context)
             throw new NotFoundException("Image not found");
         }
 
-        var imageDto = MapImageDtoFromImage(image);
+        var imageDto = image.ToDto();
         
         return imageDto;
     }
 
     public IEnumerable<ImageDto> GetAllImages()
     {
-        var images = context.Images.ToList();
-
-        var imageDtos = images.Select(image => MapImageDtoFromImage(image)).AsEnumerable();
-
-        return imageDtos;
+        return context.Images
+            .ToDtoList()
+            .AsEnumerable();
     }
 
     public IEnumerable<ImageDto> GetImagesByFilter(Expression<Func<Image, bool>> filter)
     {
-        var images = context.Images.Where(filter).ToList();
-
-        var imageDtos = images.Select(image => MapImageDtoFromImage(image)).AsEnumerable();
-
-        return imageDtos;
+        return context.Images
+            .Where(filter)
+            .ToDtoList()
+            .AsEnumerable();
     }
 
-    public IEnumerable<ImageDto> GetImagesByEventIdAndType(int eventId)
+    public IEnumerable<ImageDto> GetImagesByEventId(int eventId)
     {
         var images = context.Images
             .Where(image => image.ObjectType == ObjectType.Event && image.ObjectId == eventId)
             .ToList();
 
-        var imageDtos = images.Select(image => MapImageDtoFromImage(image)).AsEnumerable();
+        var imageDtos = images.Select(image => image.ToDto()).AsEnumerable();
 
         return imageDtos;
-    }
-
-    private ImageDto MapImageDtoFromImage(Image image)
-    {
-        return new ImageDto
-        {
-            ImageData = image.ImageData,
-            ObjectId = image.ObjectId,
-            ObjectType = image.ObjectType
-        };
-    }
-
-    private Image MapImageFromImageDto(ImageDto imageDto)
-    {
-        return new Image
-        {
-            ImageData = imageDto.ImageData,
-            ObjectId = imageDto.ObjectId,
-            ObjectType = imageDto.ObjectType
-        };
     }
 
 }

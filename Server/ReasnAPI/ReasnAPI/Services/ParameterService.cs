@@ -2,6 +2,7 @@
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using ReasnAPI.Models.Mappers;
 using ReasnAPI.Services.Exceptions;
 
 namespace ReasnAPI.Services;
@@ -15,7 +16,7 @@ public class ParameterService(ReasnContext context)
             throw new ObjectExistsException("Parameter already exists");
         }
 
-        var newParameter = MapParameterFromParameterDto(parameterDto);
+        var newParameter = parameterDto.ToEntity();
         context.Parameters.Add(newParameter);
         context.SaveChanges();
         return parameterDto;
@@ -79,43 +80,24 @@ public class ParameterService(ReasnContext context)
             throw new NotFoundException("Parameter not found");
         }
 
-        var parameterDto = MapParameterDtoFromParameter(parameter);
-
+        var parameterDto = parameter.ToDto();
         return parameterDto;
     }
 
     public IEnumerable<ParameterDto> GetAllParameters()
     {
-        var parameters = context.Parameters.ToList();
-
-        return parameters.Select(parameter => MapParameterDtoFromParameter(parameter))
+        return context.Parameters
+            .ToDtoList()
             .AsEnumerable();
     }
 
     public IEnumerable<ParameterDto> GetParametersByFilter(Expression<Func<Parameter, bool>> filter)
     {
-        var parameters = context.Parameters.Where(filter).ToList();
-
-        return parameters.Select(parameter => MapParameterDtoFromParameter(parameter))
+        return context.Parameters
+            .Where(filter)
+            .ToDtoList()
             .AsEnumerable();
     }
 
-    private Parameter MapParameterFromParameterDto(ParameterDto parameterDto)
-    {
-        return new Parameter
-        {
-            Key = parameterDto.Key,
-            Value = parameterDto.Value
-        };
-    }
-
-    private ParameterDto MapParameterDtoFromParameter(Parameter parameter)
-    {
-        return new ParameterDto
-        {
-            Key = parameter.Key,
-            Value = parameter.Value
-        };
-    }
 
 }

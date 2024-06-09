@@ -2,6 +2,7 @@
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Services.Exceptions;
 using System.Linq.Expressions;
+using ReasnAPI.Models.Mappers;
 
 namespace ReasnAPI.Services;
 
@@ -15,7 +16,7 @@ public class InterestService(ReasnContext context)
             throw new ObjectExistsException("Interest already exists");
         }
 
-        var newInterest = MapInterestFromInterestDto(interestDto);
+        var newInterest = interestDto.ToEntity();
 
         context.Interests.Add(newInterest);
         context.SaveChanges();
@@ -63,41 +64,22 @@ public class InterestService(ReasnContext context)
             throw new NotFoundException("Interest not found");
         }
 
-        var interestDto = MapInterestDtoFromInterest(interest);
-
-        return interestDto;
+        return interest.ToDto();
     }
 
     public IEnumerable<InterestDto> GetAllInterests()
     {
-        var interests = context.Interests.ToList();
-
-        return interests.Select(interest => MapInterestDtoFromInterest(interest)).AsEnumerable();
+        return context.Interests
+            .ToDtoList()
+            .AsEnumerable();
     }
 
     public IEnumerable<InterestDto> GetInterestsByFilter(Expression<Func<Interest, bool>> filter)
     {
-        var interests = context.Interests.Where(filter).ToList();
-
-        var interestDtos = interests.Select(interest => MapInterestDtoFromInterest(interest)).AsEnumerable();
-
-        return interestDtos;
-    }
-
-    private InterestDto MapInterestDtoFromInterest(Interest interest)
-    {
-        return new InterestDto
-        {
-            Name = interest.Name
-        };
-    }
-
-    private Interest MapInterestFromInterestDto(InterestDto interestDto)
-    {
-        return new Interest
-        {
-            Name = interestDto.Name
-        };
+        return context.Interests
+            .Where(filter)
+            .ToDtoList()
+            .AsEnumerable();
     }
 
 }
