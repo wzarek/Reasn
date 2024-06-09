@@ -7,20 +7,24 @@ using Serilog;
 using System;
 using System.Text.Json.Serialization;
 using ReasnAPI.Models.Database;
+using ReasnAPI.Services;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
-builder.Services.AddControllers();
-var dataSourceBuilder = new NpgsqlDataSourceBuilder(builder.Configuration.GetConnectionString("DefaultValue"));
-dataSourceBuilder.MapEnum<ParticipantStatus>("events.participant.status");
-dataSourceBuilder.MapEnum<EventStatus>("events.event.status");
-dataSourceBuilder.MapEnum<ObjectType>("common.image.object_type");
-dataSourceBuilder.MapEnum<UserRole>("users.user.role");
+var connectionString = builder.Configuration.GetConnectionString("DefaultValue");
+
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+dataSourceBuilder.MapEnum<ObjectType>("common.object_type");
+dataSourceBuilder.MapEnum<EventStatus>("common.event_status");
+dataSourceBuilder.MapEnum<ParticipantStatus>("common.participant_status");
+dataSourceBuilder.MapEnum<UserRole>("users.role");
 
 var dataSource = dataSourceBuilder.Build();
-// todo: uncomment after creating DbContext and change context name and if needed - connection string localized in appsettings.json
+
 builder.Services.AddDbContext<ReasnContext>(options =>
     options.UseNpgsql(dataSource));
+
+builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen(options =>
 {
