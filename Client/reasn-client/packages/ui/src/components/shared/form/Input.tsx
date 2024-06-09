@@ -4,6 +4,7 @@ import React, { useState } from "react";
 interface InputProps {
   type: string;
   label?: string;
+  name?: string;
   onFocus?: () => void;
   onBlur?: () => void;
 }
@@ -11,7 +12,7 @@ interface InputProps {
 export const FloatingInput = (props: InputProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
-  const { label, type, onFocus, onBlur } = props;
+  const { label, type, name, onFocus, onBlur } = props;
 
   const handleFocus = () => {
     onFocus?.();
@@ -40,6 +41,8 @@ export const FloatingInput = (props: InputProps) => {
       </label>
       <input
         type={type}
+        name={name}
+        id={name}
         className="h-full w-full rounded-lg bg-[#232327] p-2 focus:outline-none"
         onFocus={handleFocus}
         onBlur={handleBlur}

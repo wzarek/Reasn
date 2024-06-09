@@ -21,21 +21,30 @@ const RegisterUser = () => {
         <form className="flex w-full flex-col gap-8" ref={formRef}>
           {currentStep === 1 && (
             <>
-              <FloatingInput type="text" label="imię" />
-              <FloatingInput type="text" label="nazwisko" />
-              <FloatingInput type="text" label="nazwa użytkownika" />
-              <FloatingInput type="email" label="email" />
-              <FloatingInput type="tel" label="numer telefonu" />
-              <FloatingInput type="password" label="hasło" />
+              <FloatingInput type="text" label="imię" name="name" />
+              <FloatingInput type="text" label="nazwisko" name="surname" />
+              <FloatingInput
+                type="text"
+                label="nazwa użytkownika"
+                name="username"
+              />
+              <FloatingInput type="email" label="email" name="email" />
+              <FloatingInput type="tel" label="numer telefonu" name="phone" />
+              <FloatingInput type="password" label="hasło" name="password" />
+              <FloatingInput
+                type="password"
+                label="powtórz hasło"
+                name="confirm-password"
+              />
             </>
           )}
           {currentStep === 2 && (
             <>
-              <FloatingInput type="text" label="miasto" />
-              <FloatingInput type="text" label="kraj" />
-              <FloatingInput type="text" label="ulica" />
-              <FloatingInput type="text" label="województwo" />
-              <FloatingInput type="text" label="kod pocztowy" />
+              <FloatingInput type="text" label="miasto" name="city" />
+              <FloatingInput type="text" label="kraj" name="country" />
+              <FloatingInput type="text" label="ulica" name="street" />
+              <FloatingInput type="text" label="województwo" name="state" />
+              <FloatingInput type="text" label="kod pocztowy" name="postcode" />
             </>
           )}
         </form>
@@ -43,12 +52,12 @@ const RegisterUser = () => {
       <div className="z-10 flex h-full w-1/3 flex-col flex-wrap items-start justify-center gap-24">
         {currentStep === 1 && (
           <p className="bg-gradient-to-r from-[#FF6363] to-[#1E34FF] bg-clip-text text-5xl font-bold leading-tight text-transparent">
-            to jak, zorganizujesz <br /> nam coś?
+            znalazłeś już swój powód do spotkań?
           </p>
         )}
         {currentStep === 2 && (
           <p className="bg-gradient-to-r from-[#FF6363] to-[#1E34FF] bg-clip-text text-5xl font-bold leading-tight text-transparent">
-            gdzie możemy cię <br /> znaleźć?
+            gdzie powinniśmy cię szukać?
           </p>
         )}
         <ButtonBase
