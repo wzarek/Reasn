@@ -48,7 +48,7 @@ namespace ReasnAPI.Tests.Services
 
             var tagService = new TagService(mockContext.Object);
             
-            Assert.ThrowsException<ObjectExistsException>(() => tagService.CreateTag(tagDto));
+            Assert.ThrowsException<BadRequestException>(() => tagService.CreateTag(tagDto));
         }
 
         [TestMethod]
@@ -191,7 +191,7 @@ namespace ReasnAPI.Tests.Services
 
             var tagService = new TagService(mockContext.Object);
 
-            Assert.ThrowsException<ObjectInUseException>(() => tagService.DeleteTag(1));
+            Assert.ThrowsException<BadRequestException>(() => tagService.DeleteTag(1));
             Assert.AreEqual(1, tags.Count); // Ensure the tag was not removed
             mockContext.Verify(c => c.SaveChanges(), Times.Never); // Ensure SaveChanges was never called
         }

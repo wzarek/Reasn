@@ -48,7 +48,7 @@ namespace ReasnAPI.Tests.Services
 
             var interestService = new InterestService(mockContext.Object);
             
-            Assert.ThrowsException<ObjectExistsException>(() => interestService.CreateInterest(interestDto));
+            Assert.ThrowsException<BadRequestException>(() => interestService.CreateInterest(interestDto));
         }
 
         [TestMethod]
@@ -178,7 +178,7 @@ namespace ReasnAPI.Tests.Services
                 new UserInterest { InterestId = 1, UserId = 1 }
             });
 
-            Assert.ThrowsException<ObjectInUseException>(() => new InterestService(mockContext.Object).DeleteInterest(1));
+            Assert.ThrowsException<BadRequestException>(() => new InterestService(mockContext.Object).DeleteInterest(1));
 
             mockContext.Verify(c => c.Interests.Remove(It.IsAny<Interest>()), Times.Never);
             mockContext.Verify(c => c.SaveChanges(), Times.Never);

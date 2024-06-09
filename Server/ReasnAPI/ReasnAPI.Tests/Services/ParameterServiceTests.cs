@@ -50,7 +50,7 @@ namespace ReasnAPI.Tests.Services
 
             var parameterService = new ParameterService(mockContext.Object);
             
-            Assert.ThrowsException<ObjectExistsException>(() => parameterService.CreateParameter(parameterDto));
+            Assert.ThrowsException<BadRequestException>(() => parameterService.CreateParameter(parameterDto));
         }
 
         [TestMethod]
@@ -119,7 +119,7 @@ namespace ReasnAPI.Tests.Services
 
             var parameterService = new ParameterService(mockContext.Object);
 
-            Assert.ThrowsException<ObjectInUseException>(() => parameterService.UpdateParameter(1, parameterDto));
+            Assert.ThrowsException<BadRequestException>(() => parameterService.UpdateParameter(1, parameterDto));
             mockContext.Verify(c => c.SaveChanges(), Times.Never); // Ensure SaveChanges was never called
         }
 
