@@ -5,7 +5,7 @@ using ReasnAPI.Models.Enums;
 using ReasnAPI.Models.Mappers;
 using static System.Net.Mime.MediaTypeNames;
 using Image = ReasnAPI.Models.Database.Image;
-using ReasnAPI.Services.Exceptions;
+using ReasnAPI.Exceptions;
 
 namespace ReasnAPI.Services;
 public class ImageService(ReasnContext context)

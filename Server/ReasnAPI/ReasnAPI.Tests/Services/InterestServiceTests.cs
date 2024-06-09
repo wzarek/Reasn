@@ -10,7 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Moq;
 using Moq.EntityFrameworkCore;
-using ReasnAPI.Services.Exceptions;
+using ReasnAPI.Exceptions;
 
 namespace ReasnAPI.Tests.Services
 {

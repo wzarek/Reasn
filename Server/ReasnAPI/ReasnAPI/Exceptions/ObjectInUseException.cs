@@ -1,4 +1,4 @@
-﻿namespace ReasnAPI.Services.Exceptions;
+﻿namespace ReasnAPI.Exceptions;
 
 public class ObjectInUseException : Exception
 {

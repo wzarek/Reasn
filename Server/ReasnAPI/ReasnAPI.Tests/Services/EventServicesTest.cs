@@ -9,7 +9,7 @@ using ReasnAPI.Models.Database;
 using Moq;
 using Moq.EntityFrameworkCore;
 using ReasnAPI.Models.Enums;
-using ReasnAPI.Services.Exceptions;
+using ReasnAPI.Exceptions;
 
 
 namespace ReasnAPI.Tests.Services

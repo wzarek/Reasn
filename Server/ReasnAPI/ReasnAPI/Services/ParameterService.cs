@@ -1,4 +1,6 @@
-﻿using ReasnAPI.Models.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using ReasnAPI.Exceptions;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
@@ -34,12 +36,12 @@ public class ParameterService(ReasnContext context)
         var parameters = context.Events.Include(p => p.Parameters);
 
         var parameterCheck = parameters.FirstOrDefault(r => r.Parameters.Any(p => p.Id == parameterId));
-            
+
         if (parameterCheck is not null) // if parameter is associated with an event, it cannot be updated
         {
             throw new ObjectInUseException("Parameter is associated with an event");
         }
-    
+
         parameter.Key = parameterDto.Key;
         parameter.Value = parameterDto.Value;
         context.Parameters.Update(parameter);
@@ -63,7 +65,7 @@ public class ParameterService(ReasnContext context)
         var parameterCheck = eventsWithParameters
             .Any(e => e.Parameters.Any(p => p.Id == parameterId));
 
-        if (parameterCheck) 
+        if (parameterCheck)
         {
             throw new ObjectInUseException("Parameter is associated with an event");
         }

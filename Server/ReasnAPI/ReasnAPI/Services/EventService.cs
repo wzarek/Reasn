@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ReasnAPI.Exceptions;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
-using System.Linq;
 using System.Transactions;
 using ReasnAPI.Models.Enums;
 using ReasnAPI.Models.Mappers;
@@ -19,9 +19,9 @@ public class EventService(ReasnContext context)
             var nowTime = DateTime.UtcNow;
             var newEvent = eventDto.ToEntity();
             newEvent.CreatedAt = nowTime;
-            newEvent.UpdatedAt = nowTime;  
+            newEvent.UpdatedAt = nowTime;
             newEvent.Slug = eventDto.Slug;
-            
+
             context.Events.Add(newEvent);
             context.SaveChanges();
 
@@ -62,7 +62,7 @@ public class EventService(ReasnContext context)
         using (var scope = new TransactionScope())
         {
             var eventToUpdate = context.Events.FirstOrDefault(r => r.Id == eventId);
-            
+
             if (eventToUpdate is null)
             {
                 throw new NotFoundException("Event not found");

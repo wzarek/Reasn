@@ -1,4 +1,5 @@
-﻿using ReasnAPI.Models.Database;
+﻿using ReasnAPI.Exceptions;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Services.Exceptions;
 using System.Linq.Expressions;
@@ -47,7 +48,7 @@ public class InterestService(ReasnContext context)
         }
 
         var eventInterest = context.UserInterests.FirstOrDefault(r => r.InterestId == id);
-        if (eventInterest is not null) 
+        if (eventInterest is not null)
         {
             throw new ObjectInUseException("Interest is in use");
         }
