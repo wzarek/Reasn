@@ -4,11 +4,23 @@ import { UserRole } from "@reasn/common/enums/modelsEnums";
 import { z } from "zod";
 
 export const UserDtoSchema = z.object({
-  Username: z.string(),
-  Name: z.string(),
-  Surname: z.string(),
-  Email: z.string(),
-  Phone: z.string().nullable(),
+  Username: z
+    .string()
+    .max(64)
+    .regex(/^[\p{L}\d._%+-]{4,}$/u),
+  Name: z
+    .string()
+    .max(64)
+    .regex(/^\p{Lu}[\p{Ll}\s'-]+$/u),
+  Surname: z
+    .string()
+    .max(64)
+    .regex(/^\p{L}+(?:[\s'-]\p{L}+)*$/u),
+  Email: z.string().email(),
+  Phone: z
+    .string()
+    .nullable()
+    .refine((value) => value === null || /^\+\d{1,3}\s\d{1,15}$/.test(value)),
   Role: z.nativeEnum(UserRole),
   AddressId: z.number(),
   Intrests: z.array(UserInterestDtoSchema),

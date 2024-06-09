@@ -2,8 +2,14 @@ import ModelMappingError from "@reasn/common/errors/ModelMappingError";
 import { z } from "zod";
 
 export const ParameterDtoSchema = z.object({
-  Key: z.string(),
-  Value: z.string(),
+  Key: z
+    .string()
+    .max(32)
+    .regex(/^\p{L}+(?:\s\p{L}+)*$/u),
+  Value: z
+    .string()
+    .max(64)
+    .regex(/^[\p{L}\d]+(?:\s[\p{L}\d]+)*$/u),
 });
 
 export type ParameterDto = z.infer<typeof ParameterDtoSchema>;

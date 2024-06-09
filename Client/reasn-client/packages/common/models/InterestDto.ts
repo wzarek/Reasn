@@ -2,7 +2,10 @@ import ModelMappingError from "@reasn/common/errors/ModelMappingError";
 import { z } from "zod";
 
 export const InterestDtoSchema = z.object({
-  Name: z.string(),
+  Name: z
+    .string()
+    .max(32)
+    .regex(/^\p{Lu}\p{Ll}+(?:\s\p{L}+)*$/u),
 });
 
 export type InterestDto = z.infer<typeof InterestDtoSchema>;

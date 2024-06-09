@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const CommentDtoSchema = z.object({
   EventId: z.number(),
-  Content: z.string(),
+  Content: z.string().max(1024),
   CreatedAt: z
     .string()
     .datetime({ offset: true })

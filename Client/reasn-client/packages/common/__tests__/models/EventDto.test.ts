@@ -14,7 +14,7 @@ describe("EventDto", () => {
   const updatedAt = new Date("2022-01-01");
   const slug = "test-event";
   const status = EventStatus.APPROVED;
-  const tags: TagDto[] = [{ Name: "Tag 1" }, { Name: "Tag 2" }];
+  const tags: TagDto[] = [{ Name: "first tag" }, { Name: "second tag" }];
 
   describe("fromJson", () => {
     it("should create an instance of EventDto from JSON string", () => {
