@@ -10,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Moq;
 using Moq.EntityFrameworkCore;
+using ReasnAPI.Services.Exceptions;
 
 namespace ReasnAPI.Tests.Services
 {
@@ -47,9 +48,7 @@ namespace ReasnAPI.Tests.Services
 
             var interestService = new InterestService(mockContext.Object);
             
-            var result = interestService.CreateInterest(interestDto);
-            
-            Assert.IsNull(result);
+            Assert.ThrowsException<ObjectExistsException>(() => interestService.CreateInterest(interestDto));
         }
 
         [TestMethod]
@@ -86,9 +85,7 @@ namespace ReasnAPI.Tests.Services
 
             var interestService = new InterestService(mockContext.Object);
 
-            var result = interestService.GetInterestById(1);
-
-            Assert.IsNull(result);
+            Assert.ThrowsException<NotFoundException>(() => interestService.GetInterestById(1));
         }
 
         //[TestMethod]
@@ -135,9 +132,7 @@ namespace ReasnAPI.Tests.Services
 
             var interestService = new InterestService(mockContext.Object);
             
-            var result = interestService.UpdateInterest(1, interestDto);
-            
-            Assert.IsNull(result);
+            Assert.ThrowsException<NotFoundException>(() => interestService.UpdateInterest(1, interestDto));
         }
 
         [TestMethod]
@@ -152,9 +147,8 @@ namespace ReasnAPI.Tests.Services
 
             var interestService = new InterestService(mockContext.Object);
 
-            var result = interestService.DeleteInterest(1);
+            interestService.DeleteInterest(1);
 
-            Assert.IsTrue(result);
             mockContext.Verify(c => c.Interests.Remove(It.Is<Interest>(i => i.Id == 1)), Times.Once);
             mockContext.Verify(c => c.SaveChanges(), Times.Once);
         }
@@ -168,11 +162,7 @@ namespace ReasnAPI.Tests.Services
 
             var interestService = new InterestService(mockContext.Object);
 
-            var result = interestService.DeleteInterest(1);
-
-            Assert.IsFalse(result);
-            mockContext.Verify(c => c.Interests.Remove(It.IsAny<Interest>()), Times.Never);
-            mockContext.Verify(c => c.SaveChanges(), Times.Never);
+            Assert.ThrowsException<NotFoundException>(() => interestService.DeleteInterest(1));
         }
 
         [TestMethod]
@@ -188,11 +178,8 @@ namespace ReasnAPI.Tests.Services
                 new UserInterest { InterestId = 1, UserId = 1 }
             });
 
-            var interestService = new InterestService(mockContext.Object);
+            Assert.ThrowsException<ObjectInUseException>(() => new InterestService(mockContext.Object).DeleteInterest(1));
 
-            var result = interestService.DeleteInterest(1);
-
-            Assert.IsFalse(result);
             mockContext.Verify(c => c.Interests.Remove(It.IsAny<Interest>()), Times.Never);
             mockContext.Verify(c => c.SaveChanges(), Times.Never);
         }

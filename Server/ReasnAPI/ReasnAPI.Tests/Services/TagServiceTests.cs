@@ -10,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Moq;
 using Moq.EntityFrameworkCore;
+using ReasnAPI.Services.Exceptions;
 
 namespace ReasnAPI.Tests.Services
 {
@@ -47,9 +48,7 @@ namespace ReasnAPI.Tests.Services
 
             var tagService = new TagService(mockContext.Object);
             
-            var result = tagService.CreateTag(tagDto);
-            
-            Assert.IsNull(result);
+            Assert.ThrowsException<ObjectExistsException>(() => tagService.CreateTag(tagDto));
         }
 
         [TestMethod]
@@ -99,9 +98,7 @@ namespace ReasnAPI.Tests.Services
 
             var tagService = new TagService(mockContext.Object);
             
-            var result = tagService.GetTagById(1);
-            
-            Assert.IsNull(result);
+            Assert.ThrowsException<NotFoundException>(() => tagService.GetTagById(1));
         }
 
         [TestMethod]
@@ -134,7 +131,6 @@ namespace ReasnAPI.Tests.Services
         [TestMethod]
         public void UpdateTag_TagDoesNotExist_NullReturned()
         {
-            // Arrange
             var tagDto = new TagDto
             {
                 Name = "TestTag1"
@@ -146,11 +142,7 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event> { new Event { Id = eventId } });
             var tagService = new TagService(mockContext.Object);
 
-            // Act
-            var result = tagService.UpdateTag(1, tagDto, eventId);
-
-            // Assert
-            Assert.IsNull(result);
+            Assert.ThrowsException<NotFoundException>(() => tagService.UpdateTag(1, tagDto, eventId));
             mockContext.Verify(c => c.SaveChanges(), Times.Never); // Ensure SaveChanges was never called
         }
 
@@ -166,35 +158,28 @@ namespace ReasnAPI.Tests.Services
             var tagService = new TagService(mockContext.Object);
 
             // Act
-            var result = tagService.DeleteTag(1);
+            tagService.DeleteTag(1);
 
             // Assert
-            Assert.IsTrue(result);
             mockContext.Verify(c => c.SaveChanges(), Times.Once); // Ensure SaveChanges was called
         }
 
         [TestMethod]
         public void DeleteTag_TagDoesNotExist_NothingHappens()
         {
-            // Arrange
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag>()); // No tags in context
             mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event>()); // No events associated with tags
 
             var tagService = new TagService(mockContext.Object);
 
-            // Act
-            var result = tagService.DeleteTag(1);
-
-            // Assert
-            Assert.IsFalse(result);
+            Assert.ThrowsException<NotFoundException>(() => tagService.DeleteTag(1));
             mockContext.Verify(c => c.SaveChanges(), Times.Never); // Ensure SaveChanges was never called
         }
 
         [TestMethod]
         public void DeleteTag_TagInUse_NothingHappens()
         {
-            // Arrange
             var tag = new Tag { Id = 1, Name = "TestTag" };
             var tags = new List<Tag> { tag };
             var mockContext = new Mock<ReasnContext>();
@@ -206,11 +191,7 @@ namespace ReasnAPI.Tests.Services
 
             var tagService = new TagService(mockContext.Object);
 
-            // Act
-            var result = tagService.DeleteTag(1);
-
-            // Assert
-            Assert.IsFalse(result);
+            Assert.ThrowsException<ObjectInUseException>(() => tagService.DeleteTag(1));
             Assert.AreEqual(1, tags.Count); // Ensure the tag was not removed
             mockContext.Verify(c => c.SaveChanges(), Times.Never); // Ensure SaveChanges was never called
         }

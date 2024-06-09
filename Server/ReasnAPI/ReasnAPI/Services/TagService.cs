@@ -4,16 +4,17 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
+using ReasnAPI.Services.Exceptions;
 
 namespace ReasnAPI.Services;
 public class TagService (ReasnContext context)
 {
-    public TagDto? CreateTag(TagDto tagDto)
+    public TagDto CreateTag(TagDto tagDto)
     {
         var tag = context.Tags.FirstOrDefault(r => r.Name == tagDto.Name);
         if (tag is not null)
         {
-            return null;
+            throw new ObjectExistsException("Tag already exists");
         }
 
         var newTag = MapTagFromTagDto(tagDto);
@@ -22,7 +23,7 @@ public class TagService (ReasnContext context)
         return tagDto;
     }
 
-    public TagDto? UpdateTag(int tagId, TagDto tagDto, int eventId)
+    public TagDto UpdateTag(int tagId, TagDto tagDto, int eventId)
     {
         using (var scope = new TransactionScope())
         {
@@ -30,7 +31,7 @@ public class TagService (ReasnContext context)
 
             if (tag is null)
             {
-                return null;
+                throw new NotFoundException("Tag not found");
             }
 
             var eventsWithTags = context.Events.Include(e => e.Tags).ToList();
@@ -59,7 +60,7 @@ public class TagService (ReasnContext context)
             }
             else
             {
-                return null;
+                throw new NotFoundException("Tag not found");
             }
 
             context.SaveChanges();
@@ -68,13 +69,13 @@ public class TagService (ReasnContext context)
         }
     }
 
-    public bool DeleteTag(int tagId)
+    public void DeleteTag(int tagId)
     {
         var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
 
         if (tag == null)
         {
-            return false;
+            throw new NotFoundException("Tag not found");
         }
 
         var eventsWithTags = context.Events.Include(e => e.Tags).ToList();
@@ -83,21 +84,19 @@ public class TagService (ReasnContext context)
 
         if (isTagAssociatedWithEvent) 
         {
-            return false;
+            throw new ObjectInUseException("Tag is associated with an event");
         }
 
         context.Tags.Remove(tag);
         context.SaveChanges();
-
-        return true;
     }
 
-    public TagDto? GetTagById(int tagId)
+    public TagDto GetTagById(int tagId)
     {
         var tag = context.Tags.Find(tagId);
         if(tag is null)
         {
-            return null;
+            throw new NotFoundException("Tag not found");
         }
 
         return MapTagDtoFromTag(tag);

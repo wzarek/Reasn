@@ -9,6 +9,7 @@ using ReasnAPI.Models.Database;
 using Moq;
 using Moq.EntityFrameworkCore;
 using ReasnAPI.Models.Enums;
+using ReasnAPI.Services.Exceptions;
 
 
 namespace ReasnAPI.Tests.Services
@@ -217,9 +218,7 @@ namespace ReasnAPI.Tests.Services
             
             var eventService = new EventService(mockContext.Object);
 
-            var result = eventService.UpdateEvent(1, eventDto);
-
-            Assert.IsNull(result);
+            Assert.ThrowsException<NotFoundException>(() => eventService.UpdateEvent(1, eventDto));
         }
 
         [TestMethod]
@@ -325,9 +324,7 @@ namespace ReasnAPI.Tests.Services
 
             var eventService = new EventService(mockContext.Object);
 
-            var result = eventService.GetEventById(1);
-
-            Assert.IsNull(result);
+            Assert.ThrowsException<NotFoundException>(() => eventService.GetEventById(1));
         }
 
         [TestMethod]

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Moq;
 using Moq.EntityFrameworkCore;
+using ReasnAPI.Services.Exceptions;
 
 namespace ReasnAPI.Tests.Services
 {
@@ -49,9 +50,7 @@ namespace ReasnAPI.Tests.Services
 
             var parameterService = new ParameterService(mockContext.Object);
             
-            var result = parameterService.CreateParameter(parameterDto);
-            
-            Assert.IsNull(result);
+            Assert.ThrowsException<ObjectExistsException>(() => parameterService.CreateParameter(parameterDto));
         }
 
         [TestMethod]
@@ -85,7 +84,6 @@ namespace ReasnAPI.Tests.Services
         [TestMethod]
         public void UpdateParameter_ParameterDoesNotExist_NullReturned()
         {
-            // Arrange
             var parameterDto = new ParameterDto
             {
                 Key = "TestKey",
@@ -98,18 +96,13 @@ namespace ReasnAPI.Tests.Services
 
             var parameterService = new ParameterService(mockContext.Object);
 
-            // Act
-            var result = parameterService.UpdateParameter(1, parameterDto);
-
-            // Assert
-            Assert.IsNull(result);
+            Assert.ThrowsException<NotFoundException>(() => parameterService.UpdateParameter(1, parameterDto));
             mockContext.Verify(c => c.SaveChanges(), Times.Never); // Ensure SaveChanges was never called
         }
 
         [TestMethod]
         public void UpdateParameter_ParameterInUse_NullReturned()
         {
-            // Arrange
             var parameterDto = new ParameterDto
             {
                 Key = "UpdatedKey",
@@ -126,11 +119,7 @@ namespace ReasnAPI.Tests.Services
 
             var parameterService = new ParameterService(mockContext.Object);
 
-            // Act
-            var result = parameterService.UpdateParameter(1, parameterDto);
-
-            // Assert
-            Assert.IsNull(result);
+            Assert.ThrowsException<ObjectInUseException>(() => parameterService.UpdateParameter(1, parameterDto));
             mockContext.Verify(c => c.SaveChanges(), Times.Never); // Ensure SaveChanges was never called
         }
 
@@ -142,9 +131,7 @@ namespace ReasnAPI.Tests.Services
 
             var parameterService = new ParameterService(mockContext.Object);
             
-            var result = parameterService.GetParameterById(1);
-            
-            Assert.IsNull(result);
+            Assert.ThrowsException<NotFoundException>(() => parameterService.GetParameterById(1));
         }
 
         //[TestMethod]
@@ -177,10 +164,9 @@ namespace ReasnAPI.Tests.Services
             var parameterService = new ParameterService(mockContext.Object);
 
             // Act
-            var result = parameterService.DeleteParameter(1);
+            parameterService.DeleteParameter(1);
 
             // Assert
-            Assert.IsTrue(result);
             mockContext.Verify(c => c.SaveChanges(), Times.Once);
         }
 
@@ -191,7 +177,7 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>());
             var parameterService = new ParameterService(mockContext.Object);
             
-            parameterService.DeleteParameter(1);
+            Assert.ThrowsException<NotFoundException>(() => parameterService.DeleteParameter(1));
             
             mockContext.Verify(c => c.SaveChanges(), Times.Never);
         }

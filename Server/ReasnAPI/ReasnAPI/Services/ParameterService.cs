@@ -2,16 +2,17 @@
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using ReasnAPI.Services.Exceptions;
 
 namespace ReasnAPI.Services;
 public class ParameterService(ReasnContext context)
 {
-    public ParameterDto? CreateParameter(ParameterDto parameterDto)
+    public ParameterDto CreateParameter(ParameterDto parameterDto)
     {
         var parameter = context.Parameters.FirstOrDefault(r => r.Key == parameterDto.Key && r.Value == parameterDto.Value);
         if (parameter is not null)
         {
-            return null;
+            throw new ObjectExistsException("Parameter already exists");
         }
 
         var newParameter = MapParameterFromParameterDto(parameterDto);
@@ -20,17 +21,22 @@ public class ParameterService(ReasnContext context)
         return parameterDto;
     }
 
-    public ParameterDto? UpdateParameter(int parameterId, ParameterDto parameterDto)
+    public ParameterDto UpdateParameter(int parameterId, ParameterDto parameterDto)
     {
         var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
+
+        if (parameter is null)
+        {
+            throw new NotFoundException("Parameter not found");
+        }
 
         var parameters = context.Events.Include(p => p.Parameters);
 
         var parameterCheck = parameters.FirstOrDefault(r => r.Parameters.Any(p => p.Id == parameterId));
             
-        if (parameterCheck is not null || parameter is null) // if parameter is associated with an event, it cannot be updated
+        if (parameterCheck is not null) // if parameter is associated with an event, it cannot be updated
         {
-            return null;
+            throw new ObjectInUseException("Parameter is associated with an event");
         }
     
         parameter.Key = parameterDto.Key;
@@ -40,13 +46,13 @@ public class ParameterService(ReasnContext context)
         return parameterDto;
     }
 
-    public bool DeleteParameter(int parameterId)
+    public void DeleteParameter(int parameterId)
     {
         var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
 
         if (parameter == null)
         {
-            return false;
+            throw new NotFoundException("Parameter not found");
         }
 
         var eventsWithParameters = context.Events
@@ -58,20 +64,19 @@ public class ParameterService(ReasnContext context)
 
         if (parameterCheck) 
         {
-            return false;
+            throw new ObjectInUseException("Parameter is associated with an event");
         }
 
         context.Parameters.Remove(parameter);
         context.SaveChanges();
-        return true;
     }
 
-    public ParameterDto? GetParameterById(int parameterId)
+    public ParameterDto GetParameterById(int parameterId)
     {
         var parameter = context.Parameters.Find(parameterId);
         if (parameter is null)
         {
-            return null;
+            throw new NotFoundException("Parameter not found");
         }
 
         var parameterDto = MapParameterDtoFromParameter(parameter);

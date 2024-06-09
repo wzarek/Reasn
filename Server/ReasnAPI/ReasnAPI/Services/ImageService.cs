@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using ReasnAPI.Models.Enums;
 using static System.Net.Mime.MediaTypeNames;
 using Image = ReasnAPI.Models.Database.Image;
+using ReasnAPI.Services.Exceptions;
 
 namespace ReasnAPI.Services;
 public class ImageService(ReasnContext context)
@@ -46,12 +47,12 @@ public class ImageService(ReasnContext context)
         return imageDtos;
     }
 
-    public ImageDto? UpdateImage(int imageId, ImageDto imageDto)
+    public ImageDto UpdateImage(int imageId, ImageDto imageDto)
     {
         var image = context.Images.FirstOrDefault(r => r.Id == imageId);
         if (image is null)
         {
-            return null;
+            throw new NotFoundException("Image not found");
         }
 
         image.ObjectId = imageDto.ObjectId;
@@ -63,25 +64,24 @@ public class ImageService(ReasnContext context)
         return imageDto;
     }
 
-    public bool DeleteImage(int id)
+    public void DeleteImage(int id)
     {
         var image = context.Images.FirstOrDefault(r => r.Id == id);
         if (image is null)
         {
-            return false;
+            throw new NotFoundException("Image not found");
         }
+
         context.Images.Remove(image);
         context.SaveChanges();
-
-        return true;
     }
 
-    public ImageDto? GetImageById(int id)
+    public ImageDto GetImageById(int id)
     {
         var image = context.Images.Find(id);
         if (image is null)
         {
-            return null;
+            throw new NotFoundException("Image not found");
         }
 
         var imageDto = MapImageDtoFromImage(image);

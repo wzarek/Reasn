@@ -1,17 +1,18 @@
 ﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
+using ReasnAPI.Services.Exceptions;
 using System.Linq.Expressions;
 
 namespace ReasnAPI.Services;
 
 public class InterestService(ReasnContext context)
 {
-    public InterestDto? CreateInterest(InterestDto interestDto)
+    public InterestDto CreateInterest(InterestDto interestDto)
     {
         var interest = context.Interests.FirstOrDefault(r => r.Name == interestDto.Name);
         if (interest is not null)
         {
-            return null;
+            throw new ObjectExistsException("Interest already exists");
         }
 
         var newInterest = MapInterestFromInterestDto(interestDto);
@@ -21,12 +22,12 @@ public class InterestService(ReasnContext context)
         return interestDto;
     }
 
-    public InterestDto? UpdateInterest(int interestId, InterestDto interestDto)
+    public InterestDto UpdateInterest(int interestId, InterestDto interestDto)
     {
         var interest = context.Interests.FirstOrDefault(r => r.Id == interestId);
         if (interest is null)
         {
-            return null;
+            throw new NotFoundException("Interest not found");
         }
 
         interest.Name = interestDto.Name;
@@ -36,31 +37,30 @@ public class InterestService(ReasnContext context)
         return interestDto;
     }
 
-    public bool DeleteInterest(int id)
+    public void DeleteInterest(int id)
     {
         var interest = context.Interests.FirstOrDefault(r => r.Id == id);
+        if (interest is null)
+        {
+            throw new NotFoundException("Interest not found");
+        }
+
         var eventInterest = context.UserInterests.FirstOrDefault(r => r.InterestId == id);
         if (eventInterest is not null) 
         {
-            return false;
+            throw new ObjectInUseException("Interest is in use");
         }
 
-        if (interest is null)
-        {
-            return false;
-        }
         context.Interests.Remove(interest);
         context.SaveChanges();
-
-        return true;
     }
 
-    public InterestDto? GetInterestById(int interestId)
+    public InterestDto GetInterestById(int interestId)
     {
         var interest = context.Interests.Find(interestId);
         if (interest is null)
         {
-            return null;
+            throw new NotFoundException("Interest not found");
         }
 
         var interestDto = MapInterestDtoFromInterest(interest);

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Moq;
 using Moq.EntityFrameworkCore;
+using ReasnAPI.Services.Exceptions;
 
 
 namespace ReasnAPI.Tests.Services
@@ -115,8 +116,7 @@ namespace ReasnAPI.Tests.Services
 
             var imageService = new ImageService(mockContext.Object);
 
-            var result = imageService.GetImageById(1);
-            Assert.IsNull(result);
+            Assert.ThrowsException<NotFoundException>(() => imageService.GetImageById(1));
         }
 
         [TestMethod]
@@ -153,9 +153,7 @@ namespace ReasnAPI.Tests.Services
 
             var imageService = new ImageService(mockContext.Object);
 
-            var result = imageService.UpdateImage(1, imageDto);
-
-            Assert.IsNull(result);
+            Assert.ThrowsException<NotFoundException>(() => imageService.UpdateImage(1, imageDto));
         }
 
         [TestMethod]
@@ -184,9 +182,7 @@ namespace ReasnAPI.Tests.Services
 
             var imageService = new ImageService(mockContext.Object);
 
-            imageService.DeleteImage(1);
-
-            mockContext.Verify(c => c.SaveChanges(), Times.Never);
+            Assert.ThrowsException<NotFoundException>(() => imageService.DeleteImage(1));
         }
 
         [TestMethod]

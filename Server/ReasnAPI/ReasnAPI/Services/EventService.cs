@@ -5,11 +5,12 @@ using System.Linq.Expressions;
 using System.Linq;
 using System.Transactions;
 using ReasnAPI.Models.Enums;
+using ReasnAPI.Services.Exceptions;
 
 namespace ReasnAPI.Services;
 public class EventService(ReasnContext context)
 {
-    public EventDto? CreateEvent(EventDto eventDto)
+    public EventDto CreateEvent(EventDto eventDto)
     {
         using (var scope = new TransactionScope())
         {
@@ -55,14 +56,15 @@ public class EventService(ReasnContext context)
         return eventDto;
     }
 
-    public EventDto? UpdateEvent(int eventId, EventDto eventDto)
+    public EventDto UpdateEvent(int eventId, EventDto eventDto)
     {
         using (var scope = new TransactionScope())
         {
             var eventToUpdate = context.Events.FirstOrDefault(r => r.Id == eventId);
+            
             if (eventToUpdate is null)
             {
-                return null;
+                throw new NotFoundException("Event not found");
             }
 
             eventToUpdate.Name = eventDto.Name;
@@ -154,7 +156,7 @@ public class EventService(ReasnContext context)
         return eventDto;
     }
 
-    public bool DeleteEvent(int eventId)
+    public void DeleteEvent(int eventId)
     {
         using (var scope = new TransactionScope())
         {
@@ -162,15 +164,13 @@ public class EventService(ReasnContext context)
 
             if (eventToDelete is null)
             {
-                return false;
+                throw new NotFoundException("Event not found");
             }
 
             context.Events.Remove(eventToDelete);
             context.SaveChanges();
             scope.Complete();
         }
-
-        return true;
     }
 
     public EventDto? GetEventById(int eventId)
@@ -178,7 +178,7 @@ public class EventService(ReasnContext context)
         var eventToReturn = context.Events.Include(e => e.Tags).Include(e => e.Parameters).FirstOrDefault(e => e.Id == eventId);
         if (eventToReturn is null)
         {
-            return null;
+            throw new NotFoundException("Event not found");
         }
 
         var eventDto = MapEventDtoFromEvent(eventToReturn);
