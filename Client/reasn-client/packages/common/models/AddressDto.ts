@@ -2,11 +2,26 @@ import ModelMappingError from "@reasn/common/errors/ModelMappingError";
 import { z } from "zod";
 
 export const AddressDtoSchema = z.object({
-  Country: z.string(),
-  City: z.string(),
-  Street: z.string(),
-  State: z.string(),
-  ZipCode: z.string().nullable(),
+  Country: z
+    .string()
+    .max(64)
+    .regex(/^\p{Lu}[\p{L}\s'-]*(?<![\s-])$/u),
+  City: z
+    .string()
+    .max(64)
+    .regex(/^\p{Lu}[\p{Ll}'.]+(?:[\s-][\p{L}'.]+)*$/u),
+  Street: z
+    .string()
+    .max(64)
+    .regex(/^[\p{L}\d\s\-/.,#']+(?<![-\s#,])$/u),
+  State: z
+    .string()
+    .max(64)
+    .regex(/^\p{Lu}\p{Ll}+(?:(\s|-)\p{L}+)*$/u),
+  ZipCode: z
+    .string()
+    .nullable()
+    .refine((value) => value === null || /^[\p{L}\d\s-]{3,}$/u.test(value)),
 });
 
 export type AddressDto = z.infer<typeof AddressDtoSchema>;

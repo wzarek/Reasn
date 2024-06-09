@@ -2,7 +2,10 @@ import ModelMappingError from "@reasn/common/errors/ModelMappingError";
 import { z } from "zod";
 
 export const TagDtoSchema = z.object({
-  Name: z.string(),
+  Name: z
+    .string()
+    .max(64)
+    .regex(/^\p{L}+(?:\s\p{L}+)*$/u),
 });
 
 export type TagDto = z.infer<typeof TagDtoSchema>;
