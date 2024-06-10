@@ -8,7 +8,7 @@ using ReasnAPI.Exceptions;
 namespace ReasnAPI.Services;
 public class ImageService(ReasnContext context)
 {
-    public List<ImageDto> CreateImages(List<ImageDto> imageDtos)
+    public IEnumerable<ImageDto> CreateImages(List<ImageDto> imageDtos)
     {
         var newImages = new List<Image>();
 
@@ -46,7 +46,7 @@ public class ImageService(ReasnContext context)
             context.SaveChanges();
         }
 
-        return imageDtos;
+        return imageDtos.AsEnumerable();
     }
 
     public void UpdateImages(int objectId, List<ImageDto> imageDtos)
