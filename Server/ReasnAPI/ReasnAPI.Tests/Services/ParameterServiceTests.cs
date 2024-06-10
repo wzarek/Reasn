@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using ReasnAPI.Models.Database;
+﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Services;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
-using System.Linq.Expressions;
 using Moq;
 using Moq.EntityFrameworkCore;
 using ReasnAPI.Exceptions;
@@ -133,19 +126,6 @@ namespace ReasnAPI.Tests.Services
             
             Assert.ThrowsException<NotFoundException>(() => parameterService.GetParameterById(1));
         }
-
-        //[TestMethod]
-        //public void GetParameterById_ParameterExists_ParameterReturned()
-        //{
-        //    var mockContext = new Mock<ReasnContext>();
-        //    mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter> { new Parameter { Id = 1, Key = "TestKey", Value = "TestValue" } });
-
-        //    var parameterService = new ParameterService(mockContext.Object);
-            
-        //    var result = parameterService.GetParameterById(1);
-            
-        //    Assert.AreEqual("TestValue", result.Value);
-        //}
 
         [TestMethod]
         public void DeleteParameter_ParameterExists_ParameterDeleted()

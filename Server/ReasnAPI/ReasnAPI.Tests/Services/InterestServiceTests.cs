@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using ReasnAPI.Models.Database;
+﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Services;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
-using System.Linq.Expressions;
 using Moq;
 using Moq.EntityFrameworkCore;
 using ReasnAPI.Exceptions;
@@ -87,19 +80,6 @@ namespace ReasnAPI.Tests.Services
 
             Assert.ThrowsException<NotFoundException>(() => interestService.GetInterestById(1));
         }
-
-        //[TestMethod]
-        //public void GetInterestById_InterestExists_InterestReturned()
-        //{
-        //    var mockContext = new Mock<ReasnContext>();
-        //    mockContext.Setup(c => c.Interests).ReturnsDbSet(new List<Interest> { new Interest {Id = 1, Name = "TestInterest"} });
-
-        //    var interestService = new InterestService(mockContext.Object);
-
-        //    var result = interestService.GetInterestById(1);
-
-        //    Assert.AreEqual("TestInterest", result.Name);
-        //}
 
         [TestMethod]
         public void UpdateInterest_InterestExists_InterestUpdated()

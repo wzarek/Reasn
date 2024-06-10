@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using ReasnAPI.Models.Database;
+﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Services;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
-using System.Linq.Expressions;
 using Moq;
 using Moq.EntityFrameworkCore;
 using ReasnAPI.Exceptions;
@@ -76,19 +69,6 @@ namespace ReasnAPI.Tests.Services
             
             Assert.AreEqual(0, result.Count);
         }
-
-        //[TestMethod]
-        //public void GetTagById_TagExists_TagReturned()
-        //{
-        //    var mockContext = new Mock<ReasnContext>();
-        //    mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag> { new Tag { Id = 1, Name = "TestTag" } });
-
-        //    var tagService = new TagService(mockContext.Object);
-            
-        //    var result = tagService.GetTagById(1);
-            
-        //    Assert.AreEqual("TestTag", result.Name);
-        //}
 
         [TestMethod]
         public void GetTagById_TagDoesNotExist_NullReturned()
