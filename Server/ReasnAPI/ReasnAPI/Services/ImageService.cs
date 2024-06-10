@@ -49,6 +49,11 @@ public class ImageService(ReasnContext context)
 
     public void UpdateImages(int objectId, List<ImageDto> imageDtos)
     {
+        if (!imageDtos.Any())
+        {
+            throw new ArgumentException("No images provided");
+        }
+
         var objectType = imageDtos[0].ObjectType;
 
         if (objectType == ObjectType.User)

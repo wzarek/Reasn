@@ -7,6 +7,7 @@ using System.Transactions;
 using ReasnAPI.Models.Enums;
 using ReasnAPI.Models.Mappers;
 using ReasnAPI.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace ReasnAPI.Services;
 public class EventService(ReasnContext context)
@@ -233,8 +234,21 @@ public class EventService(ReasnContext context)
 
     private string CreateSlug(EventDto eventDto, DateTime createdTime)
     {
-        var slug = eventDto.Name.ToLower().Replace(" ", "-");
-        var timestamp = createdTime.Ticks;
+        var slug = eventDto.Name.ToLower();
+        slug = slug.Trim();
+        slug = Regex.Replace(slug, @"\s+", " ");
+        slug = Regex.Replace(slug, " ", "-");
+        slug = Regex.Replace(slug, @"[^a-z0-9-]", "");
+        slug = Regex.Replace(slug, "-+", "-");
+
+        var timestamp = createdTime.Ticks.ToString();
+        var maxSlugLength = 128 - timestamp.Length - 1; // -1 for the dash between slug and timestamp
+
+        if (slug.Length > maxSlugLength)
+        {
+            slug = slug.Substring(0, maxSlugLength);
+        }
+
         return $"{slug}-{timestamp}";
     }
 

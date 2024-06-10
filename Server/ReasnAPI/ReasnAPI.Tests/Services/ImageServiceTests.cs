@@ -11,6 +11,7 @@ using System.Linq.Expressions;
 using Moq;
 using Moq.EntityFrameworkCore;
 using ReasnAPI.Exceptions;
+using ReasnAPI.Models.Enums;
 
 
 namespace ReasnAPI.Tests.Services
@@ -120,40 +121,72 @@ namespace ReasnAPI.Tests.Services
         }
 
         [TestMethod]
-        public void UpdateImage_ImageExists_ImageUpdated()
+        public void UpdateImages_UserType_ImageUpdated()
         {
             var imageDto = new ImageDto
             {
+                ObjectId = 1,
+                ObjectType = ObjectType.User,
                 ImageData = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 }
             };
 
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Images).ReturnsDbSet(new List<Image>
-                { new Image { Id = 1, ImageData = new byte[] { } } });
+        { new Image { ObjectId = 1, ObjectType = ObjectType.User, ImageData = new byte[] { } } });
 
             var imageService = new ImageService(mockContext.Object);
 
-            var result = imageService.UpdateImage(1, imageDto);
+            imageService.UpdateImages(1, new List<ImageDto> { imageDto });
 
-            CollectionAssert.AreEqual(new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 }, result.ImageData);
+            mockContext.Verify(c => c.SaveChanges(), Times.Once);
         }
 
         [TestMethod]
+        public void UpdateImages_EventType_ImagesUpdated()
+        {
+            var imageDtos = new List<ImageDto>
+    {
+        new ImageDto
+        {
+            ObjectId = 1,
+            ObjectType = ObjectType.Event,
+            ImageData = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 }
+        },
+        new ImageDto
+        {
+            ObjectId = 1,
+            ObjectType = ObjectType.Event,
+            ImageData = new byte[] { 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30 }
+        }
+    };
 
-        public void UpdateImage_ImageDoesNotExist_NullReturned()
+            var mockContext = new Mock<ReasnContext>();
+            mockContext.Setup(c => c.Images).ReturnsDbSet(new List<Image>
+        { new Image { ObjectId = 1, ObjectType = ObjectType.Event, ImageData = new byte[] { } } });
+
+            var imageService = new ImageService(mockContext.Object);
+
+            imageService.UpdateImages(1, imageDtos);
+
+            mockContext.Verify(c => c.SaveChanges(), Times.Once);
+        }
+
+        [TestMethod]
+        public void UpdateImages_ImageDoesNotExist_ExceptionThrown()
         {
             var imageDto = new ImageDto
             {
+                ObjectId = 1,
+                ObjectType = ObjectType.User,
                 ImageData = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 }
             };
 
             var mockContext = new Mock<ReasnContext>();
-
             mockContext.Setup(c => c.Images).ReturnsDbSet(new List<Image>());
 
             var imageService = new ImageService(mockContext.Object);
 
-            Assert.ThrowsException<NotFoundException>(() => imageService.UpdateImage(1, imageDto));
+            Assert.ThrowsException<NotFoundException>(() => imageService.UpdateImages(1, new List<ImageDto> { imageDto }));
         }
 
         [TestMethod]
