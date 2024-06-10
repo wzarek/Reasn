@@ -16,7 +16,7 @@ public class ImageService(ReasnContext context)
 
         foreach (var imageDto in imageDtos)
         {
-            var image = context.Images.FirstOrDefault(r => r.ObjectId == imageDto.ObjectId && r.ObjectType == imageDto.ObjectType);
+            var image = context.Images.FirstOrDefault(r => r.ObjectId == imageDto.ObjectId && r.ObjectType == imageDto.ObjectType && r.ImageData == imageDto.ImageData);
             if (image is not null)
             {
                 continue;
