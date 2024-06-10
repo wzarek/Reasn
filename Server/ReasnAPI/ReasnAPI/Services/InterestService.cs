@@ -46,8 +46,8 @@ public class InterestService(ReasnContext context)
             throw new NotFoundException("Interest not found");
         }
 
-        var eventInterest = context.UserInterests.FirstOrDefault(r => r.InterestId == id);
-        if (eventInterest is not null)
+        var userInterest = context.UserInterests.FirstOrDefault(r => r.InterestId == id);
+        if (userInterest is not null)
         {
             throw new BadRequestException("Interest is in use");
         }

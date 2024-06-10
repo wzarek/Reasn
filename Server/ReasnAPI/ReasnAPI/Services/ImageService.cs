@@ -29,12 +29,12 @@ public class ImageService(ReasnContext context)
 
         if (newImages.Any())
         {
-            var objectType = newImages.First().ObjectType;
+            var objectType = newImages[0].ObjectType;
           
         
             if (objectType == ObjectType.User && newImages.Count == 1)
             {
-                context.Images.Add(newImages.First());
+                context.Images.Add(newImages[0]);
             }
             else if (objectType == ObjectType.Event)
             {

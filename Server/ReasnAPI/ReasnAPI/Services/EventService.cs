@@ -61,7 +61,7 @@ public class EventService(ReasnContext context)
     {
         using (var scope = new TransactionScope())
         {
-            var eventToUpdate = context.Events.FirstOrDefault(r => r.Id == eventId);
+            var eventToUpdate = context.Events.Include(e => e.Tags).Include(e => e.Parameters).FirstOrDefault(e => e.Id == eventId);
 
             if (eventToUpdate is null)
             {
@@ -159,11 +159,27 @@ public class EventService(ReasnContext context)
     {
         using (var scope = new TransactionScope())
         {
-            var eventToDelete = context.Events.FirstOrDefault(r => r.Id == eventId);
+            var eventToDelete = context.Events.Include(e => e.Tags).Include(e => e.Parameters).FirstOrDefault(e => e.Id == eventId);
 
             if (eventToDelete is null)
             {
                 throw new NotFoundException("Event not found");
+            }
+
+            foreach (var tag in eventToDelete.Tags.ToList())
+            {
+                if (!context.Events.Any(e => e.Tags.Any(t => t.Name == tag.Name) && e.Id != eventId))
+                {
+                    context.Tags.Remove(tag);
+                }
+            }
+
+            foreach (var parameter in eventToDelete.Parameters.ToList())
+            {
+                if (!context.Events.Any(e => e.Parameters.Any(p => p.Key == parameter.Key && p.Value == parameter.Value) && e.Id != eventId))
+                {
+                    context.Parameters.Remove(parameter);
+                }
             }
 
             context.Events.Remove(eventToDelete);
