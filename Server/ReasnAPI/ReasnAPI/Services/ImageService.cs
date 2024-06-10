@@ -3,8 +3,6 @@ using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 using ReasnAPI.Models.Enums;
 using ReasnAPI.Models.Mappers;
-using static System.Net.Mime.MediaTypeNames;
-using Image = ReasnAPI.Models.Database.Image;
 using ReasnAPI.Exceptions;
 
 namespace ReasnAPI.Services;
