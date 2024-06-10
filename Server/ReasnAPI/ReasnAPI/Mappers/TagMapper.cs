@@ -1,7 +1,7 @@
 ﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 
-namespace ReasnAPI.Models.Mappers
+namespace ReasnAPI.Mappers
 {
     public static class TagMapper
     {

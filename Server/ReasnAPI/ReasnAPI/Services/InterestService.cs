@@ -2,7 +2,7 @@
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
-using ReasnAPI.Models.Mappers;
+using ReasnAPI.Mappers;
 
 namespace ReasnAPI.Services;
 

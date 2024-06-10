@@ -4,8 +4,8 @@ using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 using System.Transactions;
-using ReasnAPI.Models.Mappers;
 using System.Text.RegularExpressions;
+using ReasnAPI.Mappers;
 
 namespace ReasnAPI.Services;
 public class EventService(ReasnContext context)

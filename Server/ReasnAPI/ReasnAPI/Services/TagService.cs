@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using ReasnAPI.Exceptions;
-using ReasnAPI.Models.Mappers;
+using ReasnAPI.Mappers;
 
 namespace ReasnAPI.Services;
 public class TagService (ReasnContext context)
