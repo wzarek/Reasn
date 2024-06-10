@@ -15,12 +15,13 @@ public class EventService(ReasnContext context)
     {
         using (var scope = new TransactionScope())
         {
-            eventDto.Slug = CreateSlug(eventDto);
-            var nowTime = DateTime.UtcNow;
+            
+            var createdTime = DateTime.UtcNow;
             var newEvent = eventDto.ToEntity();
-            newEvent.CreatedAt = nowTime;
-            newEvent.UpdatedAt = nowTime;
-            newEvent.Slug = eventDto.Slug;
+            newEvent.CreatedAt = createdTime;
+            newEvent.UpdatedAt = createdTime;
+            newEvent.Slug = CreateSlug(eventDto, createdTime);
+           
 
             context.Events.Add(newEvent);
             context.SaveChanges();
@@ -230,10 +231,11 @@ public class EventService(ReasnContext context)
         return eventDtos;
     }
 
-    private string CreateSlug(EventDto eventDto)
+    private string CreateSlug(EventDto eventDto, DateTime createdTime)
     {
         var slug = eventDto.Name.ToLower().Replace(" ", "-");
-        return slug;
+        var timestamp = createdTime.Ticks;
+        return $"{slug}-{timestamp}";
     }
 
 }
