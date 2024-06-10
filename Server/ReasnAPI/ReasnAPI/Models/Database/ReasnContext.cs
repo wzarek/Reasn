@@ -147,7 +147,7 @@ public partial class ReasnContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.ImageData).HasColumnName("image_data");
             entity.Property(e => e.ObjectId).HasColumnName("object_id");
-            entity.Property(i => i.ObjectType).HasColumnName("object_type");
+            entity.Property(e => e.ObjectType).HasColumnName("object_type");
         });
 
         modelBuilder.Entity<Interest>(entity =>
@@ -253,7 +253,7 @@ public partial class ReasnContext : DbContext
             entity.Property(e => e.Surname).HasColumnName("surname");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             entity.Property(e => e.Username).HasColumnName("username");
-            entity.Property(u => u.Role).HasColumnName("role");
+            entity.Property(e => e.Role).HasColumnName("role");
 
             entity.HasOne(d => d.Address).WithMany(p => p.Users)
                 .HasForeignKey(d => d.AddressId)

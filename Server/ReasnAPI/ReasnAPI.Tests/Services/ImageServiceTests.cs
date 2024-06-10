@@ -33,7 +33,7 @@ namespace ReasnAPI.Tests.Services
 
             var imageService = new ImageService(mockContext.Object);
             List<ImageDto> imagedtoslist = new List<ImageDto>();
-            imagedtoslist.Append(imageDto);
+            imagedtoslist.Add(imageDto); // Use Add instead of Append
 
             var result = imageService.CreateImages(imagedtoslist);
             Assert.IsNotNull(result);
@@ -53,7 +53,7 @@ namespace ReasnAPI.Tests.Services
 
             var imageService = new ImageService(mockContext.Object);
             List<ImageDto> imagedtoslist = new List<ImageDto>();
-            imagedtoslist.Append(imageDto);
+            imagedtoslist.Add(imageDto); // Use Add instead of Append
 
             var result = imageService.CreateImages(imagedtoslist);
 

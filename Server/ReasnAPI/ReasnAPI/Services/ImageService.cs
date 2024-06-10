@@ -14,6 +14,11 @@ public class ImageService(ReasnContext context)
     {
         var newImages = new List<Image>();
 
+        if (imageDtos[0].ObjectType == ObjectType.User && imageDtos.Count > 1)
+        {
+            throw new ArgumentException("For User type, only one image can be created");
+        }
+
         foreach (var imageDto in imageDtos)
         {
             var image = context.Images.FirstOrDefault(r => r.ObjectId == imageDto.ObjectId && r.ObjectType == imageDto.ObjectType && r.ImageData == imageDto.ImageData);
@@ -30,8 +35,7 @@ public class ImageService(ReasnContext context)
         if (newImages.Any())
         {
             var objectType = newImages[0].ObjectType;
-          
-        
+
             if (objectType == ObjectType.User && newImages.Count == 1)
             {
                 context.Images.Add(newImages[0]);

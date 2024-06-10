@@ -18,6 +18,11 @@ namespace ReasnAPI.Models.Mappers
             return tags.Select(ToDto).ToList();
         }
 
+        public static List<Tag> ToEntityList(this IEnumerable<TagDto> tags)
+        {
+            return tags.Select(ToEntity).ToList();
+        }
+
         public static Tag ToEntity(this TagDto tagDto)
         {
             return new Tag

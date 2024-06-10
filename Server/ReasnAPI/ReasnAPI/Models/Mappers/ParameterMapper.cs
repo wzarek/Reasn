@@ -17,6 +17,12 @@ namespace ReasnAPI.Models.Mappers
         {
             return parameter.Select(ToDto).ToList();
         }
+
+        public static List<Parameter> ToEntityList(this IEnumerable<ParameterDto> tags)
+        {
+            return tags.Select(ToEntity).ToList();
+        }
+
         public static Parameter ToEntity(this ParameterDto parameterDto)
         {
             return new Parameter

@@ -333,59 +333,64 @@ namespace ReasnAPI.Tests.Services
         {
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event>
-            {
-                new Event()
-                {
-                    Id = 1,
-                    Name = "name",
-                    Slug = "name",
-                    AddressId = 1,
-                    Description = "description",
-                    OrganizerId = 1,
-                    StartAt = DateTime.Now,
-                    EndAt = DateTime.Now,
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now,
-                    Status = EventStatus.Completed,
-                }
-            });
+    {
+        new Event()
+        {
+            Id = 1,
+            Name = "name",
+            Slug = "name",
+            AddressId = 1,
+            Description = "description",
+            OrganizerId = 1,
+            StartAt = DateTime.Now,
+            EndAt = DateTime.Now,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now,
+            Status = EventStatus.Completed,
+            Tags = new List<Tag> { new Tag { Id = 1, Name = "name" } },
+            Parameters = new List<Parameter> { new Parameter { Key = "key", Value = "value" } },
+            Comments = new List<Comment> { new Comment { Id = 1, Content = "content" } },
+            Participants = new List<Participant> { new Participant { Id = 1, UserId = 1 } }
+        }
+    });
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag>
-            {
-                new Tag()
-                {
-                    Id = 1,
-                    Name = "name"
-                }
-            });
+    {
+        new Tag()
+        {
+            Id = 1,
+            Name = "name"
+        }
+    });
             mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address>
-            {
-                new Address()
-                {
-                    Id = 1,
-                    City = "city",
-                    Country = "country",
-                    State = "state",
-                    Street = "street",
-                    ZipCode = "test123"
-                }
-            });
+    {
+        new Address()
+        {
+            Id = 1,
+            City = "city",
+            Country = "country",
+            State = "state",
+            Street = "street",
+            ZipCode = "test123"
+        }
+    });
             mockContext.Setup(c => c.Users).ReturnsDbSet(new List<User>{
-                new User()
-                {
-                    Id = 1,
-                    Name = "test",
-                    Email = "test@wp.pl",
-                    AddressId  = 1,
-                    CreatedAt = DateTime.Now,
-                    IsActive = true,
-                    Role = UserRole.User,
-                    Password ="test123",
-                    Phone = "123123123",
-                    Surname ="test",
-                    Username ="test",
-                    UpdatedAt =DateTime.Now }});
-            
-        
+        new User()
+        {
+            Id = 1,
+            Name = "test",
+            Email = "test@wp.pl",
+            AddressId  = 1,
+            CreatedAt = DateTime.Now,
+            IsActive = true,
+            Role = UserRole.User,
+            Password ="test123",
+            Phone = "123123123",
+            Surname ="test",
+            Username ="test",
+            UpdatedAt =DateTime.Now }});
+            mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>());
+            mockContext.Setup(c => c.Comments).ReturnsDbSet(new List<Comment>());
+            mockContext.Setup(c => c.Participants).ReturnsDbSet(new List<Participant>());
 
             var eventService = new EventService(mockContext.Object);
 

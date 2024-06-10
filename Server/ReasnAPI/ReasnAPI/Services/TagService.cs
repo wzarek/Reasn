@@ -1,11 +1,9 @@
 ﻿using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using ReasnAPI.Exceptions;
-using System.Net;
 using ReasnAPI.Models.Mappers;
 
 namespace ReasnAPI.Services;
