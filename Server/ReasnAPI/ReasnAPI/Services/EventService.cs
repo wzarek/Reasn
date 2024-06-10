@@ -226,6 +226,19 @@ public class EventService(ReasnContext context)
         return eventDto;
     }
 
+    public EventDto? GetEventBySlug(string slug)
+    {
+        var eventToReturn = context.Events.Include(e => e.Tags).Include(e => e.Parameters).FirstOrDefault(e => e.Slug == slug);
+        if (eventToReturn is null)
+        {
+            throw new NotFoundException("Event not found");
+        }
+
+        var eventDto = eventToReturn.ToDto();
+
+        return eventDto;
+    }
+
     public IEnumerable<EventDto> GetEventsByFilter(Expression<Func<Event, bool>> filter)
     {
         var events = context.Events.Include(e => e.Parameters).Include(e => e.Tags).Where(filter).ToList();
