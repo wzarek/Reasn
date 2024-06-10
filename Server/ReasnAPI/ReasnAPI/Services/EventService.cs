@@ -39,24 +39,23 @@ public class EventService(ReasnContext context)
         if (eventDto.Tags is not null && eventDto.Tags.Any())
         {
             var newTags = eventDto.Tags
-                .Where(t => !context.Tags.Any(x => x.Name == t.Name))
-                .Select(t => new Tag { Name = t.Name })
+                .Select(t => context.Tags.FirstOrDefault(x => x.Name == t.Name) ?? new Tag { Name = t.Name })
                 .ToList();
 
-            context.Tags.AddRange(newTags);
+            context.Tags.AddRange(newTags.Where(t => t.Id == 0)); // Add only new tags to the context
             newEvent.Tags = newTags;
         }
     }
+
     private void AddParameters(EventDto eventDto, Event newEvent)
     {
         if (eventDto.Parameters is not null && eventDto.Parameters.Any())
         {
             var newParameters = eventDto.Parameters
-                .Where(p => !context.Parameters.Any(x => x.Key == p.Key && x.Value == p.Value))
-                .Select(p => new Parameter { Key = p.Key, Value = p.Value })
+                .Select(p => context.Parameters.FirstOrDefault(x => x.Key == p.Key && x.Value == p.Value) ?? new Parameter { Key = p.Key, Value = p.Value })
                 .ToList();
 
-            context.Parameters.AddRange(newParameters);
+            context.Parameters.AddRange(newParameters.Where(p => p.Id == 0)); // Add only new parameters to the context
             newEvent.Parameters = newParameters;
         }
     }
