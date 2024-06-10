@@ -131,6 +131,22 @@ public class ImageService(ReasnContext context)
         return imageDto;
     }
 
+    public List<ImageDto> GetImagesByObjectId(int objectId, ObjectType objectType)
+    {
+        var images = context.Images
+            .Where(image => image.ObjectId == objectId && image.ObjectType == objectType)
+            .ToList();
+
+        if (!images.Any())
+        {
+            throw new NotFoundException("Images not found");
+        }
+
+        var imageDtos = images.Select(image => image.ToDto()).ToList();
+
+        return imageDtos;
+    }
+
     public IEnumerable<ImageDto> GetAllImages()
     {
         return context.Images
