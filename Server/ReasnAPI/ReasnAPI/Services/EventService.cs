@@ -80,11 +80,9 @@ public class EventService(ReasnContext context)
             eventToUpdate.UpdatedAt = DateTime.Now;
             eventToUpdate.Status = eventDto.Status;
 
-            context.Events.Update(eventToUpdate);
-            context.SaveChanges();
-
             UpdateTags(eventDto, eventToUpdate);
             UpdateParameters(eventDto, eventToUpdate);
+            context.Events.Update(eventToUpdate);
 
             context.SaveChanges();
             scope.Complete();
