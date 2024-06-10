@@ -14,13 +14,11 @@ public class EventService(ReasnContext context)
     {
         using (var scope = new TransactionScope())
         {
-            
             var createdTime = DateTime.UtcNow;
             var newEvent = eventDto.ToEntity();
             newEvent.CreatedAt = createdTime;
             newEvent.UpdatedAt = createdTime;
             newEvent.Slug = CreateSlug(eventDto, createdTime);
-           
 
             context.Events.Add(newEvent);
             context.SaveChanges();
