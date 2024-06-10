@@ -40,29 +40,61 @@ public class ImageService(ReasnContext context)
             {
                 context.Images.AddRange(newImages);
             }
-        
-
+            
             context.SaveChanges();
         }
 
         return imageDtos;
     }
 
-    public ImageDto UpdateImage(int imageId, ImageDto imageDto)
+    public void UpdateImages(int objectId, List<ImageDto> imageDtos)
     {
-        var image = context.Images.FirstOrDefault(r => r.Id == imageId);
-        if (image is null)
+        var objectType = imageDtos[0].ObjectType;
+
+        if (objectType == ObjectType.User)
         {
-            throw new NotFoundException("Image not found");
+            if (imageDtos.Count != 1)
+            {
+                throw new ArgumentException("For User type, only one image can be updated");
+            }
+
+            var image = context.Images.FirstOrDefault(r => r.ObjectId == objectId && r.ObjectType == ObjectType.User);
+            if (image is null)
+            {
+                throw new NotFoundException("Image not found");
+            }
+
+            image.ImageData = imageDtos[0].ImageData;
+
+            context.Images.Update(image);
+        }
+        else if (objectType == ObjectType.Event)
+        {
+            var images = context.Images.Where(r => r.ObjectId == objectId && r.ObjectType == ObjectType.Event).ToList();
+
+            // Remove images that are not in the new list
+            foreach (var image in images)
+            {
+                if (!imageDtos.Any(dto => dto.ImageData == image.ImageData))
+                {
+                    context.Images.Remove(image);
+                }
+            }
+
+            // Add new images that are not in the database
+            var newImages = new List<Image>();
+            foreach (var imageDto in imageDtos)
+            {
+                if (!images.Any(img => img.ImageData == imageDto.ImageData))
+                {
+                    var newImage = imageDto.ToEntity();
+                    newImages.Add(newImage);
+                }
+            }
+            context.Images.AddRange(newImages);
         }
 
-        image.ObjectId = imageDto.ObjectId;
-        image.ImageData = imageDto.ImageData;
-        image.ObjectType = imageDto.ObjectType;
-
-        context.Images.Update(image);
         context.SaveChanges();
-        return imageDto;
     }
 
     public void DeleteImage(int id)
