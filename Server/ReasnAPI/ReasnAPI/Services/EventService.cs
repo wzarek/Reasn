@@ -161,7 +161,7 @@ public class EventService(ReasnContext context)
     {
         using (var scope = new TransactionScope())
         {
-            var eventToDelete = context.Events.Include(e => e.Tags).Include(e => e.Parameters).FirstOrDefault(e => e.Id == eventId);
+            var eventToDelete = context.Events.Include(e => e.Tags).Include(e => e.Parameters).Include(e=>e.Participants).Include(e => e.Comments).FirstOrDefault(e => e.Id == eventId);
 
             if (eventToDelete is null)
             {
@@ -170,19 +170,33 @@ public class EventService(ReasnContext context)
 
             foreach (var tag in eventToDelete.Tags.ToList())
             {
+                eventToDelete.Tags.Remove(tag);// remove the association first
                 if (!context.Events.Any(e => e.Tags.Any(t => t.Name == tag.Name) && e.Id != eventId))
                 {
-                    context.Tags.Remove(tag);
+                    
+                    // Check if the tag is associated with any other event
+                    if (!context.Events.Any(e => e.Tags.Contains(tag)))
+                    {
+                        context.Tags.Remove(tag); // then remove the tag
+                    }
                 }
             }
 
             foreach (var parameter in eventToDelete.Parameters.ToList())
             {
+                eventToDelete.Parameters.Remove(parameter); // remove the association first
                 if (!context.Events.Any(e => e.Parameters.Any(p => p.Key == parameter.Key && p.Value == parameter.Value) && e.Id != eventId))
                 {
-                    context.Parameters.Remove(parameter);
+                    // Check if the parameter is associated with any other event
+                    if (!context.Events.Any(e => e.Parameters.Contains(parameter)))
+                    {
+                        context.Parameters.Remove(parameter); // then remove the parameter
+                    }
                 }
             }
+
+            context.Comments.RemoveRange(eventToDelete.Comments);
+            context.Participants.RemoveRange(eventToDelete.Participants);
 
             context.Events.Remove(eventToDelete);
             context.SaveChanges();

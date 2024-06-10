@@ -3,7 +3,6 @@ using ReasnAPI.Exceptions;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
 using ReasnAPI.Models.Mappers;
 
 namespace ReasnAPI.Services;
