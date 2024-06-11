@@ -71,6 +71,29 @@ public class ParameterService(ReasnContext context)
         context.Parameters.Remove(parameter);
         context.SaveChanges();
     }
+    public void RemoveParametersNotInAnyEvent()
+    {
+        var parametersNotInAnyEvent = context.Parameters
+            .Where(p => !context.Events.Any(e => e.Parameters.Contains(p)))
+            .ToList();
+
+        context.Parameters.RemoveRange(parametersNotInAnyEvent);
+        context.SaveChanges();
+    }
+
+    public void AddParametersFromList(List<Parameter> parametersToAdd)
+    {
+        var existingParamsInDb = context.Parameters
+            .Where(param => parametersToAdd.Any(newParam => newParam.Key == param.Key && newParam.Value == param.Value))
+            .ToList();
+
+        var paramsToAdd = parametersToAdd
+            .Where(newParam => existingParamsInDb.All(existingParam => existingParam.Key != newParam.Key || existingParam.Value != newParam.Value))
+            .ToList();
+
+        context.Parameters.AddRange(paramsToAdd);
+        context.SaveChanges();
+    }
 
     public ParameterDto GetParameterById(int parameterId)
     {

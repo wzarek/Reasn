@@ -30,7 +30,5 @@ namespace ReasnAPI.Mappers
             };
         }
 
-
-
     }
 }

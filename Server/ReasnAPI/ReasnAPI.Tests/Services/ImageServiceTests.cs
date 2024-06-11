@@ -200,7 +200,7 @@ namespace ReasnAPI.Tests.Services
 
             var imageService = new ImageService(mockContext.Object);
 
-            imageService.DeleteImage(1);
+            imageService.DeleteImageById(1);
 
             mockContext.Verify(c => c.SaveChanges(), Times.Once);
         }
@@ -215,7 +215,7 @@ namespace ReasnAPI.Tests.Services
 
             var imageService = new ImageService(mockContext.Object);
 
-            Assert.ThrowsException<NotFoundException>(() => imageService.DeleteImage(1));
+            Assert.ThrowsException<NotFoundException>(() => imageService.DeleteImageById(1));
         }
 
         [TestMethod]

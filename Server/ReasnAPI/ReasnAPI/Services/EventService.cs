@@ -10,6 +10,9 @@ using ReasnAPI.Mappers;
 namespace ReasnAPI.Services;
 public class EventService(ReasnContext context)
 {
+    private readonly ParameterService _parameterService = new ParameterService(context);
+    private readonly TagService _tagService = new TagService(context);
+
     public EventDto CreateEvent(EventDto eventDto)
     {
         using (var scope = new TransactionScope())
@@ -22,40 +25,24 @@ public class EventService(ReasnContext context)
 
             context.Events.Add(newEvent);
             context.SaveChanges();
+            if (eventDto.Tags != null)
+            {
+                var newTags = eventDto.Tags.ToEntityList();
+                AttatchTagsToEvent(newTags, newEvent);
+            }
 
-            AddTags(eventDto, newEvent);
-            AddParameters(eventDto, newEvent);
+            if (eventDto.Parameters != null)
+            {
+                var newParameters = eventDto.Parameters.ToEntityList();
+                AttachParametersToEvent(newParameters, newEvent);
+            }
+            
 
             context.SaveChanges();
             scope.Complete();
         }
 
         return eventDto;
-    }
-    private void AddTags(EventDto eventDto, Event newEvent)
-    {
-        if (eventDto.Tags is not null && eventDto.Tags.Any())
-        {
-            var newTags = eventDto.Tags
-                .Select(t => context.Tags.FirstOrDefault(x => x.Name == t.Name) ?? new Tag { Name = t.Name })
-                .ToList();
-
-            context.Tags.AddRange(newTags.Where(t => t.Id == 0)); // Add only new tags to the context
-            newEvent.Tags = newTags;
-        }
-    }
-
-    private void AddParameters(EventDto eventDto, Event newEvent)
-    {
-        if (eventDto.Parameters is not null && eventDto.Parameters.Any())
-        {
-            var newParameters = eventDto.Parameters
-                .Select(p => context.Parameters.FirstOrDefault(x => x.Key == p.Key && x.Value == p.Value) ?? new Parameter { Key = p.Key, Value = p.Value })
-                .ToList();
-
-            context.Parameters.AddRange(newParameters.Where(p => p.Id == 0)); // Add only new parameters to the context
-            newEvent.Parameters = newParameters;
-        }
     }
 
     public EventDto UpdateEvent(int eventId, EventDto eventDto)
@@ -78,8 +65,34 @@ public class EventService(ReasnContext context)
             eventToUpdate.UpdatedAt = DateTime.Now;
             eventToUpdate.Status = eventDto.Status;
 
-            UpdateTags(eventDto, eventToUpdate);
-            UpdateParameters(eventDto, eventToUpdate);
+            if (eventDto.Tags == null)
+            {
+                DetachTagsFromEvent(eventToUpdate.Tags.ToList(), eventToUpdate);
+            }
+            else
+            {
+                var newTags = eventDto.Tags.ToEntityList();
+                var tagsToRemove = eventToUpdate.Tags
+                    .Where(existingTag => newTags.All(newTag => newTag.Name != existingTag.Name))
+                    .ToList();
+                DetachTagsFromEvent(tagsToRemove, eventToUpdate);
+                AttatchTagsToEvent(newTags, eventToUpdate);
+            }
+
+            if (eventDto.Parameters == null)
+            {
+                DetachParametersFromEvent(eventToUpdate.Parameters.ToList(), eventToUpdate);
+            }
+            else
+            {
+                var newParameters = eventDto.Parameters.ToEntityList();
+                var paramsToRemove = eventToUpdate.Parameters
+                    .Where(existingParam => newParameters.All(newParam => newParam.Key != existingParam.Key || newParam.Value != existingParam.Value))
+                    .ToList();
+                DetachParametersFromEvent(paramsToRemove, eventToUpdate);
+                AttachParametersToEvent(newParameters, eventToUpdate);
+            }
+
             context.Events.Update(eventToUpdate);
 
             context.SaveChanges();
@@ -89,70 +102,46 @@ public class EventService(ReasnContext context)
         return eventDto;
     }
 
-    private void UpdateTags(EventDto eventDto, Event eventToUpdate)
+    private void AttatchTagsToEvent(List<Tag> tagsToAdd, Event eventToUpdate)
     {
-        if (eventDto.Tags is not null)
-        {
-            var newTags = eventDto.Tags.ToEntityList();
+        _tagService.AddTagsFromList(tagsToAdd);
 
-            var tagsToRemove = eventToUpdate.Tags
-                .Where(existingTag => newTags.All(newTag => newTag.Name != existingTag.Name))
-                .ToList();
+        var tagsToAttach = tagsToAdd
+            .Where(newTag => eventToUpdate.Tags.All(existingTag => existingTag.Name != newTag.Name))
+            .ToList();
 
-            tagsToRemove.ForEach(tag => eventToUpdate.Tags.Remove(tag));
+        tagsToAttach.ForEach(eventToUpdate.Tags.Add);
 
-            var existingTagsInDb = context.Tags
-                .Where(tag => newTags.Any(newTag => newTag.Name == tag.Name))
-                .ToList();
-
-            var tagsToAdd = newTags
-                .Where(newTag => existingTagsInDb.All(existingTag => existingTag.Name != newTag.Name))
-                .ToList();
-
-            context.Tags.AddRange(tagsToAdd);
-            context.SaveChanges();
-
-            var tagsToAttach = newTags
-                .Where(newTag => eventToUpdate.Tags.All(existingTag => existingTag.Name != newTag.Name))
-                .ToList();
-
-            tagsToAttach.ForEach(eventToUpdate.Tags.Add);
-
-            context.SaveChanges();
-        }
+        context.SaveChanges();
     }
 
-    private void UpdateParameters(EventDto eventDto, Event eventToUpdate)
+    private void DetachTagsFromEvent(List<Tag> tagsToRemove, Event eventToUpdate)
     {
-        if (eventDto.Parameters is not null)
-        {
-            var newParameters = eventDto.Parameters.ToEntityList();
+        tagsToRemove.ForEach(tag => eventToUpdate.Tags.Remove(tag));
+        context.SaveChanges();
 
-            var paramsToRemove = eventToUpdate.Parameters
-                .Where(existingParam => newParameters.All(newParam => newParam.Key != existingParam.Key || newParam.Value != existingParam.Value))
-                .ToList();
+        _tagService.RemoveTagsNotInAnyEvent();
+    }
 
-            paramsToRemove.ForEach(param => eventToUpdate.Parameters.Remove(param));
+    private void AttachParametersToEvent(List<Parameter> parametersToAdd, Event eventToUpdate)
+    {
+        _parameterService.AddParametersFromList(parametersToAdd);
 
-            var existingParamsInDb = context.Parameters
-                .Where(param => newParameters.Any(newParam => newParam.Key == param.Key && newParam.Value == param.Value))
-                .ToList();
+        var paramsToAttach = parametersToAdd
+            .Where(newParam => eventToUpdate.Parameters.All(existingParam => existingParam.Key != newParam.Key || existingParam.Value != newParam.Value))
+            .ToList();
 
-            var paramsToAdd = newParameters
-                .Where(newParam => existingParamsInDb.All(existingParam => existingParam.Key != newParam.Key || existingParam.Value != newParam.Value))
-                .ToList();
+        paramsToAttach.ForEach(eventToUpdate.Parameters.Add);
 
-            context.Parameters.AddRange(paramsToAdd);
-            context.SaveChanges();
+        context.SaveChanges();
+    }
 
-            var paramsToAttach = newParameters
-                .Where(newParam => eventToUpdate.Parameters.All(existingParam => existingParam.Key != newParam.Key || existingParam.Value != newParam.Value))
-                .ToList();
+    private void DetachParametersFromEvent(List<Parameter> parametersToRemove, Event eventToUpdate)
+    {
+        parametersToRemove.ForEach(param => eventToUpdate.Parameters.Remove(param));
+        context.SaveChanges();
 
-            paramsToAttach.ForEach(eventToUpdate.Parameters.Add);
-
-            context.SaveChanges();
-        }
+        _parameterService.RemoveParametersNotInAnyEvent();
     }
 
     public void DeleteEvent(int eventId)
@@ -167,9 +156,9 @@ public class EventService(ReasnContext context)
             }
 
             RemoveTags(eventToDelete, eventId);
-            RemoveParameters(eventToDelete, eventId);
-            RemoveComments(eventToDelete);
-            RemoveParticipants(eventToDelete);
+            RemoveParametersFromEventCollection(eventToDelete, eventId);
+            RemoveCommentsFromEventCollection(eventToDelete);
+            RemoveParticipantsFromEventCollection(eventToDelete);
 
             context.Events.Remove(eventToDelete);
             context.SaveChanges();
@@ -190,7 +179,7 @@ public class EventService(ReasnContext context)
         }
     }
 
-    private void RemoveParameters(Event eventToDelete, int eventId)
+    private void RemoveParametersFromEventCollection(Event eventToDelete, int eventId)
     {
         foreach (var parameter in eventToDelete.Parameters.ToList())
         {
@@ -203,17 +192,17 @@ public class EventService(ReasnContext context)
         }
     }
 
-    private void RemoveComments(Event eventToDelete)
+    private void RemoveCommentsFromEventCollection(Event eventToDelete)
     {
         context.Comments.RemoveRange(eventToDelete.Comments);
     }
 
-    private void RemoveParticipants(Event eventToDelete)
+    private void RemoveParticipantsFromEventCollection(Event eventToDelete)
     {
         context.Participants.RemoveRange(eventToDelete.Participants);
     }
 
-    public EventDto? GetEventById(int eventId)
+    public EventDto GetEventById(int eventId)
     {
         var eventToReturn = context.Events.Include(e => e.Tags).Include(e => e.Parameters).FirstOrDefault(e => e.Id == eventId);
         if (eventToReturn is null)
@@ -226,7 +215,7 @@ public class EventService(ReasnContext context)
         return eventDto;
     }
 
-    public EventDto? GetEventBySlug(string slug)
+    public EventDto GetEventBySlug(string slug)
     {
         var eventToReturn = context.Events.Include(e => e.Tags).Include(e => e.Parameters).FirstOrDefault(e => e.Slug == slug);
         if (eventToReturn is null)
@@ -242,14 +231,7 @@ public class EventService(ReasnContext context)
     public IEnumerable<EventDto> GetEventsByFilter(Expression<Func<Event, bool>> filter)
     {
         var events = context.Events.Include(e => e.Parameters).Include(e => e.Tags).Where(filter).ToList();
-        var eventDtos = new List<EventDto>();
-        foreach (var eventToReturn in events)
-        {
-            var eventDto = eventToReturn.ToDto();
-
-            eventDtos.Add(eventDto);
-        }
-
+        var eventDtos = events.ToDtoList();
         return eventDtos;
     }
 
@@ -257,14 +239,7 @@ public class EventService(ReasnContext context)
     {
         var events = context.Events.Include(e => e.Parameters).Include(e => e.Tags).ToList();
 
-        var eventDtos = new List<EventDto>();
-        foreach (var eventToReturn in events)
-        {
-            var eventDto = eventToReturn.ToDto();
-
-            eventDtos.Add(eventDto);
-        }
-
+        var eventDtos = events.ToDtoList();
         return eventDtos;
     }
 

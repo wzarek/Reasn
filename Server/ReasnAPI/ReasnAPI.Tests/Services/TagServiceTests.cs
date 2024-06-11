@@ -99,7 +99,7 @@ namespace ReasnAPI.Tests.Services
             var tagService = new TagService(mockContext.Object);
 
             // Act
-            var result = tagService.UpdateTag(1, tagDto, eventId);
+            var result = tagService.UpdateTagForEvent(1, tagDto, eventId);
 
             // Assert
             Assert.IsNotNull(result);
@@ -122,7 +122,7 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event> { new Event { Id = eventId } });
             var tagService = new TagService(mockContext.Object);
 
-            Assert.ThrowsException<NotFoundException>(() => tagService.UpdateTag(1, tagDto, eventId));
+            Assert.ThrowsException<NotFoundException>(() => tagService.UpdateTagForEvent(1, tagDto, eventId));
             mockContext.Verify(c => c.SaveChanges(), Times.Never); // Ensure SaveChanges was never called
         }
 

@@ -77,6 +77,9 @@ namespace ReasnAPI.Tests.Services
                 Username ="test", 
                 UpdatedAt =DateTime.Now }});
             
+            mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>());
+            mockContext.Setup(c => c.Comments).ReturnsDbSet(new List<Comment>());
+            mockContext.Setup(c => c.Participants).ReturnsDbSet(new List<Participant>());
             var eventService = new EventService(mockContext.Object);
 
             var result = eventService.UpdateEvent(1,eventDto);

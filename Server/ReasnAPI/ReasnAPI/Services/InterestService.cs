@@ -56,6 +56,21 @@ public class InterestService(ReasnContext context)
         context.SaveChanges();
     }
 
+    public void ForceDeleteInterest(int id)
+    {
+        var interest = context.Interests.FirstOrDefault(r => r.Id == id);
+        if (interest is null)
+        {
+            throw new NotFoundException("Interest not found");
+        }
+
+        var userInterests = context.UserInterests.Where(r => r.InterestId == id).ToList();
+        context.UserInterests.RemoveRange(userInterests);
+
+        context.Interests.Remove(interest);
+        context.SaveChanges();
+    }
+
     public InterestDto GetInterestById(int interestId)
     {
         var interest = context.Interests.Find(interestId);

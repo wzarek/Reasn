@@ -11,6 +11,11 @@ public class ImageService(ReasnContext context)
 {
     public IEnumerable<ImageDto> CreateImages(List<ImageDto> imageDtos)
     {
+        if (!imageDtos.Any())
+        {
+            throw new ArgumentException("No images provided");
+        }
+
         var newImages = new List<Image>();
 
         if (imageDtos[0].ObjectType == ObjectType.User && imageDtos.Count > 1)
@@ -105,7 +110,7 @@ public class ImageService(ReasnContext context)
         context.SaveChanges();
     }
 
-    public void DeleteImage(int id)
+    public bool DeleteImageById(int id)
     {
         var image = context.Images.FirstOrDefault(r => r.Id == id);
         if (image is null)
@@ -115,6 +120,21 @@ public class ImageService(ReasnContext context)
 
         context.Images.Remove(image);
         context.SaveChanges();
+        return true;
+    }
+
+    public bool DeleteImageByObjectIdAndType(int objectId, ObjectType objectType)
+    {
+        var images = context.Images.Where(r => r.ObjectId == objectId && r.ObjectType == objectType).ToList();
+        if (!images.Any())
+        {
+            throw new NotFoundException("Images not found");
+        }
+
+        context.Images.RemoveRange(images);
+        context.SaveChanges();
+
+        return true;
     }
 
     public ImageDto GetImageById(int id)
@@ -130,10 +150,10 @@ public class ImageService(ReasnContext context)
         return imageDto;
     }
 
-    public IEnumerable<ImageDto> GetImagesByObjectId(int objectId, ObjectType objectType)
+    public IEnumerable<ImageDto> GetImagesByUserId(int userId)
     {
         var images = context.Images
-            .Where(image => image.ObjectId == objectId && image.ObjectType == objectType)
+            .Where(image => image.ObjectId == userId && image.ObjectType == ObjectType.User)
             .ToList();
 
         if (!images.Any())
@@ -141,7 +161,7 @@ public class ImageService(ReasnContext context)
             throw new NotFoundException("Images not found");
         }
 
-        var imageDtos = images.Select(image => image.ToDto()).AsEnumerable();
+        var imageDtos = images.ToDtoList().AsEnumerable();
 
         return imageDtos;
     }
@@ -167,7 +187,12 @@ public class ImageService(ReasnContext context)
             .Where(image => image.ObjectType == ObjectType.Event && image.ObjectId == eventId)
             .ToList();
 
-        var imageDtos = images.Select(image => image.ToDto()).AsEnumerable();
+        if (!images.Any())
+        {
+            throw new NotFoundException("Images not found");
+        }
+
+        var imageDtos = images.ToDtoList().AsEnumerable();
 
         return imageDtos;
     }

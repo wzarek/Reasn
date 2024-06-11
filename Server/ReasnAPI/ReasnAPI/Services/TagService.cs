@@ -22,7 +22,7 @@ public class TagService (ReasnContext context)
         return tagDto;
     }
 
-    public TagDto UpdateTag(int tagId, TagDto tagDto, int eventId)
+    public TagDto UpdateTagForEvent(int tagId, TagDto tagDto, int eventId)
     {
         using (var scope = new TransactionScope())
         {
@@ -67,6 +67,35 @@ public class TagService (ReasnContext context)
             return tagDto;
         }
     }
+    public TagDto UpdateTag(int tagId, TagDto tagDto)
+    {
+        var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
+
+        if (tag is null)
+        {
+            throw new NotFoundException("Tag not found");
+        }
+
+        tag.Name = tagDto.Name;
+        context.Tags.Update(tag);
+        context.SaveChanges();
+
+        return tagDto;
+    }
+
+    public void AddTagsFromList(List<Tag> tagsToAdd)
+    {
+        var existingTagsInDb = context.Tags
+            .Where(tag => tagsToAdd.Any(newTag => newTag.Name == tag.Name))
+            .ToList();
+
+        var tagsToAddToDb = tagsToAdd
+            .Where(newTag => existingTagsInDb.All(existingTag => existingTag.Name != newTag.Name))
+            .ToList();
+
+        context.Tags.AddRange(tagsToAddToDb);
+        context.SaveChanges();
+    }
 
     public void DeleteTag(int tagId)
     {
@@ -87,6 +116,16 @@ public class TagService (ReasnContext context)
         }
 
         context.Tags.Remove(tag);
+        context.SaveChanges();
+    }
+
+    public void RemoveTagsNotInAnyEvent()
+    {
+        var tagsNotInAnyEvent = context.Tags
+            .Where(t => !context.Events.Any(e => e.Tags.Contains(t)))
+            .ToList();
+
+        context.Tags.RemoveRange(tagsNotInAnyEvent);
         context.SaveChanges();
     }
 
