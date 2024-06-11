@@ -24,6 +24,7 @@ public class EventService(ReasnContext context)
             newEvent.Slug = CreateSlug(eventDto, createdTime);
 
             context.Events.Add(newEvent);
+
             context.SaveChanges();
             if (eventDto.Tags != null)
             {
@@ -241,6 +242,18 @@ public class EventService(ReasnContext context)
 
         var eventDtos = events.ToDtoList();
         return eventDtos;
+    }
+    public IEnumerable<EventDto> GetUserEvents(string username)
+    {
+        var user = context.Users.FirstOrDefault(u => u.Username == username);
+
+        if (user is null)
+        {
+            throw new NotFoundException("User not found");
+        }
+
+        var userEvents = context.Participants.Include(p => p.Event).Where(p => p.UserId == user.Id).Select(p => p.Event);
+        return userEvents.ToDtoList().AsEnumerable();
     }
 
     private string CreateSlug(EventDto eventDto, DateTime createdTime)
