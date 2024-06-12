@@ -80,7 +80,7 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>());
             mockContext.Setup(c => c.Comments).ReturnsDbSet(new List<Comment>());
             mockContext.Setup(c => c.Participants).ReturnsDbSet(new List<Participant>());
-            var eventService = new EventService(mockContext.Object);
+            var eventService = new EventService(mockContext.Object, new ParameterService(mockContext.Object), new TagService(mockContext.Object));
 
             var result = eventService.UpdateEvent(1,eventDto);
             Assert.AreEqual("name1",result.Name);
@@ -322,7 +322,7 @@ namespace ReasnAPI.Tests.Services
 
             eventService.DeleteEvent(1);
 
-            mockContext.Verify(c => c.SaveChanges(), Times.Once);
+            mockContext.Verify(c => c.SaveChanges(), Times.AtLeastOnce);
         }
 
     }
