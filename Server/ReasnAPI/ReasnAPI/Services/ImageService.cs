@@ -110,8 +110,50 @@ public class ImageService(ReasnContext context)
         context.SaveChanges();
     }
 
+    public void UpdateImage(int objectId, ImageDto imageDto)
+    {
+        if (imageDto is null)
+        {
+            throw new ArgumentException("No image provided");
+        }
+
+        var image = context.Images.Where(i => i.ObjectType == imageDto.ObjectType).FirstOrDefault(r => r.Id == objectId);
+        if (image is null)
+        {
+            throw new NotFoundException("Image not found");
+        }
+
+        image.ImageData = imageDto.ImageData;
+        context.Images.Update(image);
+        context.SaveChanges();
+
+    }
+
     public void DeleteImageById(int id)
     {
+        var image = context.Images.FirstOrDefault(r => r.Id == id);
+        if (image is null)
+        {
+            throw new NotFoundException("Image not found");
+        }
+
+        context.Images.Remove(image);
+        context.SaveChanges();
+    }
+
+    public void DeleteImageRelatedToEvent(int id, string slug)
+    {
+        var @event = context.Events.FirstOrDefault(r => r.Id == id && r.Slug == slug);
+        if (@event is null)
+        {
+            throw new NotFoundException("Event not found");
+        }
+
+        if (@event.Id != id)
+        {
+            throw new NotFoundException("Image is not related with this event");
+        }
+
         var image = context.Images.FirstOrDefault(r => r.Id == id);
         if (image is null)
         {
@@ -132,7 +174,6 @@ public class ImageService(ReasnContext context)
 
         context.Images.RemoveRange(images);
         context.SaveChanges();
-
     }
 
     public ImageDto GetImageById(int id)
