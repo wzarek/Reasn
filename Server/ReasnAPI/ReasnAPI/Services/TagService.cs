@@ -40,6 +40,11 @@ public class TagService (ReasnContext context)
 
     public void AddTagsFromList(List<Tag> tagsToAdd)
     {
+        if (tagsToAdd is null)
+        {
+            throw new ArgumentException("No tag provided");
+        }
+
         var existingTagsInDb = context.Tags
             .Where(tag => tagsToAdd.Any(newTag => newTag.Name == tag.Name))
             .ToList();
@@ -56,7 +61,7 @@ public class TagService (ReasnContext context)
     {
         var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
 
-        if (tag == null)
+        if (tag is null)
         {
             throw new NotFoundException("Tag not found");
         }

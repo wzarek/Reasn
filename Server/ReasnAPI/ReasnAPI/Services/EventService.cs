@@ -219,7 +219,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
     public IEnumerable<CommentDto> GetEventCommentsBySlug(string slug)
     {
         var eventToReturn = context.Events.Include(e => e.Comments)
-            .Include(e => e.Participants).FirstOrDefault(e => e.Slug == slug);
+            .FirstOrDefault(e => e.Slug == slug);
         if (eventToReturn is null)
         {
             throw new NotFoundException("Event not found");

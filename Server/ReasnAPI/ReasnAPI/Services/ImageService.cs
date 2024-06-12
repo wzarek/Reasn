@@ -105,7 +105,7 @@ public class ImageService(ReasnContext context)
         }
 
         var image = context.Images.FirstOrDefault(i => i.ObjectType == ObjectType.User && i.ObjectId == userId);
-        if (image == null)
+        if (image is null)
         {
             throw new NotFoundException("Image not found");
         }
@@ -130,21 +130,21 @@ public class ImageService(ReasnContext context)
 
     public void DeleteImageRelatedToEvent(int id, string slug)
     {
-        var @event = context.Events.FirstOrDefault(r => r.Slug == slug);
-        if (@event is null)
+        var relatedEvent = context.Events.FirstOrDefault(r => r.Slug == slug);
+        if (relatedEvent is null)
         {
             throw new NotFoundException("Event not found");
-        }
-
-        if (@event.Id != id)
-        {
-            throw new NotFoundException("Image is not related with this event");
         }
 
         var image = context.Images.FirstOrDefault(r => r.Id == id);
         if (image is null)
         {
             throw new NotFoundException("Image not found");
+        }
+
+        if (image.ObjectId != relatedEvent.Id || image.ObjectType != ObjectType.Event)
+        {
+            throw new NotFoundException("This image is not related with this event");
         }
 
         context.Images.Remove(image);
