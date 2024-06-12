@@ -205,7 +205,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
 
     public IEnumerable<ParticipantDto> GetEventParticipantsBySlug(string slug)
     {
-        var eventToReturn = context.Events.Include(e => e.Tags).Include(e => e.Parameters).Include(e => e.Participants).FirstOrDefault(e => e.Slug == slug);
+        var eventToReturn = context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Slug == slug);
         if (eventToReturn is null)
         {
             throw new NotFoundException("Event not found");
@@ -218,7 +218,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
 
     public IEnumerable<CommentDto> GetEventCommentsBySlug(string slug)
     {
-        var eventToReturn = context.Events.Include(e => e.Tags).Include(e => e.Parameters).Include(e => e.Comments)
+        var eventToReturn = context.Events.Include(e => e.Comments)
             .Include(e => e.Participants).FirstOrDefault(e => e.Slug == slug);
         if (eventToReturn is null)
         {

@@ -74,19 +74,29 @@ public class TagService (ReasnContext context)
         context.SaveChanges();
     }
 
-    public void ForceDeleteTag(int tagId)
+    public void ForceDeleteTag(TagDto tagDto)
     {
-        var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
+        if (tagDto is null)
+        {
+            throw new ArgumentException("No tag provided");
+        }
+
+        var tag = context.Tags.FirstOrDefault(r => r.Name == tagDto.Name);
         if (tag is null)
         {
             throw new NotFoundException("Tag not found");
         }
 
-        var eventsWithTags = context.Events.Include(e => e.Tags).ToList();
-        foreach (var eventWithTags in eventsWithTags)
+        var eventsWithTags = context.Events
+            .Where(e => e.Tags.Any(p => p.Name == tagDto.Name))
+            .Include(e => e.Tags)
+            .ToList();
+
+        foreach (var eventWithTag in eventsWithTags)
         {
-            eventWithTags.Tags.Remove(tag);
+            eventWithTag.Tags.Remove(tag);
         }
+
 
         context.Tags.Remove(tag);
         context.SaveChanges();

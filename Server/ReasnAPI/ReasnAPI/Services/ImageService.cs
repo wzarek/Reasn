@@ -97,15 +97,15 @@ public class ImageService(ReasnContext context)
         context.SaveChanges();
     }
 
-    public void UpdateImage(int objectId, ImageDto imageDto)
+    public void UpdateImageForUser(int userId, ImageDto imageDto)
     {
         if (imageDto is null)
         {
             throw new ArgumentException("No image provided");
         }
 
-        var image = context.Images.Where(i => i.ObjectType == imageDto.ObjectType).FirstOrDefault(r => r.ObjectId == objectId);
-        if (image is null)
+        var image = context.Images.FirstOrDefault(i => i.ObjectType == ObjectType.User && i.ObjectId == userId);
+        if (image == null)
         {
             throw new NotFoundException("Image not found");
         }
@@ -130,7 +130,7 @@ public class ImageService(ReasnContext context)
 
     public void DeleteImageRelatedToEvent(int id, string slug)
     {
-        var @event = context.Events.FirstOrDefault(r => r.Id == id && r.Slug == slug);
+        var @event = context.Events.FirstOrDefault(r => r.Slug == slug);
         if (@event is null)
         {
             throw new NotFoundException("Event not found");

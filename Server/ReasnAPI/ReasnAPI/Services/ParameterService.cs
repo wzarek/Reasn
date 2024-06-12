@@ -72,18 +72,22 @@ public class ParameterService(ReasnContext context)
         context.SaveChanges();
     }
 
-    public void ForceDeleteParameter(int parameterId)
+    public void ForceDeleteParameter(ParameterDto parameterDto)
     {
-        var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
+        var parameter = context.Parameters.FirstOrDefault(r => r.Key == parameterDto.Key && r.Value == parameterDto.Value);
         if (parameter is null)
         {
             throw new NotFoundException("Parameter not found");
         }
 
-        var eventsWithParameters = context.Events.Include(e => e.Parameters).ToList();
-        foreach (var eventWithParameters in eventsWithParameters)
+        var eventsWithParameter = context.Events
+            .Where(e => e.Parameters.Any(p => p.Key == parameterDto.Key && p.Value == parameterDto.Value))
+            .Include(e => e.Parameters)
+            .ToList();
+
+        foreach (var eventWithParameter in eventsWithParameter)
         {
-            eventWithParameters.Parameters.Remove(parameter);
+            eventWithParameter.Parameters.Remove(parameter);
         }
 
         context.Parameters.Remove(parameter);
