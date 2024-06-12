@@ -191,7 +191,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
         return eventDto;
     }
 
-    public EventDto GetEventBySlug(string slug)
+    public Event GetEventBySlug(string slug)
     {
         var eventToReturn = context.Events.Include(e => e.Tags).Include(e => e.Parameters).FirstOrDefault(e => e.Slug == slug);
         if (eventToReturn is null)
@@ -199,9 +199,8 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             throw new NotFoundException("Event not found");
         }
 
-        var eventDto = eventToReturn.ToDto();
 
-        return eventDto;
+        return eventToReturn;
     }
 
     public IEnumerable<ParticipantDto> GetEventParticipantsBySlug(string slug)
