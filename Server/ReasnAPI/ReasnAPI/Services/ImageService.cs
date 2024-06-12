@@ -110,7 +110,7 @@ public class ImageService(ReasnContext context)
         context.SaveChanges();
     }
 
-    public bool DeleteImageById(int id)
+    public void DeleteImageById(int id)
     {
         var image = context.Images.FirstOrDefault(r => r.Id == id);
         if (image is null)
@@ -120,10 +120,9 @@ public class ImageService(ReasnContext context)
 
         context.Images.Remove(image);
         context.SaveChanges();
-        return true;
     }
 
-    public bool DeleteImageByObjectIdAndType(int objectId, ObjectType objectType)
+    public void DeleteImageByObjectIdAndType(int objectId, ObjectType objectType)
     {
         var images = context.Images.Where(r => r.ObjectId == objectId && r.ObjectType == objectType).ToList();
         if (!images.Any())
@@ -134,7 +133,6 @@ public class ImageService(ReasnContext context)
         context.Images.RemoveRange(images);
         context.SaveChanges();
 
-        return true;
     }
 
     public ImageDto GetImageById(int id)

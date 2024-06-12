@@ -8,10 +8,8 @@ using System.Text.RegularExpressions;
 using ReasnAPI.Mappers;
 
 namespace ReasnAPI.Services;
-public class EventService(ReasnContext context)
+public class EventService(ReasnContext context, ParameterService parameterService, TagService tagService)
 {
-    private readonly ParameterService _parameterService = new ParameterService(context);
-    private readonly TagService _tagService = new TagService(context);
 
     public EventDto CreateEvent(EventDto eventDto)
     {
@@ -38,7 +36,6 @@ public class EventService(ReasnContext context)
                 AttachParametersToEvent(newParameters, newEvent);
             }
             
-
             context.SaveChanges();
             scope.Complete();
         }
@@ -105,7 +102,7 @@ public class EventService(ReasnContext context)
 
     private void AttatchTagsToEvent(List<Tag> tagsToAdd, Event eventToUpdate)
     {
-        _tagService.AddTagsFromList(tagsToAdd);
+        tagService.AddTagsFromList(tagsToAdd);
 
         var tagsToAttach = tagsToAdd
             .Where(newTag => eventToUpdate.Tags.All(existingTag => existingTag.Name != newTag.Name))
@@ -121,12 +118,12 @@ public class EventService(ReasnContext context)
         tagsToRemove.ForEach(tag => eventToUpdate.Tags.Remove(tag));
         context.SaveChanges();
 
-        _tagService.RemoveTagsNotInAnyEvent();
+        tagService.RemoveTagsNotInAnyEvent();
     }
 
     private void AttachParametersToEvent(List<Parameter> parametersToAdd, Event eventToUpdate)
     {
-        _parameterService.AddParametersFromList(parametersToAdd);
+        parameterService.AddParametersFromList(parametersToAdd);
 
         var paramsToAttach = parametersToAdd
             .Where(newParam => eventToUpdate.Parameters.All(existingParam => existingParam.Key != newParam.Key || existingParam.Value != newParam.Value))
@@ -142,7 +139,7 @@ public class EventService(ReasnContext context)
         parametersToRemove.ForEach(param => eventToUpdate.Parameters.Remove(param));
         context.SaveChanges();
 
-        _parameterService.RemoveParametersNotInAnyEvent();
+        parameterService.RemoveParametersNotInAnyEvent();
     }
 
     public void DeleteEvent(int eventId)
@@ -156,40 +153,18 @@ public class EventService(ReasnContext context)
                 throw new NotFoundException("Event not found");
             }
 
-            RemoveTags(eventToDelete, eventId);
-            RemoveParametersFromEventCollection(eventToDelete, eventId);
+            var parametersToRemove = eventToDelete.Parameters.ToList();
+            var tagsToRemove = eventToDelete.Tags.ToList();
+
+            DetachParametersFromEvent(parametersToRemove, eventToDelete);
+            DetachTagsFromEvent(tagsToRemove, eventToDelete);
+
             RemoveCommentsFromEventCollection(eventToDelete);
             RemoveParticipantsFromEventCollection(eventToDelete);
 
             context.Events.Remove(eventToDelete);
             context.SaveChanges();
             scope.Complete();
-        }
-    }
-
-    private void RemoveTags(Event eventToDelete, int eventId)
-    {
-        foreach (var tag in eventToDelete.Tags.ToList())
-        {
-            eventToDelete.Tags.Remove(tag); // remove the association first
-            // Check if the tag is associated with any other event
-            if (!context.Events.Any(e => e.Tags.Any(t => t.Name == tag.Name) && e.Id != eventId) && !context.Events.Any(e => e.Tags.Contains(tag)))
-            {
-                context.Tags.Remove(tag); // then remove the tag
-            }
-        }
-    }
-
-    private void RemoveParametersFromEventCollection(Event eventToDelete, int eventId)
-    {
-        foreach (var parameter in eventToDelete.Parameters.ToList())
-        {
-            eventToDelete.Parameters.Remove(parameter); // remove the association first
-            // Check if the parameter is associated with any other event
-            if (!context.Events.Any(e => e.Parameters.Any(p => p.Key == parameter.Key && p.Value == parameter.Value) && e.Id != eventId) && !context.Events.Any(e => e.Parameters.Contains(parameter)))
-            {
-                context.Parameters.Remove(parameter); // then remove the parameter
-            }
         }
     }
 

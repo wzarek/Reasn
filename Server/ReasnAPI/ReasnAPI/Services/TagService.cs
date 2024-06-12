@@ -119,6 +119,24 @@ public class TagService (ReasnContext context)
         context.SaveChanges();
     }
 
+    public void ForceDeleteTag(int tagId)
+    {
+        var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
+        if (tag is null)
+        {
+            throw new NotFoundException("Tag not found");
+        }
+
+        var eventsWithTags = context.Events.Include(e => e.Tags).ToList();
+        foreach (var eventWithTags in eventsWithTags)
+        {
+            eventWithTags.Tags.Remove(tag);
+        }
+
+        context.Tags.Remove(tag);
+        context.SaveChanges();
+    }
+
     public void RemoveTagsNotInAnyEvent()
     {
         var tagsNotInAnyEvent = context.Tags

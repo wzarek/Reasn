@@ -71,6 +71,25 @@ public class ParameterService(ReasnContext context)
         context.Parameters.Remove(parameter);
         context.SaveChanges();
     }
+
+    public void ForceDeleteParameter(int parameterId)
+    {
+        var parameter = context.Parameters.FirstOrDefault(r => r.Id == parameterId);
+        if (parameter is null)
+        {
+            throw new NotFoundException("Parameter not found");
+        }
+
+        var eventsWithParameters = context.Events.Include(e => e.Parameters).ToList();
+        foreach (var eventWithParameters in eventsWithParameters)
+        {
+            eventWithParameters.Parameters.Remove(parameter);
+        }
+
+        context.Parameters.Remove(parameter);
+        context.SaveChanges();
+    }
+
     public void RemoveParametersNotInAnyEvent()
     {
         var parametersNotInAnyEvent = context.Parameters
