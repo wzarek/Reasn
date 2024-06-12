@@ -204,6 +204,33 @@ public class EventService(ReasnContext context, ParameterService parameterServic
         return eventDto;
     }
 
+    public IEnumerable<ParticipantDto> GetEventParticipantsBySlug(string slug)
+    {
+        var eventToReturn = context.Events.Include(e => e.Tags).Include(e => e.Parameters).Include(e => e.Participants).FirstOrDefault(e => e.Slug == slug);
+        if (eventToReturn is null)
+        {
+            throw new NotFoundException("Event not found");
+        }
+
+        var participantsDto = eventToReturn.Participants.Select(p => p.ToDto());
+
+        return participantsDto;
+    }
+
+    public IEnumerable<CommentDto> GetEventCommentsBySlug(string slug)
+    {
+        var eventToReturn = context.Events.Include(e => e.Tags).Include(e => e.Parameters).Include(e => e.Comments)
+            .Include(e => e.Participants).FirstOrDefault(e => e.Slug == slug);
+        if (eventToReturn is null)
+        {
+            throw new NotFoundException("Event not found");
+        }
+
+        var commentDtos = eventToReturn.Comments.Select(p => p.ToDto());
+
+        return commentDtos;
+    }
+
     public IEnumerable<EventDto> GetEventsByFilter(Expression<Func<Event, bool>> filter)
     {
         var events = context.Events.Include(e => e.Parameters).Include(e => e.Tags).Where(filter).ToList();
