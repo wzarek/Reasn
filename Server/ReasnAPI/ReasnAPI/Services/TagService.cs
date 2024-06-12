@@ -22,51 +22,6 @@ public class TagService (ReasnContext context)
         return tagDto;
     }
 
-    public TagDto UpdateTagForEvent(int tagId, TagDto tagDto, int eventId)
-    {
-        using (var scope = new TransactionScope())
-        {
-            var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
-
-            if (tag is null)
-            {
-                throw new NotFoundException("Tag not found");
-            }
-
-            var eventsWithTags = context.Events.Include(e => e.Tags).ToList();
-
-            var eventTags = eventsWithTags.Where(e => e.Tags.Any(t => t.Id == tagId)).ToList();
-            var eventToUpdate = eventsWithTags.FirstOrDefault(e => e.Id == eventId);
-
-            if (eventTags.Count > 1 || (eventTags.Count == 1 && eventTags[0].Id != eventId))
-            {
-                // Create new tag, associate it with the event, and remove the old association
-                var newTag = tagDto.ToEntity();
-                context.Tags.Add(newTag);
-                context.SaveChanges();
-
-                if (eventToUpdate != null)
-                {
-                    eventToUpdate.Tags.Remove(tag);
-                    eventToUpdate.Tags.Add(newTag);
-                    context.Events.Update(eventToUpdate);
-                }
-            }
-            else if (eventTags.Count == 1 && eventTags[0].Id == eventId)
-            {
-                tag.Name = tagDto.Name;
-                context.Tags.Update(tag);
-            }
-            else
-            {
-                throw new NotFoundException("Tag not found");
-            }
-
-            context.SaveChanges();
-            scope.Complete();
-            return tagDto;
-        }
-    }
     public TagDto UpdateTag(int tagId, TagDto tagDto)
     {
         var tag = context.Tags.FirstOrDefault(r => r.Id == tagId);
