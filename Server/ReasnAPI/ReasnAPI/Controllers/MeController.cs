@@ -1,7 +1,9 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReasnAPI.Mappers;
 using ReasnAPI.Models.DTOs;
+using ReasnAPI.Models.Enums;
 using ReasnAPI.Services;
 
 namespace ReasnAPI.Controllers;
@@ -9,14 +11,12 @@ namespace ReasnAPI.Controllers;
 [ApiController]
 [Authorize]
 [Route("[controller]")]
-public class MeController : ControllerBase
+public class MeController(UserService userService, EventService eventService, ParticipantService participantService, ImageService imageService) : ControllerBase
 {
-    private readonly UserService _userService;
-
-    public MeController(UserService userService)
-    {
-        _userService = userService;
-    }
+    private readonly UserService _userService = userService;
+    private readonly EventService _eventService = eventService;
+    private readonly ParticipantService _participantService = participantService;
+    private readonly ImageService _imageService = imageService;
 
     [HttpGet]
     [ProducesResponseType<UserDto>(StatusCodes.Status200OK)]
@@ -27,72 +27,117 @@ public class MeController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult UpdateCurrentUser()
+    [ProducesResponseType<UserDto>(StatusCodes.Status200OK)]
+    public IActionResult UpdateCurrentUser(
+        [FromBody] UserDto userDto,
+        [FromServices] IValidator<UserDto> validator)
     {
-        throw new NotImplementedException();
+        validator.ValidateAndThrow(userDto);
+
+        var user = _userService.GetCurrentUser();
+
+        // Non-admin users can't update their role to admin
+        if (user.Role != UserRole.Admin && userDto.Role == UserRole.Admin)
+        {
+            return Forbid();
+        }
+
+        var updatedUser = _userService.UpdateUser(user.Id, userDto);
+
+        var location = Url.Action(
+                            action: nameof(GetCurrentUser),
+                            controller: "Me");
+
+        return Ok(location, updatedUser);
     }
 
     [HttpPost]
     [Route("image")]
-    public IActionResult AddCurrentUserImage()
+    [ProducesResponseType<ImageDto>(StatusCodes.Status201Created)]
+    public IActionResult AddCurrentUserImage([FromBody] ImageDto imageDto)
     {
-        throw new NotImplementedException();
+        var image = _imageService.CreateImage(imageDto);
+        return Created(image);
     }
 
     [HttpPut]
     [Route("image")]
-    public IActionResult UpdateCurrentUserImage()
+    [ProducesResponseType<ImageDto>(StatusCodes.Status200OK)]
+    public IActionResult UpdateCurrentUserImage([FromBody] List<ImageDto> imageDto)
     {
-        throw new NotImplementedException();
+        var userId = _userService.GetCurrentUser().Id;
+        var image = _imageService.UpdateImageByObjectId(userId, imageDto);
+
+        return Ok(image);
     }
 
     [HttpDelete]
     [Route("image")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult DeleteCurrentUserImage()
     {
-        throw new NotImplementedException();
-    }
+        var userId = _userService.GetCurrentUser().Id;
+        _imageService.DeleteImageByObjectId(userId, ObjectType.User);
 
-    [HttpGet]
-    [Route("interests")]
-    public IActionResult GetCurrentUserInterests()
-    {
-        throw new NotImplementedException();
-    }
-
-    [HttpPost]
-    [Route("interests")]
-    public IActionResult AddCurrentUserInterest()
-    {
-        throw new NotImplementedException();
-    }
-
-    [HttpDelete]
-    [Route("interests/{interestId:int}")]
-    public IActionResult DeleteCurrentUserInterest(int interestId)
-    {
-        throw new NotImplementedException();
+        return NoContent();
     }
 
     [HttpGet]
     [Route("events")]
+    [ProducesResponseType<IEnumerable<EventDto>>(StatusCodes.Status200OK)]
     public IActionResult GetCurrentUserEvents()
     {
-        throw new NotImplementedException();
+        var user = _userService.GetCurrentUser();
+        var events = _eventService.GetUserEvents(user.Username);
+
+        if (user.Role == UserRole.Organizer)
+        {
+            var organizerEvents = _eventService.GetEventsByFilter(e => e.OrganizerId == user.Id);
+            events = events.Concat(organizerEvents);
+        }
+
+        return Ok(events);
     }
 
     [HttpPost]
     [Route("events/{slug}/enroll")]
-    public IActionResult EnrollCurrentUserInEvent(string slug)
+    [ProducesResponseType<ParticipantDto>(StatusCodes.Status201Created)]
+    public IActionResult EnrollCurrentUserInEvent([FromRoute] string slug)
     {
-        throw new NotImplementedException();
+        var eventId = _eventService.GetEventBySlug(slug).Id;
+        var userId = _userService.GetCurrentUser().Id;
+
+        var participant = _participationService.CreateParticipation(new ParticipationDto { EventId = eventId, UserId = userId, Status = ParticipantStatus.Interested });
+
+        return Created(participant);
     }
 
     [HttpPost]
     [Route("events/{slug}/confirm")]
-    public IActionResult ConfirmCurrentUserEventAttendance(string slug)
+    [ProducesResponseType<ParticipantDto>(StatusCodes.Status200OK)]
+    public IActionResult ConfirmCurrentUserEventAttendance([FromRoute] string slug)
     {
-        throw new NotImplementedException();
+        var eventId = _eventService.GetEventBySlug(slug).Id;
+        var userId = _userService.GetCurrentUser().Id;
+        var participation = _participationService.GetParticipationByFilter(p => p.EventId == eventId && p.UserId == userId);
+
+        var participant = _participantService.UpdateParticipation(participation.Id, new ParticipationDto { Status = ParticipantStatus.Participating });
+
+        return Ok(participant);
+    }
+
+    [HttpPost]
+    [Route("events/{slug}/cancel")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public IActionResult CancelCurrentUserEventAttendance([FromRoute] string slug)
+    {
+        var eventId = _eventService.GetEventBySlug(slug).Id;
+        var userId = _userService.GetCurrentUser().Id;
+        var participation = _participationService.GetParticipationByFilter(p => p.EventId == eventId && p.UserId == userId);
+
+        _participantService.DeleteParticipation(participation.Id);
+
+        return NoContent();
     }
 
     [HttpGet]
