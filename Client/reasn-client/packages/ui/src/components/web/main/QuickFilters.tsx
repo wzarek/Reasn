@@ -4,7 +4,7 @@ import { Card, CardVariant } from "@reasn/ui/src/components/shared";
 import { ButtonBase } from "@reasn/ui/src/components/shared/form";
 
 interface QuickFiltersButtonProps {
-  title: string;
+  text: string;
   selected?: boolean;
   onClick: () => void;
 }
@@ -16,37 +16,37 @@ export const QuickFilters = () => {
     <div>
       <div className="flex w-full gap-10 overflow-x-clip bg-[#1E1F29] px-10 py-8">
         <QuickFilterButton
-          title="Dziś"
+          text="Dziś"
           onClick={() => setSelectedFilter("Today")}
           selected={selectedFilter === "Today"}
         />
         <QuickFilterButton
-          title="Jutro"
+          text="Jutro"
           onClick={() => setSelectedFilter("Tommorow")}
           selected={selectedFilter === "Tommorow"}
         />
         <QuickFilterButton
-          title="Rozpoczęte"
+          text="Rozpoczęte"
           onClick={() => setSelectedFilter("In Progress")}
           selected={selectedFilter === "In Progress"}
         />
         <QuickFilterButton
-          title="W tym tygodniu"
+          text="W tym tygodniu"
           onClick={() => setSelectedFilter("This Week")}
           selected={selectedFilter === "This Week"}
         />
         <QuickFilterButton
-          title="Wrocław"
+          text="Wrocław"
           onClick={() => setSelectedFilter("Wro")}
           selected={selectedFilter === "Wro"}
         />
         <QuickFilterButton
-          title="Kraków"
+          text="Kraków"
           onClick={() => setSelectedFilter("Krk")}
           selected={selectedFilter === "Krk"}
         />
         <QuickFilterButton
-          title="Zdalne"
+          text="Zdalne"
           onClick={() => setSelectedFilter("Remote")}
           selected={selectedFilter === "Remote"}
         />
@@ -77,7 +77,7 @@ export const QuickFilters = () => {
 };
 
 export const QuickFilterButton = (props: QuickFiltersButtonProps) => {
-  const { title, onClick, selected } = props;
+  const { text, onClick, selected } = props;
   return (
     <div className="min-w-36 rounded-2xl bg-gradient-to-r from-[#ff6363] to-[#1e35ff] p-px text-white">
       <button
@@ -88,7 +88,7 @@ export const QuickFilterButton = (props: QuickFiltersButtonProps) => {
           { "bg-[#1E1F29] hover:bg-[#2E2F3E]": !selected },
         )}
       >
-        {title}
+        {text}
       </button>
     </div>
   );
