@@ -7,13 +7,9 @@ namespace ReasnAPI.Mappers
     {
         public static EventDto ToDto(this Event eventToMap)
         {
-            var tags = eventToMap.Tags
-                .Select(t => new TagDto { Name = t.Name })
-                .ToList();
+            var tags = eventToMap.Tags.ToDtoList();
 
-            var parameters = eventToMap.Parameters
-                .Select(p => new ParameterDto { Key = p.Key, Value = p.Value })
-                .ToList();
+            var parameters = eventToMap.Parameters.ToDtoList();
 
             return new EventDto
             {
