@@ -55,7 +55,7 @@ public class ImageService(ReasnContext context)
         return imageDtos.AsEnumerable();
     }
 
-    public void UpdateImages(int objectId, List<ImageDto> imageDtos)
+    public void UpdateImagesForEvent(int objectId, List<ImageDto> imageDtos)
     {
         if (!imageDtos.Any())
         {
@@ -66,20 +66,7 @@ public class ImageService(ReasnContext context)
 
         if (objectType == ObjectType.User)
         {
-            if (imageDtos.Count != 1)
-            {
-                throw new ArgumentException("For User type, only one image can be updated");
-            }
-
-            var image = context.Images.FirstOrDefault(r => r.ObjectId == objectId && r.ObjectType == ObjectType.User);
-            if (image is null)
-            {
-                throw new NotFoundException("Image not found");
-            }
-
-            image.ImageData = imageDtos[0].ImageData;
-
-            context.Images.Update(image);
+            throw new ArgumentException("For User type, use UpdateImage");
         }
         else if (objectType == ObjectType.Event)
         {
@@ -117,7 +104,7 @@ public class ImageService(ReasnContext context)
             throw new ArgumentException("No image provided");
         }
 
-        var image = context.Images.Where(i => i.ObjectType == imageDto.ObjectType).FirstOrDefault(r => r.Id == objectId);
+        var image = context.Images.Where(i => i.ObjectType == imageDto.ObjectType).FirstOrDefault(r => r.ObjectId == objectId);
         if (image is null)
         {
             throw new NotFoundException("Image not found");

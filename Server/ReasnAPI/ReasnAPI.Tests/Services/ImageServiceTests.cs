@@ -136,7 +136,7 @@ namespace ReasnAPI.Tests.Services
 
             var imageService = new ImageService(mockContext.Object);
 
-            imageService.UpdateImages(1, new List<ImageDto> { imageDto });
+            imageService.UpdateImage(1, imageDto );
 
             mockContext.Verify(c => c.SaveChanges(), Times.Once);
         }
@@ -166,7 +166,7 @@ namespace ReasnAPI.Tests.Services
 
             var imageService = new ImageService(mockContext.Object);
 
-            imageService.UpdateImages(1, imageDtos);
+            imageService.UpdateImagesForEvent(1, imageDtos);
 
             mockContext.Verify(c => c.SaveChanges(), Times.Once);
         }
@@ -186,7 +186,7 @@ namespace ReasnAPI.Tests.Services
 
             var imageService = new ImageService(mockContext.Object);
 
-            Assert.ThrowsException<NotFoundException>(() => imageService.UpdateImages(1, new List<ImageDto> { imageDto }));
+            Assert.ThrowsException<ArgumentException>(() => imageService.UpdateImagesForEvent(1, new List<ImageDto> { imageDto }));
         }
 
         [TestMethod]
