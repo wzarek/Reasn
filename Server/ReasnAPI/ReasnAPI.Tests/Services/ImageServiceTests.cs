@@ -136,7 +136,7 @@ namespace ReasnAPI.Tests.Services
 
             var imageService = new ImageService(mockContext.Object);
 
-            imageService.UpdateImage(1, imageDto );
+            imageService.UpdateImageForUser(1, imageDto );
 
             mockContext.Verify(c => c.SaveChanges(), Times.Once);
         }
