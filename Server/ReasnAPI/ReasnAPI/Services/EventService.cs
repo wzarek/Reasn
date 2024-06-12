@@ -35,7 +35,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
                 var newParameters = eventDto.Parameters.ToEntityList();
                 AttachParametersToEvent(newParameters, newEvent);
             }
-            
+
             context.SaveChanges();
             scope.Complete();
         }

@@ -22,9 +22,9 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Interests).ReturnsDbSet(new List<Interest>());
 
             var interestService = new InterestService(mockContext.Object);
-           
+
             var result = interestService.CreateInterest(interestDto);
-           
+
             Assert.AreEqual(interestDto.Name, result.Name);
         }
 
@@ -40,7 +40,7 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Interests).ReturnsDbSet(new List<Interest> { new Interest { Name = "TestInterest" } });
 
             var interestService = new InterestService(mockContext.Object);
-            
+
             Assert.ThrowsException<BadRequestException>(() => interestService.CreateInterest(interestDto));
         }
 
@@ -93,9 +93,9 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Interests).ReturnsDbSet(new List<Interest> { new Interest { Id = 1, Name = "TestInterest" } });
 
             var interestService = new InterestService(mockContext.Object);
-            
+
             var result = interestService.UpdateInterest(1, interestDto);
-            
+
             Assert.AreEqual("TestInterest1", result.Name);
         }
 
@@ -111,7 +111,7 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Interests).ReturnsDbSet(new List<Interest>());
 
             var interestService = new InterestService(mockContext.Object);
-            
+
             Assert.ThrowsException<NotFoundException>(() => interestService.UpdateInterest(1, interestDto));
         }
 
@@ -175,7 +175,7 @@ namespace ReasnAPI.Tests.Services
             var result = interestService.GetInterestsByFilter(i => i.Name == "TestInterest").ToList();
 
             Assert.AreEqual(1, result.Count());
-         
+
         }
 
         [TestMethod]

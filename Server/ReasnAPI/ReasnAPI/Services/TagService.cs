@@ -7,7 +7,7 @@ using ReasnAPI.Exceptions;
 using ReasnAPI.Mappers;
 
 namespace ReasnAPI.Services;
-public class TagService (ReasnContext context)
+public class TagService(ReasnContext context)
 {
     public TagDto CreateTag(TagDto tagDto)
     {
@@ -70,7 +70,7 @@ public class TagService (ReasnContext context)
 
         var isTagAssociatedWithEvent = eventsWithTags.Any(e => e.Tags.Any(t => t.Id == tagId));
 
-        if (isTagAssociatedWithEvent) 
+        if (isTagAssociatedWithEvent)
         {
             throw new BadRequestException("Tag is associated with an event");
         }
@@ -120,7 +120,7 @@ public class TagService (ReasnContext context)
     public TagDto GetTagById(int tagId)
     {
         var tag = context.Tags.Find(tagId);
-        if(tag is null)
+        if (tag is null)
         {
             throw new NotFoundException("Tag not found");
         }

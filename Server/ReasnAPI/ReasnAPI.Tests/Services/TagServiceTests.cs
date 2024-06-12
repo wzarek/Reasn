@@ -22,9 +22,9 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag>());
 
             var tagService = new TagService(mockContext.Object);
-           
+
             var result = tagService.CreateTag(tagDto);
-           
+
             Assert.AreEqual(tagDto.Name, result.Name);
         }
 
@@ -40,7 +40,7 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag> { new Tag { Name = "TestTag" } });
 
             var tagService = new TagService(mockContext.Object);
-            
+
             Assert.ThrowsException<BadRequestException>(() => tagService.CreateTag(tagDto));
         }
 
@@ -51,9 +51,9 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag> { new Tag { Name = "TestTag" } });
 
             var tagService = new TagService(mockContext.Object);
-            
+
             var result = tagService.GetAllTags().ToList();
-            
+
             Assert.AreEqual(1, result.Count);
         }
 
@@ -64,9 +64,9 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag>());
 
             var tagService = new TagService(mockContext.Object);
-            
+
             var result = tagService.GetAllTags().ToList();
-            
+
             Assert.AreEqual(0, result.Count);
         }
 
@@ -77,7 +77,7 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag>());
 
             var tagService = new TagService(mockContext.Object);
-            
+
             Assert.ThrowsException<NotFoundException>(() => tagService.GetTagById(1));
         }
 
@@ -138,9 +138,9 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag> { new Tag { Id = 1, Name = "TestTag" } });
 
             var tagService = new TagService(mockContext.Object);
-            
+
             var result = tagService.GetTagsByFilter(t => t.Name == "TestTag").ToList();
-            
+
             Assert.AreEqual(1, result.Count);
         }
 
@@ -151,9 +151,9 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag> { new Tag { Id = 1, Name = "TestTag" } });
 
             var tagService = new TagService(mockContext.Object);
-            
+
             var result = tagService.GetTagsByFilter(t => t.Name == "TestTag1").ToList();
-            
+
             Assert.AreEqual(0, result.Count);
         }
 

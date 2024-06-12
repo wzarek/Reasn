@@ -36,7 +36,7 @@ namespace ReasnAPI.Tests.Services
             };
 
             var mockContext = new Mock<ReasnContext>();
-            mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event>{ 
+            mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event>{
                 new Event()
             {
                 Id = 1,
@@ -51,40 +51,40 @@ namespace ReasnAPI.Tests.Services
                 Status = EventStatus.Completed,
             }});
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag>());
-            
+
             mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address>{
                 new Address()
                 {
-                    Id = 1, 
-                    City = "city", 
-                    Country = "country", 
-                    State = "state", 
-                    Street = "street", 
+                    Id = 1,
+                    City = "city",
+                    Country = "country",
+                    State = "state",
+                    Street = "street",
                     ZipCode = "test123"
                 }});
-            mockContext.Setup(c => c.Users).ReturnsDbSet(new List<User>{ 
+            mockContext.Setup(c => c.Users).ReturnsDbSet(new List<User>{
                 new User()
             {
-                Id = 1, 
-                Name = "test", 
-                Email = "test@wp.pl", 
-                AddressId  = 1, 
+                Id = 1,
+                Name = "test",
+                Email = "test@wp.pl",
+                AddressId  = 1,
                 CreatedAt = DateTime.Now,
-                IsActive = true, Role = UserRole.Admin, 
+                IsActive = true, Role = UserRole.Admin,
                 Password ="test123",
-                Phone = "123123123", 
-                Surname ="test", 
-                Username ="test", 
+                Phone = "123123123",
+                Surname ="test",
+                Username ="test",
                 UpdatedAt =DateTime.Now }});
-            
+
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>());
             mockContext.Setup(c => c.Comments).ReturnsDbSet(new List<Comment>());
             mockContext.Setup(c => c.Participants).ReturnsDbSet(new List<Participant>());
             var eventService = new EventService(mockContext.Object, new ParameterService(mockContext.Object), new TagService(mockContext.Object));
 
-            var result = eventService.UpdateEvent(1,eventDto);
-            Assert.AreEqual("name1",result.Name);
-            Assert.AreEqual("description2",result.Description);
+            var result = eventService.UpdateEvent(1, eventDto);
+            Assert.AreEqual("name1", result.Name);
+            Assert.AreEqual("description2", result.Description);
             Assert.AreEqual(1, result.Tags.Count);
 
         }
@@ -114,34 +114,34 @@ namespace ReasnAPI.Tests.Services
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Events).ReturnsDbSet(new List<Event>());
             mockContext.Setup(c => c.Tags).ReturnsDbSet(new List<Tag>());
-         
+
             mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address>{
                 new Address()
             {
                 Id = 1,
                 City = "city",
-                Country = "country", 
-                State = "state", 
-                Street = "street", 
+                Country = "country",
+                State = "state",
+                Street = "street",
                 ZipCode = "test123"
             }});
-            mockContext.Setup(c => c.Users).ReturnsDbSet(new List<User>{ 
+            mockContext.Setup(c => c.Users).ReturnsDbSet(new List<User>{
                 new User()
             {
-                Id = 1, 
-                Name = "test", 
-                Email = "test@wp.pl", 
-                AddressId  = 1, 
+                Id = 1,
+                Name = "test",
+                Email = "test@wp.pl",
+                AddressId  = 1,
                 CreatedAt = DateTime.Now,
-                IsActive = true, 
-                Role = UserRole.Admin, 
+                IsActive = true,
+                Role = UserRole.Admin,
                 Password ="test123",
                 Phone = "123123123",
                 Surname ="test",
-                Username ="test", 
+                Username ="test",
                 UpdatedAt =DateTime.Now
             }});
-            
+
             var eventService = new EventService(mockContext.Object, new ParameterService(mockContext.Object), new TagService(mockContext.Object));
 
             Assert.ThrowsException<NotFoundException>(() => eventService.UpdateEvent(1, eventDto));
@@ -171,30 +171,30 @@ namespace ReasnAPI.Tests.Services
             {
                 new Tag()
                 {
-                    Id = 1, 
+                    Id = 1,
                     Name = "name"
                 }
             });
-  
+
             mockContext.Setup(c => c.Addresses).ReturnsDbSet(new List<Address>{
                 new Address()
             {
-                Id = 1, 
-                City = "city", 
-                Country = "country", 
+                Id = 1,
+                City = "city",
+                Country = "country",
                 State = "state",
-                Street = "street", 
+                Street = "street",
                 ZipCode = "test123"
             }});
-            mockContext.Setup(c => c.Users).ReturnsDbSet(new List<User>{ 
+            mockContext.Setup(c => c.Users).ReturnsDbSet(new List<User>{
                 new User()
             {
-                Id = 1, 
+                Id = 1,
                 Name = "test",
                 Email = "test@wp.pl",
-                AddressId  = 1, 
+                AddressId  = 1,
                 CreatedAt = DateTime.Now,
-                IsActive = true, 
+                IsActive = true,
                 Role = UserRole.User,
                 Password ="test123",
                 Phone = "123123123",
@@ -207,7 +207,7 @@ namespace ReasnAPI.Tests.Services
 
             var result = eventService.GetEventById(1);
             Assert.IsNotNull(result);
-           
+
         }
 
         [TestMethod]
@@ -222,11 +222,11 @@ namespace ReasnAPI.Tests.Services
             {
                 new Address()
                 {
-                Id = 1, 
-                City = "city", 
-                Country = "country", 
-                State = "state", 
-                Street = "street", 
+                Id = 1,
+                City = "city",
+                Country = "country",
+                State = "state",
+                Street = "street",
                 ZipCode = "test123"
             }});
             mockContext.Setup(c => c.Users).ReturnsDbSet(new List<User>

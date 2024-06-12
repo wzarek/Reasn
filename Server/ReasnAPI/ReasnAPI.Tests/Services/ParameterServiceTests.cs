@@ -23,9 +23,9 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>());
 
             var parameterService = new ParameterService(mockContext.Object);
-           
+
             var result = parameterService.CreateParameter(parameterDto);
-           
+
             Assert.AreEqual(parameterDto.Value, result.Value);
         }
 
@@ -42,7 +42,7 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter> { new Parameter { Key = "TestKey", Value = "TestValue" } });
 
             var parameterService = new ParameterService(mockContext.Object);
-            
+
             Assert.ThrowsException<BadRequestException>(() => parameterService.CreateParameter(parameterDto));
         }
 
@@ -123,7 +123,7 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>());
 
             var parameterService = new ParameterService(mockContext.Object);
-            
+
             Assert.ThrowsException<NotFoundException>(() => parameterService.GetParameterById(1));
         }
 
@@ -156,9 +156,9 @@ namespace ReasnAPI.Tests.Services
             var mockContext = new Mock<ReasnContext>();
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>());
             var parameterService = new ParameterService(mockContext.Object);
-            
+
             Assert.ThrowsException<NotFoundException>(() => parameterService.DeleteParameter(1));
-            
+
             mockContext.Verify(c => c.SaveChanges(), Times.Never);
         }
 
@@ -169,9 +169,9 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter> { new Parameter { Id = 1, Key = "TestKey", Value = "TestValue" } });
 
             var parameterService = new ParameterService(mockContext.Object);
-            
+
             var result = parameterService.GetParametersByFilter(p => p.Key == "TestKey").ToList();
-            
+
             Assert.AreEqual(1, result.Count());
         }
 
@@ -182,9 +182,9 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>());
 
             var parameterService = new ParameterService(mockContext.Object);
-            
+
             var result = parameterService.GetParametersByFilter(p => p.Key == "TestKey").ToList();
-            
+
             Assert.AreEqual(0, result.Count());
         }
 
@@ -195,9 +195,9 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter> { new Parameter { Id = 1, Key = "TestKey", Value = "TestValue" } });
 
             var parameterService = new ParameterService(mockContext.Object);
-            
+
             var result = parameterService.GetAllParameters().ToList();
-            
+
             Assert.AreEqual(1, result.Count());
         }
 
@@ -208,11 +208,11 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>());
 
             var parameterService = new ParameterService(mockContext.Object);
-            
+
             var result = parameterService.GetAllParameters().ToList();
-            
+
             Assert.AreEqual(0, result.Count());
         }
-        
+
     }
 }

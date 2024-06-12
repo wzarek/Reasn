@@ -32,7 +32,7 @@ public class ImageService(ReasnContext context)
             }
 
             var newImage = imageDto.ToEntity();
-            
+
             newImages.Add(newImage);
         }
 
@@ -48,7 +48,7 @@ public class ImageService(ReasnContext context)
             {
                 context.Images.AddRange(newImages);
             }
-            
+
             context.SaveChanges();
         }
 
@@ -172,7 +172,7 @@ public class ImageService(ReasnContext context)
         }
 
         var imageDto = image.ToDto();
-        
+
         return imageDto;
     }
 
