@@ -266,16 +266,36 @@ public class EventService(ReasnContext context, ParameterService parameterServic
         baseSlug = Regex.Replace(baseSlug, @"[^a-z0-9-]", "");
         baseSlug = Regex.Replace(baseSlug, "-+", "-");
 
-        var slug = baseSlug;
-        var counter = 1;
+        var existingSlugs = context.Events
+            .Where(e => e.Slug.StartsWith(baseSlug))
+            .Select(e => e.Slug)
+            .ToList();
 
-        while (context.Events.Any(e => e.Slug == slug))
+        var counter = 1;
+        if (existingSlugs.Any())
         {
-            slug = $"{baseSlug}-{counter}";
-            counter++;
+            var regex = new Regex($"^{Regex.Escape(baseSlug)}-(\\d+)$");
+            foreach (var slug in existingSlugs)
+            {
+                var match = regex.Match(slug);
+                if (match.Success)
+                {
+                    var currentCounter = int.Parse(match.Groups[1].Value);
+                    counter = Math.Max(counter, currentCounter + 1);
+                }
+            }
         }
 
-        return slug;
+        var countLength = counter.ToString().Length;
+        var maxBaseSlugLength = 128 - countLength - 1;
+        if (baseSlug.Length > maxBaseSlugLength)
+        {
+            baseSlug = baseSlug.Substring(0, maxBaseSlugLength);
+        }
+
+        var finalSlug = $"{baseSlug}-{counter}";
+
+        return finalSlug;
     }
 
 }

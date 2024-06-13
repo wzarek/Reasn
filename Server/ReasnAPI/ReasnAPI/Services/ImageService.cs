@@ -72,7 +72,6 @@ public class ImageService(ReasnContext context)
         {
             var images = context.Images.Where(r => r.ObjectId == objectId && r.ObjectType == ObjectType.Event).ToList();
 
-            // Remove images that are not in the new list
             foreach (var image in images)
             {
                 if (!imageDtos.Any(dto => dto.ImageData == image.ImageData))
@@ -81,7 +80,6 @@ public class ImageService(ReasnContext context)
                 }
             }
 
-            // Add new images that are not in the database
             var newImages = new List<Image>();
             foreach (var imageDto in imageDtos)
             {
