@@ -60,7 +60,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             eventToUpdate.OrganizerId = eventDto.OrganizerId;
             eventToUpdate.StartAt = eventDto.StartAt;
             eventToUpdate.EndAt = eventDto.EndAt;
-            eventToUpdate.UpdatedAt = DateTime.Now;
+            eventToUpdate.UpdatedAt = DateTime.UtcNow;
             eventToUpdate.Status = eventDto.Status;
 
             if (eventDto.Tags == null)
