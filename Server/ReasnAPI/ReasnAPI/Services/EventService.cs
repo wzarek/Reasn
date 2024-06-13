@@ -19,7 +19,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             var newEvent = eventDto.ToEntity();
             newEvent.CreatedAt = createdTime;
             newEvent.UpdatedAt = createdTime;
-            newEvent.Slug = CreateSlug(eventDto, createdTime);
+            newEvent.Slug = CreateSlug(eventDto);
 
             context.Events.Add(newEvent);
 
@@ -257,24 +257,25 @@ public class EventService(ReasnContext context, ParameterService parameterServic
         return userEvents.ToDtoList().AsEnumerable();
     }
 
-    private string CreateSlug(EventDto eventDto, DateTime createdTime)
+    private string CreateSlug(EventDto eventDto)
     {
-        var slug = eventDto.Name.ToLower();
-        slug = slug.Trim();
-        slug = Regex.Replace(slug, @"\s+", " ");
-        slug = Regex.Replace(slug, " ", "-");
-        slug = Regex.Replace(slug, @"[^a-z0-9-]", "");
-        slug = Regex.Replace(slug, "-+", "-");
+        var baseSlug = eventDto.Name.ToLower();
+        baseSlug = baseSlug.Trim();
+        baseSlug = Regex.Replace(baseSlug, @"\s+", " ");
+        baseSlug = Regex.Replace(baseSlug, " ", "-");
+        baseSlug = Regex.Replace(baseSlug, @"[^a-z0-9-]", "");
+        baseSlug = Regex.Replace(baseSlug, "-+", "-");
 
-        var timestamp = createdTime.Ticks.ToString();
-        var maxSlugLength = 128 - timestamp.Length - 1; // -1 for the dash between slug and timestamp
+        var slug = baseSlug;
+        var counter = 1;
 
-        if (slug.Length > maxSlugLength)
+        while (context.Events.Any(e => e.Slug == slug))
         {
-            slug = slug.Substring(0, maxSlugLength);
+            slug = $"{baseSlug}-{counter}";
+            counter++;
         }
 
-        return $"{slug}-{timestamp}";
+        return slug;
     }
 
 }
