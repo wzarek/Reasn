@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Transactions;
 using System.Text.RegularExpressions;
 using ReasnAPI.Mappers;
+using ReasnAPI.Models.Enums;
 
 namespace ReasnAPI.Services;
 public class EventService(ReasnContext context, ParameterService parameterService, TagService tagService, CommentService commentService)
@@ -203,7 +204,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
         return eventToReturn;
     }
 
-    public IEnumerable<ParticipantDto> GetEventParticipantsBySlug(string slug)
+    public int GetEventParticipantsBySlug(string slug, ParticipantStatus status)
     {
         var eventToReturn = context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Slug == slug);
         if (eventToReturn is null)
@@ -211,9 +212,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             throw new NotFoundException("Event not found");
         }
 
-        var participantsDto = eventToReturn.Participants.Select(p => p.ToDto());
-
-        return participantsDto;
+        return eventToReturn.Participants.Count(p => p.Status == status);
     }
 
     public IEnumerable<CommentDto> GetEventCommentsBySlug(string slug)
