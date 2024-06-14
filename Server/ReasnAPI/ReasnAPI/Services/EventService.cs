@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using ReasnAPI.Mappers;
 
 namespace ReasnAPI.Services;
-public class EventService(ReasnContext context, ParameterService parameterService, TagService tagService)
+public class EventService(ReasnContext context, ParameterService parameterService, TagService tagService, CommentService commentService)
 {
 
     public EventDto CreateEvent(EventDto eventDto)
@@ -228,6 +228,14 @@ public class EventService(ReasnContext context, ParameterService parameterServic
         var commentDtos = eventToReturn.Comments.Select(p => p.ToDto());
 
         return commentDtos;
+    }
+
+    public void AddEventComment(CommentDto commentDto, string slug)
+    {
+        commentDto = commentService.CreateComment(commentDto);
+        var relatedEvent = GetEventBySlug(slug);
+        relatedEvent.Comments.Add(commentDto.ToEntity());
+        context.SaveChanges();
     }
 
     public IEnumerable<EventDto> GetEventsByFilter(Expression<Func<Event, bool>> filter)
