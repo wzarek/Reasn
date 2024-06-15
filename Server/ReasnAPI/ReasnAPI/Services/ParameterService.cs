@@ -104,17 +104,25 @@ public class ParameterService(ReasnContext context)
         context.SaveChanges();
     }
 
-    public void AddParametersFromList(List<Parameter> parametersToAdd)
+    public void AttachParametersToEvent(List<Parameter> parametersToAdd, Event eventToUpdate)
     {
-        var existingParamsInDb = context.Parameters
-            .Where(param => parametersToAdd.Any(newParam => newParam.Key == param.Key && newParam.Value == param.Value))
+        var parameterKeyValuePairsToAdd = parametersToAdd.Select(p => new { p.Key, p.Value }).ToList();
+
+        var keysToAdd = parametersToAdd.Select(p => p.Key).Distinct().ToList();
+        var valuesToAdd = parametersToAdd.Select(p => p.Value).Distinct().ToList();
+
+        var parametersFromDb = context.Parameters
+            .Where(param => keysToAdd.Contains(param.Key) && valuesToAdd.Contains(param.Value))
             .ToList();
 
-        var paramsToAdd = parametersToAdd
-            .Where(newParam => existingParamsInDb.All(existingParam => existingParam.Key != newParam.Key || existingParam.Value != newParam.Value))
+        parametersFromDb.ForEach(eventToUpdate.Parameters.Add);
+
+        var newParametersToAdd = parametersToAdd.Where(paramToAdd =>
+                !parametersFromDb.Any(existingParam => existingParam.Key == paramToAdd.Key && existingParam.Value == paramToAdd.Value))
             .ToList();
 
-        context.Parameters.AddRange(paramsToAdd);
+        newParametersToAdd.ForEach(eventToUpdate.Parameters.Add);
+
         context.SaveChanges();
     }
 

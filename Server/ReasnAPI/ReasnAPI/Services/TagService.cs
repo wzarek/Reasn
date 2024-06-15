@@ -38,22 +38,18 @@ public class TagService(ReasnContext context)
         return tagDto;
     }
 
-    public void AddTagsFromList(List<Tag> tagsToAdd)
+    public void AttatchTagsToEvent(List<Tag> tagsToAdd, Event eventToUpdate)
     {
-        if (tagsToAdd is null)
-        {
-            throw new ArgumentException("No tag provided");
-        }
 
-        var existingTagsInDb = context.Tags
-            .Where(tag => tagsToAdd.Any(newTag => newTag.Name == tag.Name))
-            .ToList();
+        var tagNamesToAdd = tagsToAdd.Select(t => t.Name).ToList();
 
-        var tagsToAddToDb = tagsToAdd
-            .Where(newTag => existingTagsInDb.All(existingTag => existingTag.Name != newTag.Name))
-            .ToList();
+        var tagsFromDb = context.Tags.Where(tag => tagNamesToAdd.Contains(tag.Name)).ToList();
 
-        context.Tags.AddRange(tagsToAddToDb);
+        tagsFromDb.ForEach(eventToUpdate.Tags.Add);
+
+        var newTagsToAdd = tagsToAdd.Where(t => tagsFromDb.All(dbTag => dbTag.Name != t.Name)).ToList();
+
+        newTagsToAdd.ForEach(eventToUpdate.Tags.Add);
         context.SaveChanges();
     }
 

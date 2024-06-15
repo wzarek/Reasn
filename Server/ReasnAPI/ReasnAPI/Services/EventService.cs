@@ -21,6 +21,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             newEvent.CreatedAt = createdTime;
             newEvent.UpdatedAt = createdTime;
             newEvent.Slug = CreateSlug(eventDto);
+            
 
             context.Events.Add(newEvent);
 
@@ -28,17 +29,18 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             if (eventDto.Tags != null)
             {
                 var newTags = eventDto.Tags.ToEntityList();
-                AttatchTagsToEvent(newTags, newEvent);
+                tagService.AttatchTagsToEvent(newTags, newEvent);
             }
 
             if (eventDto.Parameters != null)
             {
                 var newParameters = eventDto.Parameters.ToEntityList();
-                AttachParametersToEvent(newParameters, newEvent);
+                parameterService.AttachParametersToEvent(newParameters, newEvent);
             }
 
             context.SaveChanges();
             scope.Complete();
+            eventDto.Slug = newEvent.Slug;
         }
 
         return eventDto;
@@ -75,7 +77,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
                     .Where(existingTag => newTags.All(newTag => newTag.Name != existingTag.Name))
                     .ToList();
                 DetachTagsFromEvent(tagsToRemove, eventToUpdate);
-                AttatchTagsToEvent(newTags, eventToUpdate);
+                tagService.AttatchTagsToEvent(newTags, eventToUpdate);
             }
 
             if (eventDto.Parameters == null)
@@ -89,7 +91,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
                     .Where(existingParam => newParameters.All(newParam => newParam.Key != existingParam.Key || newParam.Value != existingParam.Value))
                     .ToList();
                 DetachParametersFromEvent(paramsToRemove, eventToUpdate);
-                AttachParametersToEvent(newParameters, eventToUpdate);
+                parameterService.AttachParametersToEvent(newParameters, eventToUpdate);
             }
 
             context.Events.Update(eventToUpdate);
@@ -101,38 +103,12 @@ public class EventService(ReasnContext context, ParameterService parameterServic
         return eventDto;
     }
 
-    private void AttatchTagsToEvent(List<Tag> tagsToAdd, Event eventToUpdate)
-    {
-        tagService.AddTagsFromList(tagsToAdd);
-
-        var tagsToAttach = tagsToAdd
-            .Where(newTag => eventToUpdate.Tags.All(existingTag => existingTag.Name != newTag.Name))
-            .ToList();
-
-        tagsToAttach.ForEach(eventToUpdate.Tags.Add);
-
-        context.SaveChanges();
-    }
-
     private void DetachTagsFromEvent(List<Tag> tagsToRemove, Event eventToUpdate)
     {
         tagsToRemove.ForEach(tag => eventToUpdate.Tags.Remove(tag));
         context.SaveChanges();
 
         tagService.RemoveTagsNotInAnyEvent();
-    }
-
-    private void AttachParametersToEvent(List<Parameter> parametersToAdd, Event eventToUpdate)
-    {
-        parameterService.AddParametersFromList(parametersToAdd);
-
-        var paramsToAttach = parametersToAdd
-            .Where(newParam => eventToUpdate.Parameters.All(existingParam => existingParam.Key != newParam.Key || existingParam.Value != newParam.Value))
-            .ToList();
-
-        paramsToAttach.ForEach(eventToUpdate.Parameters.Add);
-
-        context.SaveChanges();
     }
 
     private void DetachParametersFromEvent(List<Parameter> parametersToRemove, Event eventToUpdate)
@@ -204,7 +180,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
         return eventToReturn;
     }
 
-    public int GetEventParticipantsBySlug(string slug, ParticipantStatus status)
+    public int GetEventParticipantsCountBySlugAndStatus(string slug, ParticipantStatus status)
     {
         var eventToReturn = context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Slug == slug);
         if (eventToReturn is null)
@@ -213,6 +189,21 @@ public class EventService(ReasnContext context, ParameterService parameterServic
         }
 
         return eventToReturn.Participants.Count(p => p.Status == status);
+    }
+
+    public IEnumerable<ParticipantDto> GetEventParticipantsBySlugAndStatus(string slug, ParticipantStatus status)
+    {
+        var eventToReturn = context.Events.Include(e => e.Participants).FirstOrDefault(e => e.Slug == slug);
+        if (eventToReturn is null)
+        {
+            throw new NotFoundException("Event not found");
+        }
+
+        var participantDtos = eventToReturn.Participants
+            .Where(p => p.Status == status)
+            .Select(p => p.ToDto());
+
+        return participantDtos;
     }
 
     public IEnumerable<CommentDto> GetEventCommentsBySlug(string slug)
@@ -266,43 +257,33 @@ public class EventService(ReasnContext context, ParameterService parameterServic
 
     private string CreateSlug(EventDto eventDto)
     {
-        var baseSlug = eventDto.Name.ToLower();
-        baseSlug = baseSlug.Trim();
-        baseSlug = Regex.Replace(baseSlug, @"\s+", " ");
-        baseSlug = Regex.Replace(baseSlug, " ", "-");
-        baseSlug = Regex.Replace(baseSlug, @"[^a-z0-9-]", "");
-        baseSlug = Regex.Replace(baseSlug, "-+", "-");
+        var baseSlug = Regex.Replace(eventDto.Name.ToLower().Trim(), @"[^a-z0-9\s-]", "")
+            .Replace(" ", "-")
+            .Replace("--", "-");
 
         var existingSlugs = context.Events
-            .Where(e => e.Slug.StartsWith(baseSlug))
+            .Where(e => EF.Functions.Like(e.Slug, $"{baseSlug}%"))
             .Select(e => e.Slug)
+            .AsNoTracking()
             .ToList();
 
-        var counter = 1;
-        if (existingSlugs.Any())
-        {
-            var regex = new Regex($"^{Regex.Escape(baseSlug)}-(\\d+)$");
-            foreach (var slug in existingSlugs)
-            {
-                var match = regex.Match(slug);
-                if (match.Success)
-                {
-                    var currentCounter = int.Parse(match.Groups[1].Value);
-                    counter = Math.Max(counter, currentCounter + 1);
-                }
-            }
-        }
+        var highestNumber = existingSlugs
+            .Select(slug => Regex.Match(slug, $"^{Regex.Escape(baseSlug)}-(\\d+)$"))
+            .Where(match => match.Success)
+            .Select(match => int.Parse(match.Groups[1].Value))
+            .DefaultIfEmpty(0)
+            .Max();
 
-        var countLength = counter.ToString().Length;
-        var maxBaseSlugLength = 128 - countLength - 1;
-        if (baseSlug.Length > maxBaseSlugLength)
-        {
-            baseSlug = baseSlug.Substring(0, maxBaseSlugLength);
-        }
-
+        var counter = highestNumber + 1;
         var finalSlug = $"{baseSlug}-{counter}";
 
+        if (finalSlug.Length > 128)
+        {
+            finalSlug = $"{baseSlug[..(128 - counter.ToString().Length - 1)]}-{counter}";
+        }
+
         return finalSlug;
+
     }
 
 }
