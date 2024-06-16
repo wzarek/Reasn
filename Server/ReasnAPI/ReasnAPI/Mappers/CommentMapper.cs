@@ -31,4 +31,15 @@ public static class CommentMapper
             CreatedAt = commentDto.CreatedAt
         };
     }
+
+    public static CommentDto ToDtoFromRequest(this CommentRequest commentRequest, int userId)
+    {
+        return new CommentDto()
+        {
+            EventId = commentRequest.EventId,
+            Content = commentRequest.Content,
+            CreatedAt = DateTime.Now,
+            UserId = userId,
+        };
+    }
 }
