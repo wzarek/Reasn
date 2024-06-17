@@ -31,6 +31,7 @@ namespace ReasnAPI.Tests.Services
                 EndAt = DateTime.Now,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
+                Slug = "name1",
                 Status = EventStatus.Completed,
                 Tags = tagList,
             };
@@ -47,6 +48,7 @@ namespace ReasnAPI.Tests.Services
                 StartAt = DateTime.Now,
                 EndAt = DateTime.Now,
                 CreatedAt = DateTime.Now,
+                Slug = "name1",
                 UpdatedAt = DateTime.Now,
                 Status = EventStatus.Completed,
             }});

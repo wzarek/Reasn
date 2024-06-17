@@ -265,11 +265,13 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             .Replace(" ", "-")
             .Replace("--", "-");
 
+        var pattern = $"^{Regex.Escape(baseSlug)}(-\\d+)?$";
+
         var existingSlugs = context.Events
-            .Where(e => EF.Functions.Like(e.Slug, $"{baseSlug}%"))
             .Select(e => e.Slug)
             .AsNoTracking()
-            .ToList();
+            .AsEnumerable()
+            .Where(slug => Regex.IsMatch(slug, pattern));
 
         var highestNumber = existingSlugs
             .Select(slug => Regex.Match(slug, $"^{Regex.Escape(baseSlug)}-(\\d+)$"))
