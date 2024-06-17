@@ -1,28 +1,31 @@
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 
-namespace ReasnAPI.Mappers;
-
-public static class InterestMapper
+namespace ReasnAPI.Mappers
 {
-    public static InterestDto ToDto(this Interest interest)
+    public static class InterestMapper
     {
-        return new InterestDto
+        public static InterestDto ToDto(this Interest interest)
         {
-            Name = interest.Name
-        };
+            return new InterestDto
+            {
+                Name = interest.Name
+            };
+        }
+
+        public static List<InterestDto> ToDtoList(this IEnumerable<Interest> interests)
+        {
+            return interests.Select(ToDto).ToList();
+        }
+
+        public static Interest ToEntity(this InterestDto interestDto)
+        {
+            return new Interest
+            {
+                Name = interestDto.Name
+            };
+        }
     }
 
-    public static List<InterestDto> ToDtoList(this IEnumerable<Interest> interests)
-    {
-        return interests.Select(ToDto).ToList();
-    }
-
-    public static Interest ToEntity(this InterestDto interestDto)
-    {
-        return new Interest
-        {
-            Name = interestDto.Name
-        };
-    }
 }
+

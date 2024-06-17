@@ -39,6 +39,7 @@ public partial class ReasnContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+
         if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder.UseNpgsql("name=ConnectionStrings:DefaultValue");
