@@ -1,4 +1,4 @@
-import { UserRole } from "@reasn/common/enums/serviceEnums";
+import { UserRole } from "../enums/modelsEnums";
 
 /**
  * Represents the authentication data.

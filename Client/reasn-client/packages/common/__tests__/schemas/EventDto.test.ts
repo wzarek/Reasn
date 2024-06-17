@@ -1,7 +1,7 @@
-import { EventDto, EventDtoMapper } from "@reasn/common/models/EventDto";
-import { EventStatus } from "@reasn/common/enums/modelsEnums";
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
-import { TagDto } from "@reasn/common/models/TagDto";
+import { EventDto, EventDtoMapper } from "@reasn/common/src/schemas/EventDto";
+import { EventStatus } from "@reasn/common/src/enums/modelsEnums";
+import ModelMappingError from "@reasn/common/src/errors/ModelMappingError";
+import { TagDto } from "@reasn/common/src/schemas/TagDto";
 
 describe("EventDto", () => {
   const name = "Test Event";

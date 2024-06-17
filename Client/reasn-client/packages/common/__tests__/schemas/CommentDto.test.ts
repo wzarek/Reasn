@@ -1,5 +1,8 @@
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
-import { CommentDto, CommentDtoMapper } from "@reasn/common/models/CommentDto";
+import ModelMappingError from "@reasn/common/src/errors/ModelMappingError";
+import {
+  CommentDto,
+  CommentDtoMapper,
+} from "@reasn/common/src/schemas/CommentDto";
 
 describe("CommentDto", () => {
   const eventId = 1;

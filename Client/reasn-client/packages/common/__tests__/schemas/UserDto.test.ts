@@ -1,7 +1,7 @@
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
-import { UserDto, UserDtoMapper } from "@reasn/common/models/UserDto";
-import { UserInterestDto } from "@reasn/common/models/UserInterestDto";
-import { UserRole } from "@reasn/common/enums/modelsEnums";
+import ModelMappingError from "@reasn/common/src/errors/ModelMappingError";
+import { UserDto, UserDtoMapper } from "@reasn/common/src/schemas/UserDto";
+import { UserInterestDto } from "@reasn/common/src/schemas/UserInterestDto";
+import { UserRole } from "@reasn/common/src/enums/modelsEnums";
 
 describe("UserDto", () => {
   const username = "john_doe";

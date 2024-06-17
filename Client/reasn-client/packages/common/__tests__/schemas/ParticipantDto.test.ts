@@ -1,9 +1,9 @@
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
+import ModelMappingError from "@reasn/common/src/errors/ModelMappingError";
 import {
   ParticipantDto,
   ParticipantDtoMapper,
-} from "@reasn/common/models/ParticipantDto";
-import { ParticipantStatus } from "@reasn/common/enums/modelsEnums";
+} from "@reasn/common/src/schemas/ParticipantDto";
+import { ParticipantStatus } from "@reasn/common/src/enums/modelsEnums";
 
 describe("ParticipantDto", () => {
   const eventId = 1;

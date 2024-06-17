@@ -1,5 +1,5 @@
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
-import { InterestDtoSchema } from "@reasn/common/models/InterestDto";
+import ModelMappingError from "../errors/ModelMappingError";
+import { InterestDtoSchema } from "../schemas/InterestDto";
 import { z } from "zod";
 
 export const UserInterestDtoSchema = z.object({

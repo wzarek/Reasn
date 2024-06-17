@@ -1,5 +1,5 @@
-import { UserRole } from "@reasn/common/enums/modelsEnums";
-import { AuthData } from "@reasn/common/interfaces/AuthData";
+import { UserRole } from "../enums/modelsEnums";
+import { AuthData } from "../interfaces/AuthData";
 
 const AUTH_DATA_KEY = "REASN_AUTH_DATA";
 

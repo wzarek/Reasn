@@ -4144,13 +4144,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reasn/common@workspace:packages/common":
+"@reasn/common@npm:*, @reasn/common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@reasn/common@workspace:packages/common"
+  dependencies:
+    "@reasn/typescript-config": "workspace:*"
+    jest: "npm:^29.7.0"
+    jest-fetch-mock: "npm:^3.0.3"
+    typescript: "npm:latest"
+    zod: "npm:^3.23.7"
   languageName: unknown
   linkType: soft
 
-"@reasn/typescript-config@npm:*, @reasn/typescript-config@workspace:packages/typescript-config":
+"@reasn/typescript-config@npm:*, @reasn/typescript-config@workspace:*, @reasn/typescript-config@workspace:packages/typescript-config":
   version: 0.0.0-use.local
   resolution: "@reasn/typescript-config@workspace:packages/typescript-config"
   languageName: unknown
@@ -17144,6 +17150,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:latest":
+  version: 5.4.5
+  resolution: "typescript@npm:5.4.5"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/2954022ada340fd3d6a9e2b8e534f65d57c92d5f3989a263754a78aba549f7e6529acc1921913560a4b816c46dce7df4a4d29f9f11a3dc0d4213bb76d043251e
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@npm%3A^5.3.3#optional!builtin<compat/typescript>":
   version: 5.3.3
   resolution: "typescript@patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"
@@ -17151,6 +17167,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/1d0a5f4ce496c42caa9a30e659c467c5686eae15d54b027ee7866744952547f1be1262f2d40de911618c242b510029d51d43ff605dba8fb740ec85ca2d3f9500
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3Alatest#optional!builtin<compat/typescript>":
+  version: 5.4.5
+  resolution: "typescript@patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=d69c25"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/9cf4c053893bcf327d101b6c024a55baf05430dc30263f9adb1bf354aeffc11306fe1f23ba2f9a0209674359f16219b5b7d229e923477b94831d07d5a33a4217
   languageName: node
   linkType: hard
 
@@ -17452,6 +17478,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "web@workspace:apps/web"
   dependencies:
+    "@reasn/common": "npm:*"
     "@reasn/typescript-config": "npm:*"
     "@reasn/ui": "npm:*"
     "@types/node": "npm:^20.10.6"

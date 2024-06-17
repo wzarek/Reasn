@@ -1,9 +1,9 @@
-import { InterestDto } from "@reasn/common/models/InterestDto";
+import { InterestDto } from "@reasn/common/src/schemas/InterestDto";
 import {
   UserInterestDto,
   UserInterestDtoMapper,
-} from "@reasn/common/models/UserInterestDto";
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
+} from "@reasn/common/src/schemas/UserInterestDto";
+import ModelMappingError from "@reasn/common/src/errors/ModelMappingError";
 
 describe("UserInterestDto", () => {
   const interest = { Name: "Interest" } as InterestDto;

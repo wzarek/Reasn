@@ -1,4 +1,4 @@
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
+import ModelMappingError from "../errors/ModelMappingError";
 import { z } from "zod";
 
 export const AddressDtoSchema = z.object({

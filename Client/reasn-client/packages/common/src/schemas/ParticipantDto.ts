@@ -1,5 +1,5 @@
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
-import { ParticipantStatus } from "@reasn/common/enums/modelsEnums";
+import ModelMappingError from "../errors/ModelMappingError";
+import { ParticipantStatus } from "../enums/modelsEnums";
 import { z } from "zod";
 
 export const ParticipantDtoSchema = z.object({

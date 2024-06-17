@@ -1,8 +1,17 @@
 {
   "name": "@reasn/common",
   "version": "0.0.0",
-  "private": true,
-  "publishConfig": {
-    "access": "public"
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "zod": "^3.23.7"
+  },
+  "devDependencies": {
+    "@reasn/typescript-config": "workspace:*",
+    "jest": "^29.7.0",
+    "jest-fetch-mock": "^3.0.3",
+    "typescript": "latest"
   }
 }

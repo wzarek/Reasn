@@ -1,6 +1,6 @@
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
-import { TagDtoSchema } from "@reasn/common/models/TagDto";
-import { EventStatus } from "@reasn/common/enums/modelsEnums";
+import ModelMappingError from "../errors/ModelMappingError";
+import { TagDtoSchema } from "./TagDto";
+import { EventStatus } from "../enums/modelsEnums";
 import { z } from "zod";
 
 export const EventDtoSchema = z.object({

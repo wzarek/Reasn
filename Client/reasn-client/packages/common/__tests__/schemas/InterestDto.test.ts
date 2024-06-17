@@ -1,8 +1,8 @@
 import {
   InterestDto,
   InterestDtoMapper,
-} from "@reasn/common/models/InterestDto";
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
+} from "@reasn/common/src/schemas/InterestDto";
+import ModelMappingError from "@reasn/common/src/errors/ModelMappingError";
 
 describe("InterestDto", () => {
   const name = "Interest";

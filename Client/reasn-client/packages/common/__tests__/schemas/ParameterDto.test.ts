@@ -1,8 +1,8 @@
 import {
   ParameterDto,
   ParameterDtoMapper,
-} from "@reasn/common/models/ParameterDto";
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
+} from "@reasn/common/src/schemas/ParameterDto";
+import ModelMappingError from "@reasn/common/src/errors/ModelMappingError";
 
 describe("ParameterDto", () => {
   const key = "Test Key";

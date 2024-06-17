@@ -1,6 +1,6 @@
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
-import { UserInterestDtoSchema } from "@reasn/common/models/UserInterestDto";
-import { UserRole } from "@reasn/common/enums/modelsEnums";
+import ModelMappingError from "../errors/ModelMappingError";
+import { UserInterestDtoSchema } from "../schemas/UserInterestDto";
+import { UserRole } from "../enums/modelsEnums";
 import { z } from "zod";
 
 export const UserDtoSchema = z.object({

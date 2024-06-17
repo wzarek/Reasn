@@ -1,5 +1,5 @@
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
-import { TagDto, TagDtoMapper } from "@reasn/common/models/TagDto";
+import ModelMappingError from "@reasn/common/src/errors/ModelMappingError";
+import { TagDto, TagDtoMapper } from "@reasn/common/src/schemas/TagDto";
 
 describe("TagDto", () => {
   const name = "tag name";

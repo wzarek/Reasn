@@ -1,6 +1,6 @@
-import { ImageDto, ImageDtoMapper } from "@reasn/common/models/ImageDto";
-import { ObjectType } from "@reasn/common/enums/modelsEnums";
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
+import { ImageDto, ImageDtoMapper } from "@reasn/common/src/schemas/ImageDto";
+import { ObjectType } from "@reasn/common/src/enums/modelsEnums";
+import ModelMappingError from "@reasn/common/src/errors/ModelMappingError";
 
 describe("ImageDto", () => {
   const imageData = "Test Image";

@@ -1,5 +1,8 @@
-import { AddressDtoMapper, AddressDto } from "@reasn/common/models/AddressDto";
-import ModelMappingError from "@reasn/common/errors/ModelMappingError";
+import {
+  AddressDtoMapper,
+  AddressDto,
+} from "@reasn/common/src/schemas/AddressDto";
+import ModelMappingError from "@reasn/common/src/errors/ModelMappingError";
 
 describe("AddressDto", () => {
   const country = "Test Country";

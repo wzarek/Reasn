@@ -1,8 +1,14 @@
-import { getAuthDataFromSessionStorage } from "@reasn/common/services/authorizationServices";
-import { HttpMethod } from "@reasn/common/enums/serviceEnums";
-import ApiConnectionError from "@reasn/common/errors/ApiConnectionError";
+import { getAuthDataFromSessionStorage } from "../services/authorizationServices";
+import { HttpMethod } from "../enums/serviceEnums";
+import ApiConnectionError from "../errors/ApiConnectionError";
 import fetch from "cross-fetch";
-import ApiAuthorizationError from "@reasn/common/errors/ApiAuthorizationError";
+import ApiAuthorizationError from "../errors/ApiAuthorizationError";
+
+type FetchOptions = {
+  method: HttpMethod;
+  headers: { [key: string]: string };
+  body?: string;
+};
 
 /**
  * Sends an HTTP request to the specified URL.
@@ -21,7 +27,7 @@ export const sendRequest = async <T>(
   authRequired: boolean = false,
 ): Promise<T> => {
   try {
-    let headers = {};
+    let headers: { [key: string]: string } = {};
     if (authRequired) {
       const authData = getAuthDataFromSessionStorage();
       if (!authData) {
@@ -35,7 +41,7 @@ export const sendRequest = async <T>(
     const fetchOptions = {
       method: httpMethod,
       headers: headers,
-    };
+    } as FetchOptions;
 
     if (httpMethod === HttpMethod.POST || httpMethod === HttpMethod.PUT) {
       fetchOptions["body"] = JSON.stringify(bodyData);
