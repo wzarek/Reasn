@@ -56,6 +56,10 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             {
                 throw new NotFoundException("Event not found");
             }
+            if (eventToUpdate.Name != eventDto.Name)
+            {
+                eventToUpdate.Slug = CreateSlug(eventDto);
+            }
 
             eventToUpdate.Name = eventDto.Name;
             eventToUpdate.AddressId = eventDto.AddressId;
