@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using ReasnAPI.Models.Authentication;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.Enums;
-using ReasnAPI.Services.Exceptions;
+using ReasnAPI.Exceptions;
 
 namespace ReasnAPI.Services.Authentication;
 

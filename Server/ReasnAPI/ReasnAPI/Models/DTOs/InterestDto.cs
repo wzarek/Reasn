@@ -1,3 +1,5 @@
+using System;
+
 namespace ReasnAPI.Models.DTOs
 {
     public class InterestDto
