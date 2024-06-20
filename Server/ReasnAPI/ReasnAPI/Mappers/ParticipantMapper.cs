@@ -1,4 +1,5 @@
-﻿using ReasnAPI.Models.Database;
+﻿using ReasnAPI.Models.Controller;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 
 namespace ReasnAPI.Mappers;
@@ -28,4 +29,15 @@ public static class ParticipantMapper
             Status = participantDto.Status
         };
     }
+
+    public static ParticipantsResponse ToResponse(this List<ParticipantDto> participating,
+        List<ParticipantDto> interested)
+    {
+        return new ParticipantsResponse
+        {
+            Participating = participating,
+            Interested = interested
+        };
+    }
+
 }

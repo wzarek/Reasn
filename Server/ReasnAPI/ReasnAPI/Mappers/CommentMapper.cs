@@ -1,4 +1,5 @@
-﻿using ReasnAPI.Models.Database;
+﻿using ReasnAPI.Models.Controller;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 
 namespace ReasnAPI.Mappers;

@@ -1,44 +1,39 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ReasnAPI.Helpers;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Models.Enums;
 using ReasnAPI.Services;
-using ReasnAPI.Services.Exceptions;
+using ReasnAPI.Exceptions;
 using FluentValidation;
 using ReasnAPI.Mappers;
+using ReasnAPI.Models.Controller;
 
 namespace ReasnAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class EventsController : ControllerBase
+public class EventsController(
+    ReasnContext context,
+    EventService eventService,
+    UserService userService,
+    ImageService imageService,
+    TagService tagService)
+    : ControllerBase
 {
-    private readonly ReasnContext _context;
-    private readonly EventService _eventService;
-    private readonly UserService _userService;
-    private readonly ImageService _imageService;
-    private readonly TagService _tagService;
-    private readonly ParticipantService _paticipantService;
-
-    public EventsController(ReasnContext context)
-    {
-        _context = context;
-    }
 
     [HttpGet]
     [ProducesResponseType<IEnumerable<EventResponse>>(StatusCodes.Status200OK)]
     public IActionResult GetEvents()
     {
-        var events = _eventService.GetEvents();
+        var events = eventService.GetAllEvents();
         var eventsDtos = new List<EventResponse>();
 
         foreach (var thisEvent in events)
         {
-            var participating = _paticipantService.GetParticipantsByEventSlug(thisEvent.Slug, ParticipantStatus.Participating);
-            var interested = _paticipantService.GetParticipantsByEventSlug(thisEvent.Slug, ParticipantStatus.Interested);
+            var participating = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Participating);
+            var interested = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Interested);
             var eventResponse = thisEvent.ToResponse(participating, interested);
             eventsDtos.Add(eventResponse);
         }
@@ -48,16 +43,15 @@ public class EventsController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "Admin, Organizer")]
-    [ProducesResponseType<EventDto>(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     public IActionResult CreateEvent([FromBody] EventCreateRequest eventRequest, [FromServices] IValidator<EventDto> validator)
     {
-        var user = _userService.GetCurrentUser();
-        var eventDto = eventRequest.ToDtoFromRequest(user.Id);
+        var user = userService.GetCurrentUser();
+        var eventDto = eventRequest.ToDto(user.Id);
         validator.ValidateAndThrow(eventDto);
 
-        _eventService.CreateEvent(eventDto);
+        eventService.CreateEvent(eventDto);
         return Created();
-    
     }
 
     [HttpGet]
@@ -65,42 +59,33 @@ public class EventsController : ControllerBase
     [ProducesResponseType<EventResponse>(StatusCodes.Status200OK)]
     public IActionResult GetEventBySlug([FromRoute] string slug)
     {
-        var eventDto = _eventService.GetEventBySlug(slug);
-        var participating = _paticipantService.GetParticipantsByEventSlug(slug, ParticipantStatus.Participating);
-        var interested = _paticipantService.GetParticipantsByEventSlug(slug, ParticipantStatus.Interested);
+        var eventDto = eventService.GetEventBySlug(slug).ToDto();
+        var participating = eventService.GetEventParticipantsCountBySlugAndStatus(slug, ParticipantStatus.Participating);
+        var interested = eventService.GetEventParticipantsCountBySlugAndStatus(slug, ParticipantStatus.Interested);
         var eventResponse = eventDto.ToResponse(participating, interested);
 
         return Ok(eventResponse);
-    
     }
 
     [HttpPut]
     [Authorize(Roles = "Admin, Organizer")]
     [Route("{slug}")]
-    [ProducesResponseType<EventResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult UpdateEvent([FromRoute] string slug, [FromBody] EventUpdateRequest eventUpdateRequest, [FromServices] IValidator<EventDto> validator)
     {
-        var eventDto = eventUpdateRequest.ToDtoFromRequest();
+        var eventDto = eventUpdateRequest.ToDto();
         validator.ValidateAndThrow(eventDto);
-        var existingEvent = _eventService.GetEventBySlug(slug);
-        var user = _userService.GetCurrentUser();
-        if (existingEvent == null)
-        {
-            return NotFound();
-        }
+        var existingEvent = eventService.GetEventBySlug(slug);
+        var user = userService.GetCurrentUser();
 
-        if (existingEvent.OrgenizerId != user.Id && user.Role != UserRole.Admin)
+        if (existingEvent.OrganizerId != user.Id && user.Role != UserRole.Admin)
         {
             return Forbid();
         }
 
-        var updatedEvent = _eventService.UpdateEvent(existingEvent.Id, eventDto);
-        var participating = _paticipantService.GetParticipantsByEventSlug(slug, ParticipantStatus.Participating);
-        var interested = _paticipantService.GetParticipantsByEventSlug(slug, ParticipantStatus.Interested);
-        var eventResponse = updatedEvent.ToResponse(participating, interested);
+        eventService.UpdateEvent(existingEvent.Id, eventDto);
 
-        return Ok(eventResponse);
-       
+        return Ok();
     }
 
     [HttpGet]
@@ -109,11 +94,8 @@ public class EventsController : ControllerBase
     [ProducesResponseType<EventDto>(StatusCodes.Status200OK)]
     public IActionResult GetEventsRequests([FromRoute] string slug)
     {
-        var user = _userService.GetCurrentUser();
-
-        var events = _eventService.GetEventsByFilter(e => e.Status == EventStatus.WaitingForApproval);
-        return Ok(events); // tutaj chyab nie potrzeba eventresponsa ze wzgledu na to ze pobieramy eventy
-                           // ktore nie sa jeszcze zatwierdzone wiec nie powinny miec uczestnikow
+        var events = eventService.GetEventsByFilter(e => e.Status == EventStatus.PendingApproval);
+        return Ok(events); 
     }
 
     [HttpPost]
@@ -122,83 +104,75 @@ public class EventsController : ControllerBase
     [ProducesResponseType<EventDto>(StatusCodes.Status200OK)]
     public IActionResult ApproveEventRequest([FromRoute] string slug)
     {
-        var eventToApprove = _eventService.GetEventBySlug(slug);
+        var eventToApprove = eventService.GetEventBySlug(slug);
 
         eventToApprove.Status = EventStatus.Approved;
-        _eventService.UpdateEvent(eventToApprove.Id, eventToApprove.ToDto());
+        eventService.UpdateEvent(eventToApprove.Id, eventToApprove.ToDto());
         return Ok(eventToApprove);
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin, Organizer")]
     [Route("{slug}/images")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> AddEventImage([FromRoute] string slug, [FromForm] List<IFormFile> images)
     {
-        var @event = _eventService.GetEventBySlug(slug);
-        var user = _userService.GetCurrentUser();
+        var @event = eventService.GetEventBySlug(slug);
+        var user = userService.GetCurrentUser();
 
-        if (@event.OrgenizerId != user.Id && user.Role != UserRole.Admin)
+        if (@event.OrganizerId != user.Id && user.Role != UserRole.Admin)
         {
             return Forbid();
         }
 
         var imageDtos = new List<ImageDto>();
 
-        foreach (var formFile in images)
+        foreach (var formFile in images.Where(formFile => formFile.Length > 0))
         {
-            if (formFile.Length > 0)
-            {
-                using (var ms = new MemoryStream())
-                {
-                    await formFile.CopyToAsync(ms);
-                    var fileBytes = ms.ToArray();
+            using var ms = new MemoryStream();
+            await formFile.CopyToAsync(ms);
+            var fileBytes = ms.ToArray();
 
-                    imageDtos.Add(new ImageDto
-                    {
-                        ObjectId = @event.Id,
-                        ObjectType = ObjectType.Event,
-                        ImageData = fileBytes
-                    });
-                }
-            }
+            imageDtos.Add(new ImageDto
+            {
+                ObjectId = @event.Id,
+                ObjectType = ObjectType.Event,
+                ImageData = fileBytes
+            });
         }
 
-        var image = _imageService.CreateImage(imageDtos, ObjectType.Event);
-        return Ok(image);
+        imageService.CreateImages(imageDtos);
+        return Ok();
     }
 
     [HttpPut]
     [Authorize(Roles = "Admin, Organizer")]
-    [Route("{slug}/images/{imageId:int}")]
+    [Route("{slug}/images")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateEventImage([FromRoute] string slug, [FromForm] List<IFormFile> images)
     {
-        var user = _userService.GetCurrentUser();
-        var @event = _eventService.GetEventBySlug(slug);
+        var user = userService.GetCurrentUser();
+        var @event = eventService.GetEventBySlug(slug);
 
-        if (@event.OrgenizerId != user.Id && user.Role != UserRole.Admin)
+        if (@event.OrganizerId != user.Id && user.Role != UserRole.Admin)
         {
             return Forbid();
         }
 
         var imageDtos = new List<ImageDto>();
 
-        foreach (var formFile in images)
+        foreach (var formFile in images.Where(formFile => formFile.Length > 0))
         {
-            if (formFile.Length > 0)
-            {
-                using (var ms = new MemoryStream())
-                {
-                    await formFile.CopyToAsync(ms);
-                    var fileBytes = ms.ToArray();
+            using var ms = new MemoryStream();
+            await formFile.CopyToAsync(ms);
+            var fileBytes = ms.ToArray();
 
-                    imageDtos.Add(new ImageDto
-                    {
-                        ObjectId = @event.Id,
-                        ObjectType = ObjectType.Event,
-                        ImageData = fileBytes
-                    });
-                }
-            }
+            imageDtos.Add(new ImageDto
+            {
+                ObjectId = @event.Id,
+                ObjectType = ObjectType.Event,
+                ImageData = fileBytes
+            });
         }
 
         if (@event.Id != imageDtos[0].ObjectId)
@@ -206,90 +180,83 @@ public class EventsController : ControllerBase
             return NotFound();
         }
 
-        var image = _imageService.UpdateImages(imageDtos, ObjectType.Event);
-        return Ok(image);
+        imageService.UpdateImagesForEvent(@event.Id, imageDtos);
+        return Ok();
     }
 
-    //[HttpDelete]
-    //[Authorize(Roles = "Admin, Organizer")]
-    //[Route("{slug}/images/{imageId:int}")]
-    //public IActionResult DeleteEventImage([FromRoute] string slug, [FromRoute] int imageId)
-    //{
-    //    var user = _userService.GetCurrentUser();
-    //    var @event = _eventService.GetEventBySlug(slug);
+    [HttpGet]
+    [Route("{slug}/images")]
+    [ProducesResponseType<List<string>>(StatusCodes.Status200OK)]
+    public IActionResult GetEventImages([FromRoute] string slug)
+    {
+        var @event = eventService.GetEventBySlug(slug);
+        var images = imageService.GetImagesByEventId(@event.Id);
+        var count = images.Count();
+        var stringList = new List<string>();
+        for (int i = 0; i < count; i++)
+        {
+            stringList.Add($"{slug}/image/{i}");
+        }
+        return Ok(stringList);
+    }
 
-    //    if (@event.OrgenizerId == user.Id)
-    //    {
-    //        return Forbid();
-    //    }
-    //        // pytanie czy to potrzebne zadziala na updatcie XD
-    //}
+    [HttpGet]
+    [Route("{slug}/image/{id:int}")]
+    [ProducesResponseType<FileContentResult>(StatusCodes.Status200OK)]
+    public IActionResult GetEventImage([FromRoute] string slug, [FromRoute] int id)
+    {
+        var @event = eventService.GetEventBySlug(slug);
+        var images = imageService.GetImagesByEventId(@event.Id).ToList();
 
-    //[HttpGet]
-    //[Route("{slug}/users")]
-    //public IActionResult GetEventUsers(string slug)
-    //{
-    //    var participantsDto = _eventService.getEventParticipantsBySlug(slug); // podzielic tu logike na getintrested i getparticipants
+        if (images.Count <= id)
+        {
+            return NotFound();
+        }
 
-    //    var participating = participantsDto.Where(p => p.Status == ParticipantStatus.Participating);
-    //    var interested = participantsDto.Where(p => p.Status == ParticipantStatus.Interested);
-    //    var result = new {participating, interested};
-    //    return Ok(result);
-    //}
+        var image = images[id];
+
+        return File(image.ImageData, $"image/jpeg");
+    }
+
+    [HttpGet]
+    [Route("{slug}/participants")]
+    [ProducesResponseType<ParticipantsResponse>(StatusCodes.Status200OK)]
+    public IActionResult GetEventParticipants([FromRoute] string slug)
+    {
+        var interestedDto = eventService.GetEventParticipantsBySlugAndStatus(slug, ParticipantStatus.Interested).ToList();
+        var participatingDto = eventService.GetEventParticipantsBySlugAndStatus(slug, ParticipantStatus.Participating).ToList();
+
+        var participantsResponse = new ParticipantsResponse
+        {
+            Interested = interestedDto,
+            Participating = participatingDto
+        };
+
+        return Ok(participantsResponse);
+    }
 
     [HttpGet]
     [Route("{slug}/comments")]
     [ProducesResponseType<List<CommentDto>>(StatusCodes.Status200OK)]
     public IActionResult GetEventComments([FromRoute] string slug)
     {
-        var commentsDto = _eventService.GetEventCommentsBySlug(slug); 
+        var commentsDto = eventService.GetEventCommentsBySlug(slug); 
         return Ok(commentsDto);
     }
 
     [HttpPost]
     [Authorize]
     [Route("{slug}/comments")]
-    public IActionResult AddEventComment([FromRoute] string slug, [FromBody]CommentRequest commentRequest)
+    public IActionResult AddEventComment([FromRoute] string slug, [FromBody]CommentRequest commentRequest, [FromServices] IValidator<CommentDto> validator)
     {
-        var user = _userService.GetCurrentUser();
+        var user = userService.GetCurrentUser();
 
         var commentDto = commentRequest.ToDtoFromRequest(user.Id);
-
-        _eventService.AddEventCommentBySlug(commentDto,slug);
+        validator.ValidateAndThrow(commentDto);
+        
+        eventService.AddEventComment(commentDto,slug);
         return Ok();
     }
-
-    //[HttpPost]
-    //[Authorize(Roles = "Admin, Organizer")]
-    //[Route("{slug}/parameters")]
-    //public IActionResult AddEventParameter(string slug)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    //[HttpDelete]
-    //[Authorize(Roles = "Admin, Organizer")]
-    //[Route("{slug}/parameters/{parameterId:int}")]
-    //public IActionResult DeleteEventParameter(string slug, int parameterId)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    //[HttpPost]
-    //[Authorize(Roles = "Admin, Organizer")]
-    //[Route("{slug}/tags")]
-    //public IActionResult AddEventTag(string slug)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    //[HttpDelete]
-    //[Authorize(Roles = "Admin, Organizer")]
-    //[Route("{slug}/tags/{tagId:int}")]
-    //public IActionResult DeleteEventTag(string slug, int tagId)
-    //{
-    //    throw new NotImplementedException();
-    //}
 
     [HttpGet]
     [Authorize(Roles = "Admin, Organizer")]
@@ -297,7 +264,7 @@ public class EventsController : ControllerBase
     [ProducesResponseType<List<ParameterDto>>(StatusCodes.Status200OK)]
     public IActionResult GetEventsParameters([FromRoute] string slug)
     {
-        var eventDto = _eventService.GetEventBySlug(slug).ToDto();
+        var eventDto = eventService.GetEventBySlug(slug).ToDto();
         if (eventDto == null)
         {
             return NotFound();
@@ -307,34 +274,20 @@ public class EventsController : ControllerBase
         return Ok(parameters);
     }
 
-    //[HttpDelete]
-    //[Authorize(Roles = "Admin")]
-    //[Route("parameters/{parameterId:int}")]
-    //public IActionResult DeleteEventsParameter(int parameterId)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
     [HttpGet]
     [Authorize(Roles = "Admin, Organizer")]
     [Route("{slug}/tags")]
     [ProducesResponseType<List<TagDto>>(StatusCodes.Status200OK)]
     public IActionResult GetEventsTags([FromRoute] string slug)
     {
-        var user = _userService.GetCurrentUser();
-        var @event = _eventService.GetEventBySlug(slug);
+        var user = userService.GetCurrentUser();
+        var @event = eventService.GetEventBySlug(slug);
 
         if (user.Role != UserRole.Admin && @event.OrganizerId != user.Id)
         {
             Forbid();
         }
-        
-        if (@event == null)
-        {
-            return NotFound();
-        }
 
-       
         var tags = @event.Tags;
         return Ok(tags);
     }
@@ -345,7 +298,7 @@ public class EventsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult DeleteEventsTag([FromRoute] int tagId)
     {
-        var tag = _tagService.DeleteTag(tagId);
+        tagService.DeleteTag(tagId);
         return NoContent(); 
     }
 }

@@ -1,5 +1,7 @@
-﻿using ReasnAPI.Models.Database;
+﻿using ReasnAPI.Models.Controller;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
+using ReasnAPI.Models.Enums;
 
 namespace ReasnAPI.Mappers
 {
@@ -43,6 +45,58 @@ namespace ReasnAPI.Mappers
                 StartAt = eventDto.StartAt,
                 EndAt = eventDto.EndAt,
                 Status = eventDto.Status
+            };
+        }
+
+        public static EventResponse ToResponse(this EventDto eventDto, int participating, int interested)
+        {
+            return new EventResponse
+            {
+                Name = eventDto.Name,
+                AddressId = eventDto.AddressId,
+                Description = eventDto.Description,
+                OrganizerId = eventDto.OrganizerId,
+                StartAt = eventDto.StartAt,
+                EndAt = eventDto.EndAt,
+                CreatedAt = eventDto.CreatedAt,
+                UpdatedAt = eventDto.UpdatedAt,
+                Slug = eventDto.Slug,
+                Status = eventDto.Status,
+                Tags = eventDto.Tags,
+                Parameters = eventDto.Parameters,
+                ParticipatingParticipantsCount = participating,
+                InterestedParticipantsCount = interested
+            };
+        }
+
+        public static EventDto ToDto(this EventUpdateRequest eventCreateRequest)
+        {
+            return new EventDto()
+            {
+                Name = eventCreateRequest.Name,
+                AddressId = eventCreateRequest.AddressId,
+                OrganizerId = eventCreateRequest.OrganizerId,
+                Description = eventCreateRequest.Description,
+                StartAt = eventCreateRequest.StartAt,
+                EndAt = eventCreateRequest.EndAt,
+                Tags = eventCreateRequest.Tags,
+                Status = eventCreateRequest.Status,
+                Parameters = eventCreateRequest.Parameters,
+            };
+        }
+        public static EventDto ToDto(this EventCreateRequest eventCreateRequest, int organizerId)
+        {
+            return new EventDto()
+            {
+                Name = eventCreateRequest.Name,
+                AddressId = eventCreateRequest.AddressId,
+                Description = eventCreateRequest.Description,
+                StartAt = eventCreateRequest.StartAt,
+                EndAt = eventCreateRequest.EndAt,
+                Tags = eventCreateRequest.Tags,
+                Status = EventStatus.PendingApproval,
+                Parameters = eventCreateRequest.Parameters,
+                OrganizerId = organizerId
             };
         }
 

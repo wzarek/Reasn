@@ -1,7 +1,7 @@
 ﻿using ReasnAPI.Models.DTOs;
 using ReasnAPI.Models.Enums;
 
-namespace ReasnAPI.Helpers
+namespace ReasnAPI.Models.Controller
 {
     public class EventResponse
     {

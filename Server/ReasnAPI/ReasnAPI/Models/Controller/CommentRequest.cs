@@ -1,4 +1,4 @@
-﻿namespace ReasnAPI.Helpers
+﻿namespace ReasnAPI.Models.Controller
 {
     public class CommentRequest
     {
