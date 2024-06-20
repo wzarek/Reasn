@@ -18,7 +18,7 @@ export const HeroSection = () => {
       </div>
       <div className="relative">
         <div className='absolute right-[-25%] top-[-50%] z-0 h-[200%] w-[150%] rounded-full bg-gradient-to-r from-[#FF6363] to-[#1E34FF] opacity-5 blur-3xl content-[""]'></div>
-        <Card variant={CardVariant.Big} event={"abcd"} />
+        <Card variant={CardVariant.Big} event={"edit"} />
       </div>
     </section>
   );
