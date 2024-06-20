@@ -3,7 +3,7 @@ CREATE SCHEMA users;
 CREATE SCHEMA common;
 
 CREATE TYPE common.participant_status AS ENUM ('Interested', 'Participating');
-CREATE TYPE common.event_status AS ENUM ('Completed', 'In progress', 'Approved', 'Waiting for approval');
+CREATE TYPE common.event_status AS ENUM ('Completed', 'Ongoing', 'Cancelled', 'Approved', 'Pending approval', 'Rejected');
 CREATE TYPE users.role AS ENUM ('User', 'Organizer', 'Admin');
 CREATE TYPE common.object_type AS ENUM ('Event', 'User');
 

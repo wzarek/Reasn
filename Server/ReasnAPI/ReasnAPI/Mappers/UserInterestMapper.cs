@@ -18,4 +18,13 @@ public static class UserInterestMapper
     {
         return userInterests.Select(ToDto).ToList();
     }
+
+    public static UserInterest ToEntity(this UserInterestDto userInterestDto)
+    {
+        return new UserInterest
+        {
+            Interest = userInterestDto.Interest.ToEntity(),
+            Level = userInterestDto.Level
+        };
+    }
 }

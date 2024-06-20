@@ -6,7 +6,7 @@ using ReasnAPI.Models.Authentication;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Services.Authentication;
-using ReasnAPI.Services.Exceptions;
+using ReasnAPI.Exceptions;
 
 namespace ReasnAPI.Tests.UnitTests.Services.Authentication;
 

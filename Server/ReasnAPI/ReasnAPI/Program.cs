@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Npgsql;
-using ReasnAPI.Models.Enums;
 using Serilog;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -14,6 +12,10 @@ using ReasnAPI.Middlewares;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Services;
 using ReasnAPI.Services.Authentication;
+using ReasnAPI.Validators;
+using Npgsql;
+using ReasnAPI.Models.Enums;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 var config = builder.Configuration;
@@ -68,6 +70,15 @@ var dataSource = dataSourceBuilder.Build();
 builder.Services.AddDbContext<ReasnContext>(options =>
     options.UseNpgsql(dataSource)
         .EnableDetailedErrors());
+
+builder.Services.AddScoped<InterestService>();
+builder.Services.AddScoped<TagService>();
+builder.Services.AddScoped<ParameterService>();
+builder.Services.AddScoped<EventService>();
+builder.Services.AddScoped<ParticipantService>();
+builder.Services.AddScoped<ImageService>();
+
+builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen(options =>
 {

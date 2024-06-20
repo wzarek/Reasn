@@ -2,7 +2,6 @@ using System.Net;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using ReasnAPI.Exceptions;
-using ReasnAPI.Services.Exceptions;
 
 namespace ReasnAPI.Tests.UnitTests.Exceptions;
 
