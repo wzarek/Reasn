@@ -157,7 +157,7 @@ public class UserServiceTests
             Role = UserRole.User
         };
 
-        var result = userService.UpdateUser(1, userDto);
+        var result = userService.UpdateUser("Username", userDto);
 
         Assert.IsNotNull(result);
         Assert.AreEqual("Jane", result.Name);
@@ -187,7 +187,7 @@ public class UserServiceTests
 
         var userService = new UserService(mockContext.Object);
 
-        Assert.ThrowsException<ArgumentNullException>(() => userService.UpdateUser(1, null));
+        Assert.ThrowsException<ArgumentNullException>(() => userService.UpdateUser("Username", null));
     }
 
     [TestMethod]
@@ -209,6 +209,6 @@ public class UserServiceTests
             AddressId = 1
         };
 
-        Assert.ThrowsException<NotFoundException>(() => userService.UpdateUser(1, userDto));
+        Assert.ThrowsException<NotFoundException>(() => userService.UpdateUser("Username", userDto));
     }
 }

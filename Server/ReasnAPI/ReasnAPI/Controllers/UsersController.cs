@@ -9,16 +9,17 @@ namespace ReasnAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UsersController(UserService userService) : ControllerBase
+public class UsersController(UserService userService, InterestService interestService) : ControllerBase
 {
     private readonly UserService _userService = userService;
+    private readonly InterestService _interestService = interestService;
 
     [HttpGet]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "User")]
     [ProducesResponseType<IEnumerable<UserDto>>(StatusCodes.Status200OK)]
     public IActionResult GetUsers()
     {
-        var users = _userService.GetAllUsers();
+        var users = _userService.GetUsersByFilter(u => u.IsActive && u.Role != UserRole.Admin);
         return Ok(users);
     }
 
@@ -52,7 +53,7 @@ public class UsersController(UserService userService) : ControllerBase
         var userToUpdate = _userService.GetUserByUsername(username);
 
         // Users can only update their own profile, unless they are an admin
-        if (currentUser.Role != UserRole.Admin && currentUser.Id != userToUpdate.Id)
+        if (currentUser.Role != UserRole.Admin && currentUser.Username != userToUpdate.Username)
         {
             return Forbid();
         }
@@ -63,22 +64,18 @@ public class UsersController(UserService userService) : ControllerBase
             return Forbid();
         }
 
-        var updatedUser = _userService.UpdateUser(userToUpdate.Id, userDto);
+        var updatedUser = _userService.UpdateUser(userToUpdate.Username, userDto);
 
-        var location = Url.Action(
-                            action: nameof(GetUserByUsername),
-                            controller: "Users",
-                            values: new { username = updatedUser.Username });
-
-        return Ok(location, updatedUser);
+        return Ok(updatedUser);
     }
 
     [HttpGet]
     [Authorize]
     [Route("interests")]
+    [ProducesResponseType<IEnumerable<InterestDto>>(StatusCodes.Status200OK)]
     public IActionResult GetUsersInterests()
     {
-        var interests = _userService.GetAllInterests();
+        var interests = _interestService.GetAllInterests();
         return Ok(interests);
     }
 
@@ -88,7 +85,7 @@ public class UsersController(UserService userService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult DeleteUserInterest([FromRoute] int interestId)
     {
-        _userService.DeleteInterest(interestId);
+        _interestService.DeleteInterest(interestId);
         return NoContent();
     }
 }

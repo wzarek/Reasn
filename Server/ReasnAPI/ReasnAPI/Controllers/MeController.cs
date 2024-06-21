@@ -42,13 +42,9 @@ public class MeController(UserService userService, EventService eventService, Pa
             return Forbid();
         }
 
-        var updatedUser = _userService.UpdateUser(user.Id, userDto);
+        var updatedUser = _userService.UpdateUser(user.Username, userDto);
 
-        var location = Url.Action(
-                            action: nameof(GetCurrentUser),
-                            controller: "Me");
-
-        return Ok(location, updatedUser);
+        return Ok(updatedUser);
     }
 
     [HttpPost]
@@ -56,19 +52,19 @@ public class MeController(UserService userService, EventService eventService, Pa
     [ProducesResponseType<ImageDto>(StatusCodes.Status201Created)]
     public IActionResult AddCurrentUserImage([FromBody] ImageDto imageDto)
     {
-        var image = _imageService.CreateImage(imageDto);
-        return Created(image);
+        var image = _imageService.CreateImages([imageDto]);
+        return Ok(image);
     }
 
     [HttpPut]
     [Route("image")]
     [ProducesResponseType<ImageDto>(StatusCodes.Status200OK)]
-    public IActionResult UpdateCurrentUserImage([FromBody] List<ImageDto> imageDto)
+    public IActionResult UpdateCurrentUserImage([FromBody] ImageDto imageDto)
     {
         var userId = _userService.GetCurrentUser().Id;
-        var image = _imageService.UpdateImageByObjectId(userId, imageDto);
+        _imageService.UpdateImageForUser(userId, imageDto);
 
-        return Ok(image);
+        return Ok(imageDto);
     }
 
     [HttpDelete]
@@ -77,7 +73,7 @@ public class MeController(UserService userService, EventService eventService, Pa
     public IActionResult DeleteCurrentUserImage()
     {
         var userId = _userService.GetCurrentUser().Id;
-        _imageService.DeleteImageByObjectId(userId, ObjectType.User);
+        _imageService.DeleteImageByObjectIdAndType(userId, ObjectType.User);
 
         return NoContent();
     }
@@ -107,9 +103,13 @@ public class MeController(UserService userService, EventService eventService, Pa
         var eventId = _eventService.GetEventBySlug(slug).Id;
         var userId = _userService.GetCurrentUser().Id;
 
-        var participant = _participationService.CreateParticipation(new ParticipationDto { EventId = eventId, UserId = userId, Status = ParticipantStatus.Interested });
+        var participant = _participantService.CreateParticipant(new ParticipantDto { EventId = eventId, UserId = userId, Status = ParticipantStatus.Interested });
 
-        return Created(participant);
+        var location = Url.Action(
+            action: nameof(GetCurrentUserEvents),
+            controller: "Me");
+
+        return Created(location, participant);
     }
 
     [HttpPost]
@@ -119,9 +119,9 @@ public class MeController(UserService userService, EventService eventService, Pa
     {
         var eventId = _eventService.GetEventBySlug(slug).Id;
         var userId = _userService.GetCurrentUser().Id;
-        var participation = _participationService.GetParticipationByFilter(p => p.EventId == eventId && p.UserId == userId);
+        var participant = _participantService.GetParticipantsByFilter(p => p.EventId == eventId && p.UserId == userId).First();
 
-        var participant = _participantService.UpdateParticipation(participation.Id, new ParticipationDto { Status = ParticipantStatus.Participating });
+        participant = _participantService.UpdateParticipant(participant.UserId, new ParticipantDto { Status = ParticipantStatus.Participating });
 
         return Ok(participant);
     }
@@ -133,9 +133,9 @@ public class MeController(UserService userService, EventService eventService, Pa
     {
         var eventId = _eventService.GetEventBySlug(slug).Id;
         var userId = _userService.GetCurrentUser().Id;
-        var participation = _participationService.GetParticipationByFilter(p => p.EventId == eventId && p.UserId == userId);
+        var participant = _participantService.GetParticipantsByFilter(p => p.EventId == eventId && p.UserId == userId).First();
 
-        _participantService.DeleteParticipation(participation.Id);
+        _participantService.DeleteParticipant(participant.UserId);
 
         return NoContent();
     }
