@@ -174,7 +174,7 @@ public class ImageService(ReasnContext context)
         return imageDto;
     }
 
-    public IEnumerable<ImageDto> GetImagesByUserId(int userId)
+    public ImageDto GetImagesByUserId(int userId)
     {
         var images = context.Images
             .Where(image => image.ObjectId == userId && image.ObjectType == ObjectType.User)
@@ -185,9 +185,9 @@ public class ImageService(ReasnContext context)
             throw new NotFoundException("Images not found");
         }
 
-        var imageDtos = images.ToDtoList().AsEnumerable();
+        var imageDtos = images.ToDtoList();
 
-        return imageDtos;
+        return imageDtos[0];
     }
 
     public IEnumerable<ImageDto> GetAllImages()

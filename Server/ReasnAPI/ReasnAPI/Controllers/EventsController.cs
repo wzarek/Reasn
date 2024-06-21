@@ -8,7 +8,7 @@ using ReasnAPI.Services;
 using ReasnAPI.Exceptions;
 using FluentValidation;
 using ReasnAPI.Mappers;
-using ReasnAPI.Models.Controller;
+using ReasnAPI.Models.API;
 
 namespace ReasnAPI.Controllers;
 
@@ -34,7 +34,8 @@ public class EventsController(
         {
             var participating = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Participating);
             var interested = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Interested);
-            var eventResponse = thisEvent.ToResponse(participating, interested);
+            var username = userService.GetUserById(eventService.GetEventBySlug(thisEvent.Slug).OrganizerId).Username;
+            var eventResponse = thisEvent.ToResponse(participating, interested, username, $"image/{thisEvent.OrganizerId}");
             eventsDtos.Add(eventResponse);
         }
    
@@ -62,7 +63,8 @@ public class EventsController(
         var eventDto = eventService.GetEventBySlug(slug).ToDto();
         var participating = eventService.GetEventParticipantsCountBySlugAndStatus(slug, ParticipantStatus.Participating);
         var interested = eventService.GetEventParticipantsCountBySlugAndStatus(slug, ParticipantStatus.Interested);
-        var eventResponse = eventDto.ToResponse(participating, interested);
+        var username = userService.GetUserById(eventService.GetEventBySlug(slug).OrganizerId).Username;
+        var eventResponse = eventDto.ToResponse(participating, interested, username, $"image/{eventDto.OrganizerId}");
 
         return Ok(eventResponse);
     }
@@ -83,6 +85,11 @@ public class EventsController(
             return Forbid();
         }
 
+        if (existingEvent.Status != eventUpdateRequest.Status && user.Role != UserRole.Admin && eventUpdateRequest.Status != EventStatus.Cancelled)
+        {
+            return Forbid();
+        }
+
         eventService.UpdateEvent(existingEvent.Id, eventDto);
 
         return Ok();
@@ -91,11 +98,20 @@ public class EventsController(
     [HttpGet]
     [Authorize(Roles = "Admin")]
     [Route("requests")]
-    [ProducesResponseType<EventDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<List<EventResponse>>(StatusCodes.Status200OK)]
     public IActionResult GetEventsRequests([FromRoute] string slug)
     {
         var events = eventService.GetEventsByFilter(e => e.Status == EventStatus.PendingApproval);
-        return Ok(events); 
+        var eventsDtos = new List<EventResponse>();
+        foreach (var thisEvent in events)
+        {
+            var participating = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Participating);
+            var interested = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Interested);
+            var username = userService.GetUserById(eventService.GetEventBySlug(thisEvent.Slug).OrganizerId).Username;
+            var eventResponse = thisEvent.ToResponse(participating, interested, username, $"image/{thisEvent.OrganizerId}");
+            eventsDtos.Add(eventResponse);
+        }
+        return Ok(eventsDtos); 
     }
 
     [HttpPost]
@@ -108,7 +124,7 @@ public class EventsController(
 
         eventToApprove.Status = EventStatus.Approved;
         eventService.UpdateEvent(eventToApprove.Id, eventToApprove.ToDto());
-        return Ok(eventToApprove);
+        return Ok();
     }
 
     [HttpPost]

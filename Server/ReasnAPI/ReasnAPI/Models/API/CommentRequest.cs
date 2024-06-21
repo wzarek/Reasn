@@ -1,4 +1,4 @@
-﻿namespace ReasnAPI.Models.Controller
+﻿namespace ReasnAPI.Models.API
 {
     public class CommentRequest
     {

@@ -1,6 +1,6 @@
 ﻿using ReasnAPI.Models.DTOs;
 
-namespace ReasnAPI.Models.Controller
+namespace ReasnAPI.Models.API
 {
     public class ParticipantsResponse
     {

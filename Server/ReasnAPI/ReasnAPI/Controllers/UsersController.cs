@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ReasnAPI.Services;
 
 namespace ReasnAPI.Controllers;
 
@@ -7,6 +8,8 @@ namespace ReasnAPI.Controllers;
 [Route("[controller]")]
 public class UsersController : ControllerBase
 {
+    private readonly UserService userService;
+    private readonly ImageService imageService;
     [HttpGet]
     [Authorize(Roles = "Admin")]
     public IActionResult GetUsers()
@@ -35,6 +38,16 @@ public class UsersController : ControllerBase
     public IActionResult GetUsersInterests(string username)
     {
         throw new NotImplementedException();
+    }
+
+    [HttpGet]
+    [Authorize]
+    [Route("image/{userid}")]
+    public IActionResult GetImageByUserId(int userId)
+    {
+        var image = imageService.GetImagesByUserId(userId);
+      
+        return File(image.ImageData, $"image/jpeg");
     }
 
     [HttpDelete]

@@ -1,4 +1,4 @@
-﻿using ReasnAPI.Models.Controller;
+﻿using ReasnAPI.Models.API;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 

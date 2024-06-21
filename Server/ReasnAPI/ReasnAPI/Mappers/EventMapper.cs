@@ -1,4 +1,4 @@
-﻿using ReasnAPI.Models.Controller;
+﻿using ReasnAPI.Models.API;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Models.Enums;
@@ -48,14 +48,15 @@ namespace ReasnAPI.Mappers
             };
         }
 
-        public static EventResponse ToResponse(this EventDto eventDto, int participating, int interested)
+        public static EventResponse ToResponse(this EventDto eventDto, int participating, int interested, string username, string photo)
         {
             return new EventResponse
             {
                 Name = eventDto.Name,
                 AddressId = eventDto.AddressId,
                 Description = eventDto.Description,
-                OrganizerId = eventDto.OrganizerId,
+                OrganizerUsername = username,
+                OrganizerPhoto = photo,
                 StartAt = eventDto.StartAt,
                 EndAt = eventDto.EndAt,
                 CreatedAt = eventDto.CreatedAt,

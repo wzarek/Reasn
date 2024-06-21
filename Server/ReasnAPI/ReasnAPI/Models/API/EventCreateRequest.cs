@@ -1,7 +1,7 @@
 ﻿using ReasnAPI.Models.DTOs;
 using ReasnAPI.Models.Enums;
 
-namespace ReasnAPI.Models.Controller
+namespace ReasnAPI.Models.API
 {
     public class EventCreateRequest
     {
