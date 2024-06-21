@@ -1,18 +1,20 @@
 "use client";
 
 import { MOCK_IMG_URL } from "@reasn/ui/src/components/shared/Card";
-import { ButtonBase } from "@reasn/ui/src/components/shared/form";
-import { Comment } from "@reasn/ui/src/components/shared/Comment";
-import { useEffect, useRef, useState } from "react";
 import {
+  ButtonBase,
+  FloatingInput,
+  FloatingTextarea,
+} from "@reasn/ui/src/components/shared/form";
+import { useRef, useState } from "react";
+import {
+  ArrowLeft,
   Clock,
   Location,
   QuestionCircle,
   TickCircle,
 } from "@reasn/ui/src/icons";
 import { useRouter } from "next/navigation";
-
-import useColorWorker from "@reasn/common/hooks/useColorWorker";
 
 const IMAGES = [
   "https://images.pexels.com/photos/19012544/pexels-photo-19012544/free-photo-of-storm.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -26,75 +28,30 @@ const IMAGES = [
   "https://images.pexels.com/photos/54332/currant-immature-bush-berry-54332.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
 ];
 
-const EventPage = ({ params }: { params: { slug: string } }) => {
+const EventEditPage = ({ params }: { params: { slug: string } }) => {
   const { slug } = params;
   const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [gradient, setGradient] = useState<string>("");
-  const editPage = slug === "edit";
   const router = useRouter();
 
   const [img, setImg] = useState<string>(
     IMAGES[Math.floor(Math.random() * IMAGES.length)],
   );
 
-  const [imageData, setImageData] = useState<Uint8ClampedArray>();
-
-  useEffect(() => {
-    const img = imgRef.current;
-    const canvas = canvasRef.current;
-
-    if (!img || !canvas) {
-      return;
-    }
-
-    const ctx = canvas.getContext("2d");
-
-    if (!ctx) {
-      return;
-    }
-
-    img.crossOrigin = "Anonymous";
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-
-      ctx.drawImage(img, 0, 0, img.width, img.height);
-
-      const imageData = ctx.getImageData(
-        0,
-        0,
-        canvas.width,
-        canvas.height,
-      ).data;
-      setImageData(imageData);
-    };
-  }, [img]);
-
-  const dominantColors = useColorWorker(imageData);
-
-  useEffect(() => {
-    if (dominantColors.length === 0) return;
-
-    const dominantColorsRgb = dominantColors.map((color: string) => {
-      const [r, g, b] = color.split(",").map(Number);
-      return `rgb(${r}, ${g}, ${b})`;
-    });
-
-    setGradient(`linear-gradient(to right, ${dominantColorsRgb.join(", ")})`);
-  }, [dominantColors]);
-
   const handleRedirect = () => {
-    router.push(`/events/${slug}/edit`);
+    router.push(`/events/${slug}`);
   };
 
   return (
     <div className="flex w-full flex-col gap-5">
+      <div
+        className="flex w-1/3 cursor-pointer flex-row items-center gap-2 font-semibold"
+        onClick={handleRedirect}
+      >
+        <ArrowLeft className="h-5 w-5 fill-slate-400" />
+        <h3>cofnij do wydarzenia</h3>
+      </div>
       <div className="flex w-full flex-row justify-between gap-5">
-        <div
-          className="absolute bottom-[50%] right-[-50%] z-0 h-[80%] w-[200%] rounded-full blur-3xl duration-1000"
-          style={{ background: gradient, opacity: gradient ? "0.25" : "0" }}
-        ></div>
         <div className="flex h-max min-h-[50vh] w-1/3 flex-col justify-between rounded-lg bg-[#1E1F296d] p-5 backdrop-blur-lg">
           <p className="mb-2 font-bold text-orange-400">DO AKCEPTACJI</p>
           <div className="flex max-h-5 gap-2 overflow-clip text-xs text-[#cacaca]">
@@ -111,18 +68,59 @@ const EventPage = ({ params }: { params: { slug: string } }) => {
             <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
             <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
           </div>
-          <h1 className="mt-2 text-3xl font-semibold">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cumque,
-            nam.
-          </h1>
-          <div className="mt-8 flex h-full flex-col gap-1 font-thin">
+          <div className="mt-10">
+            <FloatingTextarea
+              label="Tytuł"
+              name="description"
+              defaultValue="Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cumque,
+              nam."
+              className="text-lg"
+            />
+          </div>
+          <div className="mt-8 flex h-full flex-col gap-8 font-thin">
             <div className="flex flex-row items-center gap-2">
               <Clock className="h-5 w-5 fill-slate-400" />
-              <p>12 grudnia 2024r. 12:00 - 13 grudnia 2024r. 23:48</p>
+              <FloatingInput
+                label="Data od"
+                type="date"
+                name="dateFrom"
+                defaultValue={"12.12.2024"}
+                className="grow"
+              />
+              <FloatingInput
+                label="Czas od"
+                type="time"
+                name="timeFrom"
+                defaultValue={"12:00"}
+                className="w-1/3"
+              />
+            </div>
+            <div className="flex flex-row items-center gap-2">
+              <Clock className="h-5 w-5 fill-slate-400" />
+              <FloatingInput
+                label="Data do"
+                type="date"
+                name="dateFrom"
+                defaultValue={"12.12.2024"}
+                className="grow"
+              />
+              <FloatingInput
+                label="Czas do"
+                type="time"
+                name="timeFrom"
+                defaultValue={"23:58"}
+                className="w-1/3"
+              />
             </div>
             <div className="flex flex-row items-center gap-2">
               <Location className="h-5 w-5 fill-slate-400" />
-              <p>Wrocław, C-16 Politechnika Wrocławska, Polska</p>
+              <FloatingInput
+                label="Lokalizacja"
+                type="text"
+                name="location"
+                defaultValue="Wrocław, C-16 Politechnika Wrocławska, Polska"
+                className="w-full"
+              />
             </div>
             <div className="flex flex-row gap-5">
               <div className="flex flex-row items-center gap-2">
@@ -134,7 +132,7 @@ const EventPage = ({ params }: { params: { slug: string } }) => {
                 <span>20 bierze udział</span>
               </div>
             </div>
-            <div className="mt-5">
+            <div>
               <h3 className="mb-1 font-semibold">Dodatkowe informacje:</h3>
               <div className="ml-5 flex flex-col gap-1">
                 <p>
@@ -212,10 +210,9 @@ const EventPage = ({ params }: { params: { slug: string } }) => {
           </div>
           <div className="mt-3 text-xs font-thin text-[#ccc]">
             <p>utworzono: 13 czerwca 2024r. 12:25</p>
-            <p>ostatnia edycja: 13 czerwca 2024r. 12:48</p>
           </div>
         </div>
-        <div className="flex h-full flex-col gap-5">
+        <div className="flex h-full w-full flex-col gap-5">
           <div className="relative z-10 h-[50vh] w-full overflow-hidden rounded-lg bg-black">
             <img
               src={img}
@@ -225,52 +222,24 @@ const EventPage = ({ params }: { params: { slug: string } }) => {
             />
             <canvas className="hidden" ref={canvasRef}></canvas>
           </div>
-          <div className="relative z-10 flex flex-row justify-evenly gap-8">
-            {editPage ? (
-              <ButtonBase
-                text="edytuj"
-                onClick={handleRedirect}
-                className="w-full"
+          <div className="relative flex flex-row justify-evenly gap-8">
+            <ButtonBase text="zapisz" onClick={() => {}} className="w-full" />
+          </div>
+          <div className="relative">
+            <div className="mt-8">
+              <FloatingTextarea
+                label="Opis"
+                name="comment"
+                defaultValue="Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Necessitatibus aspernatur quibusdam saepe enim totam suscipit
+                tempore facere aut id sint ratione placeat, magni ipsa quo
+                assumenda odit atque omnis, sequi, impedit reiciendis. Provident
+                nobis quaerat maxime beatae sapiente. Placeat, obcaecati
+                doloremque laboriosam cumque, praesentium necessitatibus itaque
+                consequuntur ex dignissimos quam atque beatae impedit temporibus
+                dicta ab magnam dolorum corrupti sit enim! Ipsa, omnis nisi."
+                className="h-32"
               />
-            ) : (
-              <>
-                <ButtonBase
-                  text="dodaj do polubionych"
-                  onClick={() => {}}
-                  className="w-full font-semibold text-orange-400"
-                  background="hover:bg-[#0f0f0f] bg-black"
-                />
-                <ButtonBase
-                  text="biorę udział"
-                  onClick={() => {}}
-                  className="w-full font-semibold text-green-400"
-                  background="hover:bg-[#0f0f0f] bg-black"
-                />
-              </>
-            )}
-          </div>
-          <div className="relative">
-            <h3 className="font-semibold">Opis:</h3>
-            <p className="text-justify font-thin">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Necessitatibus aspernatur quibusdam saepe enim totam suscipit
-              tempore facere aut id sint ratione placeat, magni ipsa quo
-              assumenda odit atque omnis, sequi, impedit reiciendis. Provident
-              nobis quaerat maxime beatae sapiente. Placeat, obcaecati
-              doloremque laboriosam cumque, praesentium necessitatibus itaque
-              consequuntur ex dignissimos quam atque beatae impedit temporibus
-              dicta ab magnam dolorum corrupti sit enim! Ipsa, omnis nisi.
-            </p>
-          </div>
-          <div className="relative">
-            <h3 className="font-semibold">Komentarze:</h3>
-            <div className="flex flex-col gap-2">
-              <Comment />
-              <Comment />
-              <Comment />
-              <Comment />
-              <Comment />
-              <Comment />
             </div>
           </div>
         </div>
@@ -279,4 +248,4 @@ const EventPage = ({ params }: { params: { slug: string } }) => {
   );
 };
 
-export default EventPage;
+export default EventEditPage;

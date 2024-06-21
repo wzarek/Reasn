@@ -4,7 +4,6 @@ import clsx from "clsx";
 import React, { useState } from "react";
 
 interface InputProps {
-  type: string;
   label?: string;
   name?: string;
   defaultValue?: string;
@@ -13,8 +12,8 @@ interface InputProps {
   onBlur?: () => void;
 }
 
-export const FloatingInput = (props: InputProps) => {
-  const { label, type, name, defaultValue, className, onFocus, onBlur } = props;
+export const FloatingTextarea = (props: InputProps) => {
+  const { label, name, defaultValue, className, onFocus, onBlur } = props;
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(!!defaultValue);
 
@@ -47,11 +46,10 @@ export const FloatingInput = (props: InputProps) => {
       >
         {label ?? ""}
       </label>
-      <input
-        type={type}
+      <textarea
         name={name}
         id={name}
-        className="h-full w-full rounded-lg bg-[#232327] p-2 focus:outline-none"
+        className="h-full w-full resize-none rounded-lg bg-[#232327] p-2 focus:outline-none"
         onFocus={handleFocus}
         onBlur={handleBlur}
         onChange={(e) => setIsFilled(!!e.target.value)}
