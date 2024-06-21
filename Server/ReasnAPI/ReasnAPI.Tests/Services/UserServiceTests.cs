@@ -143,6 +143,7 @@ public class UserServiceTests
 
         mockContext.Setup(c => c.Addresses).ReturnsDbSet([address]);
         mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
+        mockContext.Setup(c => c.UserInterests).ReturnsDbSet([]);
 
         var userService = new UserService(mockContext.Object);
 
