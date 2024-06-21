@@ -4,6 +4,12 @@ import { MOCK_IMG_URL } from "@reasn/ui/src/components/shared/Card";
 import { ButtonBase } from "@reasn/ui/src/components/shared/form";
 import { Comment } from "@reasn/ui/src/components/shared/Comment";
 import { useEffect, useRef, useState } from "react";
+import {
+  Clock,
+  Location,
+  QuestionCircle,
+  TickCircle,
+} from "@reasn/ui/src/icons";
 
 const IMAGES = [
   "https://images.pexels.com/photos/19012544/pexels-photo-19012544/free-photo-of-storm.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -138,12 +144,24 @@ const EventPage = ({ params }: { params: { slug: string } }) => {
             nam.
           </h1>
           <div className="mt-8 flex h-full flex-col gap-1 font-thin">
-            <p>czas: 12 grudnia 2024r. 12:00 - 13 grudnia 2024r. 23:48</p>
-            <p>adres: Wrocław, C-16 Politechnika Wrocławska, Polska</p>
-            <p className="space-x-5">
-              <span>biorący udział: 20</span>
-              <span>zainteresowani: 200</span>
-            </p>
+            <div className="flex flex-row items-center gap-2">
+              <Clock className="h-5 w-5 fill-slate-400" />
+              <p>12 grudnia 2024r. 12:00 - 13 grudnia 2024r. 23:48</p>
+            </div>
+            <div className="flex flex-row items-center gap-2">
+              <Location className="h-5 w-5 fill-slate-400" />
+              <p>Wrocław, C-16 Politechnika Wrocławska, Polska</p>
+            </div>
+            <div className="flex flex-row gap-5">
+              <div className="flex flex-row items-center gap-2">
+                <QuestionCircle className="h-5 w-5 fill-orange-400" />
+                <span>60 zainteresowanych</span>
+              </div>
+              <div className="flex flex-row items-center gap-2">
+                <TickCircle className="h-5 w-5 fill-green-400" />
+                <span>20 bierze udział</span>
+              </div>
+            </div>
             <div className="mt-5">
               <h3 className="mb-1 font-semibold">Dodatkowe informacje:</h3>
               <div className="ml-5 flex flex-col gap-1">
