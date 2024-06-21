@@ -15,7 +15,7 @@ public class UsersController(UserService userService, InterestService interestSe
     private readonly InterestService _interestService = interestService;
 
     [HttpGet]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType<IEnumerable<UserDto>>(StatusCodes.Status200OK)]
     public IActionResult GetUsers()
     {
