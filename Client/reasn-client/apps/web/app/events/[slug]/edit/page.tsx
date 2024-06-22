@@ -12,9 +12,9 @@ import { ChangeEvent, useState } from "react";
 import { ArrowLeft, Clock, Location, Upload } from "@reasn/ui/src/icons";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import { EventStatus } from "@reasn/common/enums/modelsEnums";
+import { EventStatus } from "@reasn/common/src/enums/schemasEnums";
 import { BaseInput } from "@reasn/ui/src/components/shared/form/Input";
-import { getStatusClass } from "@reasn/common/helpers/uiHelpers";
+import { getStatusClass } from "@reasn/common/src/helpers/uiHelpers";
 
 const IMAGES = [
   "https://images.pexels.com/photos/19012544/pexels-photo-19012544/free-photo-of-storm.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -28,7 +28,7 @@ const IMAGES = [
   "https://images.pexels.com/photos/54332/currant-immature-bush-berry-54332.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
 ];
 
-const MOCK_TAGS = [
+export const MOCK_TAGS = [
   "abcd",
   "efgh",
   "ijkl",
@@ -155,7 +155,7 @@ const EventEditPage = ({ params }: { params: { slug: string } }) => {
               />
             </div>
           )}
-          <div className="flex flex-wrap gap-2 overflow-clip text-xs text-[#cacaca]">
+          <div className="mt-8 flex flex-wrap gap-2 overflow-clip text-xs text-[#cacaca]">
             <SearchMultiDropdown
               label="Wyszukaj tagi"
               options={MOCK_TAGS}
@@ -252,13 +252,15 @@ const EventEditPage = ({ params }: { params: { slug: string } }) => {
               </div>
             </div>
             <div>
-              <h3 className="mb-1 font-semibold">Dodatkowe informacje:</h3>
-              <SearchMultiDropdown
-                label="Wyszukaj parametry"
-                options={Object.keys(MOCK_PARAMS)}
-                selectedOptions={paramsKeys}
-                setSelectedOptions={setParamsKeys}
-              />
+              <h3 className="mb-1font-semibold">Dodatkowe informacje:</h3>
+              <div className="mt-8">
+                <SearchMultiDropdown
+                  label="Wyszukaj parametry"
+                  options={Object.keys(MOCK_PARAMS)}
+                  selectedOptions={paramsKeys}
+                  setSelectedOptions={setParamsKeys}
+                />
+              </div>
               <div className="ml-5 mt-2 flex flex-col gap-1">
                 <h3 className="font-semibold">Wybrane parametry:</h3>
                 {paramsKeys?.map((key, idx) => (

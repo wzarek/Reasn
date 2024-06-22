@@ -8,7 +8,11 @@ module.exports = {
     "../../packages/ui/src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        xs: "460px",
+      },
+    },
   },
   plugins: [],
 };

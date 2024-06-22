@@ -41,7 +41,7 @@ export const SearchMultiDropdown = (props: MultiDropdownProps) => {
   };
 
   return (
-    <div className="mt-8 flex w-full flex-col gap-2">
+    <div className="flex w-full flex-col gap-2">
       <FloatingInput
         type="text"
         label={label}
@@ -119,7 +119,7 @@ export const SingleDropdown = (props: SingleDropdownProps) => {
     >
       <div
         className={clsx(
-          "flex w-full items-center justify-between p-2",
+          "pointer-events-none flex w-full items-center justify-between p-2",
           selectedOptionClass ?? "",
         )}
       >
@@ -132,7 +132,7 @@ export const SingleDropdown = (props: SingleDropdownProps) => {
       </div>
       <div
         className={clsx(
-          "absolute top-[100%] z-20 h-24 w-full flex-col justify-start overflow-auto rounded-b-lg bg-[#232327] text-xs",
+          "absolute top-[100%] z-20 max-h-24 w-full flex-col justify-start overflow-auto rounded-b-lg bg-[#232327] text-xs",
           { hidden: !isExpanded },
           { flex: isExpanded },
         )}
