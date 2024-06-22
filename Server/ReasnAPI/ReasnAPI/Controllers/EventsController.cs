@@ -104,7 +104,7 @@ public class EventsController(
     [Authorize(Roles = "Admin")]
     [Route("requests")]
     [ProducesResponseType<List<EventResponse>>(StatusCodes.Status200OK)]
-    public IActionResult GetEventsRequests([FromRoute] string slug)
+    public IActionResult GetEventsRequests()
     {
         var events = eventService.GetEventsByFilter(e => e.Status == EventStatus.PendingApproval);
         var eventsDtos = new List<EventResponse>();
