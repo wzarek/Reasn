@@ -18,11 +18,15 @@ export type ProblemDetails = {
   instance?: string;
 };
 
+export type RequestOptions = {
+  method: HttpMethod;
+  body?: Object | FormData;
+  authRequired?: boolean;
+};
+
 export const sendRequest = async <T>(
-  url: string,
-  httpMethod: HttpMethod,
-  body: Object = {},
-  authRequired: boolean = false,
+  url: string | URL,
+  { method, body = {}, authRequired = false }: RequestOptions,
 ): Promise<T> => {
   try {
     let headers: HeadersInit = new Headers();
@@ -37,13 +41,17 @@ export const sendRequest = async <T>(
     }
 
     const fetchOptions: RequestInit = {
-      method: httpMethod,
+      method: method,
       headers,
     };
 
-    if (httpMethod == HttpMethod.POST || httpMethod == HttpMethod.PUT) {
-      headers.set("Content-Type", "application/json");
-      fetchOptions.body = JSON.stringify(body);
+    if (method == HttpMethod.POST || method == HttpMethod.PUT) {
+      if (body instanceof FormData) {
+        fetchOptions.body = body;
+      } else {
+        headers.set("Content-Type", "application/json");
+        fetchOptions.body = JSON.stringify(body);
+      }
     }
 
     const response = await fetch(url, fetchOptions);
@@ -61,10 +69,10 @@ export const sendRequest = async <T>(
       );
     }
 
-    return (await response.json()) as T;
+    return response.json().catch(() => {}) as T;
   } catch (error) {
     console.error(
-      `Error while sending request to ${url} with method ${httpMethod}: ${error}`,
+      `Error while sending request to ${url} with method ${method}: ${error}`,
     );
     throw Error;
   }

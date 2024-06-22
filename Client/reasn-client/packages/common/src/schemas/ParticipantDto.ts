@@ -3,8 +3,8 @@ import { ParticipantStatus } from "../enums/modelsEnums";
 import { z } from "zod";
 
 export const ParticipantDtoSchema = z.object({
-  EventId: z.number(),
-  UserId: z.number(),
+  EventSlug: z.string(),
+  Username: z.string(),
   Status: z.nativeEnum(ParticipantStatus),
 });
 

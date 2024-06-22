@@ -2,6 +2,7 @@ import ModelMappingError from "@reasn/common/src/errors/ModelMappingError";
 import { UserDto, UserDtoMapper } from "@reasn/common/src/schemas/UserDto";
 import { UserInterestDto } from "@reasn/common/src/schemas/UserInterestDto";
 import { UserRole } from "@reasn/common/src/enums/modelsEnums";
+import { AddressDto } from "@reasn/common/src/schemas/AddressDto";
 
 describe("UserDto", () => {
   const username = "john_doe";
@@ -11,6 +12,13 @@ describe("UserDto", () => {
   const phone = "+48 1234567890";
   const role = UserRole.USER;
   const addressId = 2;
+  const address: AddressDto = {
+    Country: "Test Country",
+    City: "Test City",
+    Street: "Test Street",
+    State: "Test State",
+    ZipCode: "12345",
+  };
   const interests: UserInterestDto[] = [
     { Interest: { Name: "Programming" }, Level: 5 },
     { Interest: { Name: "Music" }, Level: 3 },
@@ -26,6 +34,7 @@ describe("UserDto", () => {
                 "Phone": "${phone}",
                 "Role": "${role}",
                 "AddressId": ${addressId},
+                "Address": ${JSON.stringify(address)},
                 "Intrests": ${JSON.stringify(interests)}
             }`;
 
@@ -39,6 +48,7 @@ describe("UserDto", () => {
       expect(user.Phone).toBe(phone);
       expect(user.Role).toBe(role);
       expect(user.AddressId).toBe(addressId);
+      expect(user.Address).toEqual(address);
       expect(user.Intrests).toEqual(interests);
     });
 
@@ -54,6 +64,7 @@ describe("UserDto", () => {
                 "Phone": "${phone}",
                 "Role": "${role}",
                 "AddressId": ${addressId},
+                "Address": ${JSON.stringify(address)},
                 "Intrests": ${JSON.stringify(interests)}
             }`;
 
@@ -64,6 +75,7 @@ describe("UserDto", () => {
                 "Phone": "${phone}",
                 "Role": "${role}",
                 "AddressId": ${addressId},
+                "Address": ${JSON.stringify(address)},
                 "Intrests": ${JSON.stringify(interests)}
             }`;
 
@@ -74,6 +86,7 @@ describe("UserDto", () => {
                 "Phone": "${phone}",
                 "Role": "${role}",
                 "AddressId": ${addressId},
+                "Address": ${JSON.stringify(address)},
                 "Intrests": ${JSON.stringify(interests)}
             }`;
 
@@ -84,6 +97,7 @@ describe("UserDto", () => {
                 "Phone": "${phone}",
                 "Role": "${role}",
                 "AddressId": ${addressId},
+                "Address": ${JSON.stringify(address)},
                 "Intrests": ${JSON.stringify(interests)}
             }`;
 
@@ -104,6 +118,7 @@ describe("UserDto", () => {
                 "Email": "${email}",
                 "Phone": "${phone}",
                 "AddressId": ${addressId},
+                "Address": ${JSON.stringify(address)},
                 "Intrests": ${JSON.stringify(interests)}
             }`;
 
@@ -114,7 +129,19 @@ describe("UserDto", () => {
                 "Email": "${email}",
                 "Phone": "${phone}",
                 "Role": "${role}",
+                "Address": ${JSON.stringify(address)},
                 "Intrests": ${JSON.stringify(interests)}
+            }`;
+
+      const jsonWithoutAddress = `{
+              "Username": "${username}",
+              "Name": "${name}",
+              "Surname": "${surname}",
+              "Email": "${email}",
+              "Phone": "${phone}",
+              "AddressId": ${addressId},
+              "Role": "${role}",
+              "Intrests": ${JSON.stringify(interests)}
             }`;
 
       const jsonWithoutInterests = `{
@@ -148,6 +175,9 @@ describe("UserDto", () => {
       expect(() => UserDtoMapper.fromJSON(jsonWithoutAddressId)).toThrow(
         ModelMappingError,
       );
+      expect(() => UserDtoMapper.fromJSON(jsonWithoutAddress)).toThrow(
+        ModelMappingError,
+      );
       expect(() => UserDtoMapper.fromJSON(jsonWithoutInterests)).toThrow(
         ModelMappingError,
       );
@@ -164,6 +194,7 @@ describe("UserDto", () => {
         Phone: phone,
         Role: role,
         AddressId: addressId,
+        Address: address,
         Intrests: interests,
       };
 
@@ -177,6 +208,7 @@ describe("UserDto", () => {
       expect(user.Phone).toBe(phone);
       expect(user.Role).toBe(role);
       expect(user.AddressId).toBe(addressId);
+      expect(user.Address).toEqual(address);
       expect(user.Intrests).toEqual(interests);
     });
 
@@ -199,6 +231,7 @@ describe("UserDto", () => {
         Phone: phone,
         Role: role,
         AddressId: addressId,
+        Address: address,
         Intrests: interests,
       };
 
@@ -209,6 +242,7 @@ describe("UserDto", () => {
         Phone: phone,
         Role: role,
         AddressId: addressId,
+        Address: address,
         Intrests: interests,
       };
 
@@ -219,6 +253,7 @@ describe("UserDto", () => {
         Phone: phone,
         Role: role,
         AddressId: addressId,
+        Address: address,
         Intrests: interests,
       };
 
@@ -229,6 +264,7 @@ describe("UserDto", () => {
         Phone: phone,
         Role: role,
         AddressId: addressId,
+        Address: address,
         Intrests: interests,
       };
 
@@ -239,6 +275,7 @@ describe("UserDto", () => {
         Email: email,
         Role: role,
         AddressId: addressId,
+        Address: address,
         Intrests: interests,
       };
 
@@ -249,6 +286,7 @@ describe("UserDto", () => {
         Email: email,
         Phone: phone,
         AddressId: addressId,
+        Address: address,
         Intrests: interests,
       };
 
@@ -259,6 +297,18 @@ describe("UserDto", () => {
         Email: email,
         Phone: phone,
         Role: role,
+        Address: address,
+        Intrests: interests,
+      };
+
+      const objectWithoutAddress = {
+        Username: username,
+        Name: name,
+        Surname: surname,
+        Email: email,
+        Phone: phone,
+        Role: role,
+        AddressId: addressId,
         Intrests: interests,
       };
 
@@ -270,6 +320,7 @@ describe("UserDto", () => {
         Phone: phone,
         Role: role,
         AddressId: addressId,
+        Address: address,
       };
 
       expect(() => UserDtoMapper.fromObject(object)).toThrow(ModelMappingError);
@@ -292,6 +343,9 @@ describe("UserDto", () => {
         ModelMappingError,
       );
       expect(() => UserDtoMapper.fromObject(objectWithoutAddressId)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => UserDtoMapper.fromObject(objectWithoutAddress)).toThrow(
         ModelMappingError,
       );
       expect(() => UserDtoMapper.fromObject(objectWithoutInterests)).toThrow(

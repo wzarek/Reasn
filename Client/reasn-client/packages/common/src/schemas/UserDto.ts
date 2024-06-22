@@ -1,5 +1,6 @@
 import ModelMappingError from "../errors/ModelMappingError";
 import { UserInterestDtoSchema } from "../schemas/UserInterestDto";
+import { AddressDtoSchema } from "../schemas/AddressDto";
 import { UserRole } from "../enums/modelsEnums";
 import { z } from "zod";
 
@@ -23,6 +24,7 @@ export const UserDtoSchema = z.object({
     .refine((value) => value === null || /^\+\d{1,3}\s\d{1,15}$/.test(value)),
   Role: z.nativeEnum(UserRole),
   AddressId: z.number(),
+  Address: AddressDtoSchema,
   Intrests: z.array(UserInterestDtoSchema),
 });
 

@@ -6,23 +6,23 @@ import {
 import { ParticipantStatus } from "@reasn/common/src/enums/modelsEnums";
 
 describe("ParticipantDto", () => {
-  const eventId = 1;
-  const userId = 2;
+  const eventSlug = "event-slug";
+  const username = "username";
   const status = ParticipantStatus.INTERESTED;
 
   describe("fromJson", () => {
     it("should create an instance of ParticipantDto from JSON string", () => {
       const json = `{
-                "EventId": ${eventId},
-                "UserId": ${userId},
+                "EventSlug": "${eventSlug}",
+                "Username": "${username}",
                 "Status": "${status}"
             }`;
 
       let participant = ParticipantDtoMapper.fromJSON(json);
       participant = participant as ParticipantDto;
 
-      expect(participant.EventId).toBe(eventId);
-      expect(participant.UserId).toBe(userId);
+      expect(participant.EventSlug).toBe(eventSlug);
+      expect(participant.Username).toBe(username);
       expect(participant.Status).toBe(status);
     });
 
@@ -33,28 +33,28 @@ describe("ParticipantDto", () => {
     });
 
     it("should throw an error when providing JSON without each property individually", () => {
-      const jsonWithoutEventId = `{
-                "UserId": ${userId},
+      const jsonWithoutEventSlug = `{
+                "Username": "${username}",
                 "Status": "${status}"
             }`;
 
-      const jsonWithoutUserId = `{
-                "EventId": ${eventId},
+      const jsonWithoutUsername = `{
+                "EventSlug": "${eventSlug}",
                 "Status": "${status}"
             }`;
 
-      const jsonWithoutStatusId = `{
-                "EventId": ${eventId},
-                "UserId": ${userId}
+      const jsonWithoutStatus = `{
+                "EventSlug": "${eventSlug}",
+                "Username": "${username}"
             }`;
 
-      expect(() => ParticipantDtoMapper.fromJSON(jsonWithoutEventId)).toThrow(
+      expect(() => ParticipantDtoMapper.fromJSON(jsonWithoutEventSlug)).toThrow(
         ModelMappingError,
       );
-      expect(() => ParticipantDtoMapper.fromJSON(jsonWithoutUserId)).toThrow(
+      expect(() => ParticipantDtoMapper.fromJSON(jsonWithoutUsername)).toThrow(
         ModelMappingError,
       );
-      expect(() => ParticipantDtoMapper.fromJSON(jsonWithoutStatusId)).toThrow(
+      expect(() => ParticipantDtoMapper.fromJSON(jsonWithoutStatus)).toThrow(
         ModelMappingError,
       );
     });
@@ -63,52 +63,52 @@ describe("ParticipantDto", () => {
   describe("fromObject", () => {
     it("should create an instance of ParticipantDto from an object", () => {
       const object = {
-        EventId: eventId,
-        UserId: userId,
+        EventSlug: eventSlug,
+        Username: username,
         Status: status,
       };
 
       let participant = ParticipantDtoMapper.fromObject(object);
       participant = participant as ParticipantDto;
 
-      expect(participant.EventId).toBe(eventId);
-      expect(participant.UserId).toBe(userId);
+      expect(participant.EventSlug).toBe(eventSlug);
+      expect(participant.Username).toBe(username);
       expect(participant.Status).toBe(status);
     });
 
     it("should throw an error if the object is invalid", () => {
       const object = {
-        EventId: true,
-        UserId: null,
+        EventStatus: true,
+        Username: null,
         Status: "invalid",
       };
 
-      const objectWithoutEventId = {
-        UserId: userId,
+      const objectWithoutEventSlug = {
+        Username: username,
         Status: status,
       };
 
-      const objectWithoutUserId = {
-        EventId: eventId,
+      const objectWithoutUsername = {
+        EventSlug: eventSlug,
         Status: status,
       };
 
-      const objectWithoutStatusId = {
-        EventId: eventId,
-        UserId: userId,
+      const objectWithoutStatus = {
+        EventSlug: eventSlug,
+        Username: username,
       };
 
       expect(() => ParticipantDtoMapper.fromObject(object)).toThrow(
         ModelMappingError,
       );
       expect(() =>
-        ParticipantDtoMapper.fromObject(objectWithoutEventId),
+        ParticipantDtoMapper.fromObject(objectWithoutEventSlug),
       ).toThrow(ModelMappingError);
       expect(() =>
-        ParticipantDtoMapper.fromObject(objectWithoutUserId),
+        ParticipantDtoMapper.fromObject(objectWithoutUsername),
       ).toThrow(ModelMappingError);
       expect(() =>
-        ParticipantDtoMapper.fromObject(objectWithoutStatusId),
+        ParticipantDtoMapper.fromObject(objectWithoutStatus),
       ).toThrow(ModelMappingError);
     });
   });
