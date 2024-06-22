@@ -1,6 +1,6 @@
 import React from "react";
 
-const NewEventLayout = ({
+const EventLayout = ({
   children,
   params,
 }: {
@@ -11,10 +11,10 @@ const NewEventLayout = ({
   };
 }) => {
   return (
-    <section className="relative mx-auto flex min-h-screen w-3/4 justify-between py-10">
+    <section className="relative mx-auto flex min-h-screen w-[90%] justify-between py-10 sm:w-3/4">
       {children}
     </section>
   );
 };
 
-export default NewEventLayout;
+export default EventLayout;

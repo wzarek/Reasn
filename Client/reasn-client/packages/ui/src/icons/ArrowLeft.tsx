@@ -1,7 +1,7 @@
 import React from "react";
 
 export const ArrowLeft = (props: IconProps) => {
-  const { className, colors, gradientTransform } = props;
+  const { className, colors, gradientTransform, onClick } = props;
 
   return (
     <svg
@@ -11,6 +11,7 @@ export const ArrowLeft = (props: IconProps) => {
       className={className}
       viewBox="0 0 24 24"
       fill="url(#gradient1)"
+      onClick={onClick}
     >
       <defs>
         <linearGradient

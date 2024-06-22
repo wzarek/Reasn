@@ -9,12 +9,22 @@ interface InputProps {
   name?: string;
   defaultValue?: string;
   className?: string;
+  onChange?: (value: string) => void;
   onFocus?: () => void;
   onBlur?: () => void;
 }
 
 export const FloatingInput = (props: InputProps) => {
-  const { label, type, name, defaultValue, className, onFocus, onBlur } = props;
+  const {
+    label,
+    type,
+    name,
+    defaultValue,
+    className,
+    onFocus,
+    onBlur,
+    onChange,
+  } = props;
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(!!defaultValue);
 
@@ -40,9 +50,15 @@ export const FloatingInput = (props: InputProps) => {
     >
       <label
         className={clsx(
-          "absolute left-3 transition-all duration-300",
-          { "top-[-1.5rem] text-xs": isFocused || isFilled },
-          { "top-3 text-base": !isFocused && !isFilled },
+          "pointer-events-none absolute left-3 transition-all duration-300",
+          {
+            "top-[-1.5rem] text-xs":
+              isFocused || isFilled || ["date", "time"].includes(type),
+          },
+          {
+            "top-[20%] text-base":
+              !isFocused && !isFilled && !["date", "time"].includes(type),
+          },
         )}
       >
         {label ?? ""}
@@ -54,8 +70,42 @@ export const FloatingInput = (props: InputProps) => {
         className="h-full w-full rounded-lg bg-[#232327] p-2 focus:outline-none"
         onFocus={handleFocus}
         onBlur={handleBlur}
-        onChange={(e) => setIsFilled(!!e.target.value)}
+        onChange={(e) => {
+          setIsFilled(!!e.target.value);
+          onChange?.(e.target.value);
+        }}
         defaultValue={defaultValue}
+      />
+    </div>
+  );
+};
+
+export const BaseInput = (props: InputProps) => {
+  const {
+    label,
+    type,
+    name,
+    defaultValue,
+    className,
+    onFocus,
+    onBlur,
+    onChange,
+  } = props;
+
+  return (
+    <div className={className}>
+      <input
+        type={type}
+        name={name}
+        id={name}
+        className="h-full w-full rounded-lg bg-[#232327] p-2 focus:outline-none"
+        onFocus={() => onFocus?.()}
+        onBlur={() => onBlur?.()}
+        onChange={(e) => {
+          onChange?.(e.target.value);
+        }}
+        defaultValue={defaultValue}
+        placeholder={label}
       />
     </div>
   );

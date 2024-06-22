@@ -5,6 +5,8 @@ import { ButtonBase } from "@reasn/ui/src/components/shared/form";
 import { Comment } from "@reasn/ui/src/components/shared/Comment";
 import { useEffect, useRef, useState } from "react";
 import {
+  ArrowLeft,
+  ArrowRight,
   Clock,
   Location,
   QuestionCircle,
@@ -26,6 +28,43 @@ const IMAGES = [
   "https://images.pexels.com/photos/54332/currant-immature-bush-berry-54332.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
 ];
 
+const MOCK_TAGS = [
+  "abcd",
+  "efgh",
+  "ijkl",
+  "mnop",
+  "qrst",
+  "uvwx",
+  "yzab",
+  "cdef",
+  "ghij",
+  "ijkl",
+  "mnop",
+  "qrst",
+  "uvwx",
+  "yzab",
+  "cdef",
+  "ghij",
+  "ijkl",
+  "mnop",
+  "qrst",
+  "uvwx",
+  "yzab",
+  "cdef",
+  "ghij",
+];
+
+const MOCK_PARAMS: { [key: string]: string } = {
+  abcd: "efgh",
+  ijkl: "mnop",
+  qrst: "uvwx",
+  yzab: "cdef",
+  ghij: "ijkl",
+  mnop: "qrst",
+  uvwx: "yzab",
+  cdef: "ghij",
+};
+
 const EventPage = ({ params }: { params: { slug: string } }) => {
   const { slug } = params;
   const imgRef = useRef<HTMLImageElement>(null);
@@ -34,9 +73,9 @@ const EventPage = ({ params }: { params: { slug: string } }) => {
   const editPage = slug === "edit";
   const router = useRouter();
 
-  const [img, setImg] = useState<string>(
-    IMAGES[Math.floor(Math.random() * IMAGES.length)],
-  );
+  const [imgs, setImgs] = useState<string[]>(IMAGES);
+
+  const [currentImageIdx, setCurrentImageIdx] = useState<number>(0);
 
   const [imageData, setImageData] = useState<Uint8ClampedArray>();
 
@@ -69,7 +108,7 @@ const EventPage = ({ params }: { params: { slug: string } }) => {
       ).data;
       setImageData(imageData);
     };
-  }, [img]);
+  }, [imgRef.current]);
 
   const dominantColors = useColorWorker(imageData);
 
@@ -90,26 +129,22 @@ const EventPage = ({ params }: { params: { slug: string } }) => {
 
   return (
     <div className="flex w-full flex-col gap-5">
-      <div className="flex w-full flex-row justify-between gap-5">
+      <div className="flex w-full flex-row flex-wrap justify-between gap-5 xl:flex-nowrap">
         <div
           className="absolute bottom-[50%] right-[-50%] z-0 h-[80%] w-[200%] rounded-full blur-3xl duration-1000"
           style={{ background: gradient, opacity: gradient ? "0.25" : "0" }}
         ></div>
-        <div className="flex h-max min-h-[50vh] w-1/3 flex-col justify-between rounded-lg bg-[#1E1F296d] p-5 backdrop-blur-lg">
+        <div className="flex h-max min-h-[50vh] w-full flex-col justify-between rounded-lg bg-[#1E1F296d] p-5 backdrop-blur-lg xl:w-[25vw] xl:min-w-[25vw]">
           <p className="mb-2 font-bold text-orange-400">DO AKCEPTACJI</p>
-          <div className="flex max-h-5 gap-2 overflow-clip text-xs text-[#cacaca]">
-            <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
-            <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
-            <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
-            <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
-            <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
-            <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
-            <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
-            <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
-            <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
-            <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
-            <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
-            <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
+          <div className="flex flex-wrap gap-2 overflow-clip text-xs text-[#cacaca]">
+            {MOCK_TAGS.map((tag, idx) => (
+              <p
+                key={idx + tag}
+                className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]"
+              >
+                {tag}
+              </p>
+            ))}
           </div>
           <h1 className="mt-2 text-3xl font-semibold">
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cumque,
@@ -137,66 +172,15 @@ const EventPage = ({ params }: { params: { slug: string } }) => {
             <div className="mt-5">
               <h3 className="mb-1 font-semibold">Dodatkowe informacje:</h3>
               <div className="ml-5 flex flex-col gap-1">
-                <p>
-                  <span className="mr-2 rounded-md bg-[#4b4e52] px-[5px] py-[1px]">
-                    abcd:
-                  </span>
-                  efgh
-                </p>
-                <p>
-                  <span className="mr-2 rounded-md bg-[#4b4e52] px-[5px] py-[1px]">
-                    abcd:
-                  </span>
-                  efgh
-                </p>
-                <p>
-                  <span className="mr-2 rounded-md bg-[#4b4e52] px-[5px] py-[1px]">
-                    abcd:
-                  </span>
-                  efgh
-                </p>
-                <p>
-                  <span className="mr-2 rounded-md bg-[#4b4e52] px-[5px] py-[1px]">
-                    abcd:
-                  </span>
-                  efgh
-                </p>
-                <p>
-                  <span className="mr-2 rounded-md bg-[#4b4e52] px-[5px] py-[1px]">
-                    abcd:
-                  </span>
-                  efgh
-                </p>
-                <p>
-                  <span className="mr-2 rounded-md bg-[#4b4e52] px-[5px] py-[1px]">
-                    abcd:
-                  </span>
-                  efgh
-                </p>
-                <p>
-                  <span className="mr-2 rounded-md bg-[#4b4e52] px-[5px] py-[1px]">
-                    abcd:
-                  </span>
-                  efgh
-                </p>
-                <p>
-                  <span className="mr-2 rounded-md bg-[#4b4e52] px-[5px] py-[1px]">
-                    abcd:
-                  </span>
-                  efgh
-                </p>
-                <p>
-                  <span className="mr-2 rounded-md bg-[#4b4e52] px-[5px] py-[1px]">
-                    abcd:
-                  </span>
-                  efgh
-                </p>
-                <p>
-                  <span className="mr-2 rounded-md bg-[#4b4e52] px-[5px] py-[1px]">
-                    abcd:
-                  </span>
-                  efgh
-                </p>
+                {MOCK_PARAMS &&
+                  Object.keys(MOCK_PARAMS).map((key, idx) => (
+                    <p key={idx + key}>
+                      <span className="mr-2 rounded-md bg-[#4b4e52] px-[5px] py-[1px]">
+                        {key}:
+                      </span>
+                      {MOCK_PARAMS[key]}
+                    </p>
+                  ))}
               </div>
             </div>
           </div>
@@ -215,14 +199,36 @@ const EventPage = ({ params }: { params: { slug: string } }) => {
             <p>ostatnia edycja: 13 czerwca 2024r. 12:48</p>
           </div>
         </div>
-        <div className="flex h-full flex-col gap-5">
+        <div className="flex w-full flex-col gap-5">
           <div className="relative z-10 h-[50vh] w-full overflow-hidden rounded-lg bg-black">
-            <img
-              src={img}
-              alt=""
-              className="h-full w-full object-cover"
-              ref={imgRef}
-            />
+            <div
+              className="flex h-full w-full gap-0"
+              style={{ transform: `translateX(-${currentImageIdx * 100}%)` }}
+            >
+              {imgs.map((img, idx) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <div className="w-full flex-shrink-0" key={idx + img}>
+                  <img
+                    src={img}
+                    alt=""
+                    className="h-full w-full object-cover"
+                    ref={currentImageIdx === idx ? imgRef : null}
+                  />
+                </div>
+              ))}
+            </div>
+            {currentImageIdx > 0 && (
+              <ArrowLeft
+                onClick={() => setCurrentImageIdx(currentImageIdx - 1)}
+                className="absolute left-5 top-[50%] z-20 h-8 w-8 -translate-y-1/2 cursor-pointer rounded-lg bg-gradient-to-r from-[#32346A7d] to-[#4E4F757d] fill-white p-2"
+              />
+            )}
+            {currentImageIdx < imgs.length - 1 && (
+              <ArrowRight
+                onClick={() => setCurrentImageIdx((idx) => idx + 1)}
+                className="absolute right-5 top-[50%] z-20 h-8 w-8 -translate-y-1/2 cursor-pointer rounded-lg bg-gradient-to-r from-[#32346A7d] to-[#4E4F757d] fill-white p-2"
+              />
+            )}
             <canvas className="hidden" ref={canvasRef}></canvas>
           </div>
           <div className="relative z-10 flex flex-row justify-evenly gap-8">

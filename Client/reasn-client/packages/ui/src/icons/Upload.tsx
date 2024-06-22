@@ -1,7 +1,7 @@
 import React from "react";
 
-export const ArrowRight = (props: IconProps) => {
-  const { className, colors, gradientTransform, onClick } = props;
+export const Upload = (props: IconProps) => {
+  const { className, colors, gradientTransform } = props;
 
   return (
     <svg
@@ -11,7 +11,6 @@ export const ArrowRight = (props: IconProps) => {
       className={className}
       viewBox="0 0 24 24"
       fill="url(#gradient1)"
-      onClick={onClick}
     >
       <defs>
         <linearGradient
@@ -33,7 +32,7 @@ export const ArrowRight = (props: IconProps) => {
           ))}
         </linearGradient>
       </defs>
-      <path d="M8.293 4.293a1 1 0 0 0 0 1.414L14.586 12l-6.293 6.293a1 1 0 1 0 1.414 1.414l7-7a1 1 0 0 0 0-1.414l-7-7a1 1 0 0 0-1.414 0Z" />
+      <path d="M5.25 3.495h13.498a.75.75 0 0 0 .101-1.493l-.101-.007H5.25a.75.75 0 0 0-.102 1.493l.102.007Zm6.633 18.498L12 22a1 1 0 0 0 .993-.884L13 21V8.41l3.294 3.292a1 1 0 0 0 1.32.083l.094-.083a1 1 0 0 0 .083-1.32l-.083-.094-4.997-4.997a1 1 0 0 0-1.32-.083l-.094.083-5.004 4.996a1 1 0 0 0 1.32 1.499l.094-.083L11 8.415V21a1 1 0 0 0 .883.993Z" />
     </svg>
   );
 };
