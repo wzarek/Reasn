@@ -11674,6 +11674,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jwt-decode@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "jwt-decode@npm:4.0.0"
+  checksum: 10c0/de75bbf89220746c388cf6a7b71e56080437b77d2edb29bae1c2155048b02c6b8c59a3e5e8d6ccdfd54f0b8bda25226e491a4f1b55ac5f8da04cfbadec4e546c
+  languageName: node
+  linkType: hard
+
 "keyv@npm:^4.5.3":
   version: 4.5.4
   resolution: "keyv@npm:4.5.4"
@@ -17468,7 +17475,8 @@ __metadata:
     eslint: "npm:^8.57.0"
     eslint-config-next: "npm:14.0.4"
     eslint-config-prettier: "npm:^9.1.0"
-    next: "npm:^14.1.1"
+    jwt-decode: "npm:^4.0.0"
+    next: "npm:^14.0.4"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-native-web: "npm:^0.19.10"
