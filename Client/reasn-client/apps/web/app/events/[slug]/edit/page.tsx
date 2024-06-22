@@ -70,7 +70,7 @@ const EventEditPage = ({ params }: { params: { slug: string } }) => {
   const router = useRouter();
   const [status, setStatus] = useState<string>(EventStatus.REJECTED);
 
-  const admin = true;
+  const admin = slug === "edit";
 
   const [imgs, setImgs] = useState<string[]>(
     IMAGES.sort(() => Math.random() - 0.5).slice(0, 3),
@@ -139,14 +139,21 @@ const EventEditPage = ({ params }: { params: { slug: string } }) => {
               )}`}
             />
           ) : (
-            <p
-              className={clsx(
-                "mb-2 font-bold uppercase",
-                getStatusClass(status as EventStatus),
-              )}
-            >
-              {status}
-            </p>
+            <div className="flex flex-row items-center justify-between gap-[20%]">
+              <p
+                className={clsx(
+                  "font-bold uppercase",
+                  getStatusClass(status as EventStatus),
+                )}
+              >
+                {status}
+              </p>
+              <ButtonBase
+                text="anuluj wydarzenie"
+                onClick={() => {}}
+                className="grow from-red-400 to-red-700 font-semibold text-black"
+              />
+            </div>
           )}
           <div className="flex flex-wrap gap-2 overflow-clip text-xs text-[#cacaca]">
             <SearchMultiDropdown
