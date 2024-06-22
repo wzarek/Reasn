@@ -74,6 +74,7 @@ builder.Services.AddDbContext<ReasnContext>(options =>
 builder.Services.AddScoped<InterestService>();
 builder.Services.AddScoped<TagService>();
 builder.Services.AddScoped<CommentService>();
+builder.Services.AddScoped<AddressService>();
 builder.Services.AddScoped<ParameterService>();
 builder.Services.AddScoped<EventService>();
 builder.Services.AddScoped<ParticipantService>();
