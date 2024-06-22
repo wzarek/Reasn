@@ -50,18 +50,41 @@ public class MeController(UserService userService, EventService eventService, Pa
     [HttpPost]
     [Route("image")]
     [ProducesResponseType<ImageDto>(StatusCodes.Status201Created)]
-    public IActionResult AddCurrentUserImage([FromBody] ImageDto imageDto)
+    public async Task<IActionResult> AddCurrentUserImage([FromForm] IFormFile image)
     {
-        var image = _imageService.CreateImages([imageDto]);
-        return Ok(image);
+        using var ms = new MemoryStream();
+        await image.CopyToAsync(ms);
+        var fileBytes = ms.ToArray();
+
+        var imageDto = new ImageDto
+        {
+            ObjectId = _userService.GetCurrentUser().Id,
+            ObjectType = ObjectType.User,
+            ImageData = fileBytes
+        };
+
+        var createdImage = _imageService.CreateImages([imageDto]);
+        return Ok(createdImage);
     }
 
     [HttpPut]
     [Route("image")]
     [ProducesResponseType<ImageDto>(StatusCodes.Status200OK)]
-    public IActionResult UpdateCurrentUserImage([FromBody] ImageDto imageDto)
+    public async Task<IActionResult> UpdateCurrentUserImage([FromForm] IFormFile image)
     {
         var userId = _userService.GetCurrentUser().Id;
+
+        using var ms = new MemoryStream();
+        await image.CopyToAsync(ms);
+        var fileBytes = ms.ToArray();
+
+        var imageDto = new ImageDto
+        {
+            ObjectId = userId,
+            ObjectType = ObjectType.User,
+            ImageData = fileBytes
+        };
+
         _imageService.UpdateImageForUser(userId, imageDto);
 
         return Ok(imageDto);
