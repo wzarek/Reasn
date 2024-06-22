@@ -94,6 +94,7 @@ const config: JestConfigWithTsJest = {
     "^@reasn/common/interfaces/(.*)$":
       "<rootDir>/packages/common/interfaces/$1",
     "^@reasn/common/errors/(.*)$": "<rootDir>/packages/common/errors/$1",
+    "^@reasn/common/hooks/(.*)$": "<rootDir>/packages/common/hooks/$1",
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader

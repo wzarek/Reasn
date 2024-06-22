@@ -14,7 +14,7 @@ export const QuickFilters = () => {
 
   return (
     <div>
-      <div className="flex w-full gap-10 overflow-x-clip bg-[#1E1F29] px-10 py-8">
+      <div className="flex w-full gap-10 overflow-x-auto bg-[#1E1F29] px-10 py-8">
         <QuickFilterButton
           text="Dziś"
           onClick={() => setSelectedFilter("Today")}
@@ -51,11 +51,7 @@ export const QuickFilters = () => {
           selected={selectedFilter === "Remote"}
         />
       </div>
-      <div className="flex flex-wrap gap-10 p-10">
-        <Card variant={CardVariant.Tile} event="Abc" />
-        <Card variant={CardVariant.Tile} event="Abc" />
-        <Card variant={CardVariant.Tile} event="Abc" />
-        <Card variant={CardVariant.Tile} event="Abc" />
+      <div className="grid grid-cols-1 place-items-center gap-10 p-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         <Card variant={CardVariant.Tile} event="Abc" />
         <Card variant={CardVariant.Tile} event="Abc" />
         <Card variant={CardVariant.Tile} event="Abc" />

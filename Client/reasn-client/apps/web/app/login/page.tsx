@@ -17,8 +17,8 @@ const LoginPage = () => {
 
   return (
     <>
-      <div className="flex w-1/2 items-center justify-center">
-        <form className="flex w-full flex-col gap-8" ref={formRef}>
+      <div className="relative z-10 flex w-full items-center justify-center sm:w-1/2">
+        <form className="flex w-full flex-col gap-2 sm:gap-8" ref={formRef}>
           <FloatingInput type="email" label="email" name="email" />
           <FloatingInput type="password" label="hasło" name="password" />
           <div className="flex justify-end gap-2 text-sm">
@@ -29,8 +29,8 @@ const LoginPage = () => {
           </div>
         </form>
       </div>
-      <div className="z-10 flex h-full w-1/3 flex-col flex-wrap items-start justify-center gap-24">
-        <p className="bg-gradient-to-r from-[#FF6363] to-[#1E34FF] bg-clip-text text-5xl font-bold leading-tight text-transparent">
+      <div className="relative z-10 flex h-fit w-full flex-col flex-wrap items-end justify-center gap-10 sm:h-full sm:w-1/3 sm:items-start sm:gap-24">
+        <p className="bg-gradient-to-r from-[#FF6363] to-[#1E34FF] bg-clip-text text-right text-4xl font-bold leading-tight text-transparent sm:text-left lg:text-5xl">
           miło, że do nas wracasz
         </p>
         <ButtonBase text={"zaloguj"} onClick={handleFormSubmit} />

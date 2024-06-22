@@ -17,7 +17,7 @@ const RegisterOrganizer = () => {
 
   return (
     <>
-      <div className="flex w-1/2 items-center justify-center">
+      <div className="relative z-10 flex w-full items-center justify-center sm:w-1/2">
         <form className="flex w-full flex-col gap-8" ref={formRef}>
           {currentStep === 1 && (
             <>
@@ -49,14 +49,14 @@ const RegisterOrganizer = () => {
           )}
         </form>
       </div>
-      <div className="z-10 flex h-full w-1/3 flex-col flex-wrap items-start justify-center gap-24">
+      <div className="relative z-10 flex h-fit w-full flex-col flex-wrap items-end justify-center gap-10 sm:h-full sm:w-1/3 sm:items-start sm:gap-24">
         {currentStep === 1 && (
-          <p className="bg-gradient-to-r from-[#FF6363] to-[#1E34FF] bg-clip-text text-5xl font-bold leading-tight text-transparent">
+          <p className="bg-gradient-to-r from-[#FF6363] to-[#1E34FF] bg-clip-text text-right text-4xl font-bold leading-tight text-transparent sm:text-left lg:text-5xl">
             to jak, zorganizujesz nam coś?
           </p>
         )}
         {currentStep === 2 && (
-          <p className="bg-gradient-to-r from-[#FF6363] to-[#1E34FF] bg-clip-text text-5xl font-bold leading-tight text-transparent">
+          <p className="bg-gradient-to-r from-[#FF6363] to-[#1E34FF] bg-clip-text text-right text-4xl font-bold leading-tight text-transparent sm:text-left lg:text-5xl">
             gdzie możemy cię znaleźć?
           </p>
         )}
