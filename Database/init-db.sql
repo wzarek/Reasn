@@ -104,6 +104,18 @@ CREATE TABLE IF NOT EXISTS users.interest (
     "name" text NOT NULL CONSTRAINT users_interest_name_maxlength CHECK (LENGTH("name") <= 32) UNIQUE
 );
 
+CREATE TABLE IF NOT EXISTS common.related (
+    "tag_name" text, 
+    "interest_name" text, 
+    "value" decimal,
+    UNIQUE ("tag_name", "interest_name")
+);
+
+CREATE TABLE IF NOT EXISTS common.translated (
+    "name_pl" text,
+    "name_ang" text
+);
+
 ALTER TABLE events.event ADD FOREIGN KEY ("address_id") REFERENCES common.address ("id");
 
 ALTER TABLE events.comment ADD FOREIGN KEY ("event_id") REFERENCES events.event ("id");
