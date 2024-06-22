@@ -153,6 +153,7 @@ public class UserService
     public UserDto GetUserById(int userId)
     {
         var user = _context.Users
+                            .Include(a => a.Address)
                             .Include(u => u.UserInterests)
                             .ThenInclude(ui => ui.Interest)
                             .FirstOrDefault(u => u.Id == userId);
@@ -168,6 +169,7 @@ public class UserService
     public UserDto GetUserByUsername(string username)
     {
         var user = _context.Users
+                            .Include(a => a.Address)
                             .Include(u => u.UserInterests)
                             .ThenInclude(ui => ui.Interest)
                             .FirstOrDefault(u => u.Username == username);
@@ -183,6 +185,7 @@ public class UserService
     public IEnumerable<UserDto> GetUsersByFilter(Expression<Func<User, bool>> filter)
     {
         return _context.Users
+                        .Include(a => a.Address)
                         .Include(u => u.UserInterests)
                         .ThenInclude(ui => ui.Interest)
                         .Where(filter)
@@ -193,6 +196,7 @@ public class UserService
     public IEnumerable<UserDto> GetAllUsers()
     {
         var users = _context.Users
+                            .Include(a => a.Address)
                             .Include(u => u.UserInterests)
                             .ThenInclude(ui => ui.Interest)
                             .ToList();

@@ -16,6 +16,7 @@ public static class UserMapper
             Phone = user.Phone,
             Role = user.Role,
             AddressId = user.AddressId,
+            Address = user.Address.ToDto(),
             Interests = user.UserInterests.ToDtoList()
         };
     }

@@ -27,16 +27,28 @@ public class UserServiceTests
     {
         var mockContext = new Mock<ReasnContext>();
 
+        var address = new Address
+        {
+            Id = 1,
+            City = "City",
+            Country = "Country",
+            Street = "Street",
+            State = "State",
+            ZipCode = "ZipCode"
+        };
+
         var user = new User
         {
             Id = 1,
             Name = "John",
             Surname = "Doe",
             Username = "Username",
-            Email = "Email"
+            Email = "Email",
+            Address = address,
         };
 
         mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
+        mockContext.Setup(c => c.Addresses).ReturnsDbSet([address]);
 
         var userService = new UserService(mockContext.Object);
 
@@ -65,13 +77,24 @@ public class UserServiceTests
     {
         var mockContext = new Mock<ReasnContext>();
 
+        var address = new Address
+        {
+            Id = 1,
+            City = "City",
+            Country = "Country",
+            Street = "Street",
+            State = "State",
+            ZipCode = "ZipCode"
+        };
+
         var user = new User
         {
             Id = 1,
             Name = "John",
             Surname = "Doe",
             Username = "Username",
-            Email = "Email"
+            Email = "Email",
+            Address = address,
         };
 
         mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
