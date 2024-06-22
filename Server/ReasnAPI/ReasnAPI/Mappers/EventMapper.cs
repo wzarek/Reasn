@@ -48,9 +48,9 @@ namespace ReasnAPI.Mappers
             };
         }
 
-        public static EventResponse ToResponse(this EventDto eventDto, Participants participants, string username, string photo, AddressDto addressDto)
+        public static EventResponse ToResponse(this EventDto eventDto, Participants participants, string username, string image, AddressDto addressDto)
         {
-            var organizer = new Organizer(username, photo);
+            var organizer = new Organizer(username, image);
             
             return new EventResponse(participants)
             {
