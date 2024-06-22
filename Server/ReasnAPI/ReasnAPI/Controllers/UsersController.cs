@@ -49,7 +49,6 @@ public class UsersController(UserService userService, InterestService interestSe
         var currentUser = _userService.GetUserByUsername(username);
         var interests = currentUser.Interests;
 
-        // Poprawka: Dodanie await i poprawienie b��du w nazwie metody
         var events = await _recomendationService.GetEventsByInterest(interests);
 
         return Ok(events);

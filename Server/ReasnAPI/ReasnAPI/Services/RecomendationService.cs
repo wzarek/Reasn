@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ReasnAPI.Mappers;
+using ReasnAPI.Models.Recomendation;
 
 namespace ReasnAPI.Services
 {
@@ -27,6 +28,7 @@ namespace ReasnAPI.Services
         public async Task<List<EventDto>> GetEventsByInterest(List<UserInterestDto> interestsDto)
         {
             var interests = interestsDto.Select(i => i.Interest.Name).ToList();
+            var interestsLevels = interestsDto.Select(i => i.Level).ToList();
 
             try
             {
@@ -38,19 +40,39 @@ namespace ReasnAPI.Services
                         $"Error fetching tags from Flask API. Status code: {response.StatusCode}");
                 }
 
-                var tagNames = await response.Content.ReadFromJsonAsync<List<string>>();
+                var tagInfoList = await response.Content.ReadFromJsonAsync<List<TagInfo>>();
 
-                if (tagNames == null || tagNames.Count == 0)
+                if (tagInfoList == null || tagInfoList.Count == 0)
                 {
                     return new List<EventDto>();
                 }
 
-                var events = await context.Events
-                    .Include(e => e.Tags).Include(e => e.Parameters)
-                    .Where(e => e.Tags.Any(t => tagNames.Contains(t.Name)))
-                    .ToListAsync();
+                var tagNames = tagInfoList.Select(t => t.Tag_Name).ToList();
+                var interestNames = tagInfoList.Select(t => t.Interest_Name).ToList();
+                var values = tagInfoList.Select(t => t.Value).ToList();
 
-                return events.ToDtoList();
+                for (int i = 0; i < values.Count; i++)
+                {
+                    values[i] *= interestsLevels[interestNames.IndexOf(tagInfoList[i].Interest_Name)];
+                }
+
+                var events = await context.Events
+                    .Include(e => e.Tags)
+                    .Include(e => e.Parameters)
+                    .Where(e => e.Tags.Any(t => tagNames.Contains(t.Name)))
+                    .Select(e => new
+                    {
+                        Event = e,
+                        TotalTagValue = e.Tags.Where(t => tagNames.Contains(t.Name))
+                            .Sum(t => values[tagNames.IndexOf(t.Name)])
+                    })
+                    .OrderByDescending(e => e.TotalTagValue)
+                    .Select(e => e.Event) 
+                    .ToListAsync(); ;
+
+                var eventDtos = events.Select(e => e.ToDto()).ToList();
+
+                return eventDtos;
             }
             catch (Exception ex)
             {

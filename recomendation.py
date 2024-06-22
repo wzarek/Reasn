@@ -17,17 +17,19 @@ def connect_to_db():
 def get_similar_tags_from_db(conn, interests):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
         query = """
-        SELECT DISTINCT tag_name
+        SELECT DISTINCT tag_name, interest_name, value
         FROM common.related
-        WHERE interest_name = ANY(%s) AND value > 0.3
+        WHERE interest_name IN %s AND value > 0.3
         """
-        cur.execute(query, (interests,))
+        cur.execute(query, (tuple(interests),))
         results = cur.fetchall()
         
-        if not results:
-            return None 
+        # Printowanie wyników
+        for row in results:
+            print(f"tag_name: {row['tag_name']}, interest_name: {row['interest_name']}, value: {row['value']}")
         
-        return [row['tag_name'] for row in results]
+        return [{'tag_name': row['tag_name'], 'interest_name': row['interest_name'], 'value': row['value']} for row in results]
+
 
 @app.route('/similar-tags', methods=['POST'])
 def get_similar_tags():
@@ -46,9 +48,6 @@ def get_similar_tags():
     conn = connect_to_db()
     try:
         similar_tags = get_similar_tags_from_db(conn, interests)
-        
-        if similar_tags is None:
-            return jsonify([])  
         
         return jsonify(similar_tags)
     finally:
