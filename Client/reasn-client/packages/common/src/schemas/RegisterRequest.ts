@@ -21,8 +21,8 @@ export const RegisterRequestSchema = z.object({
     .regex(/^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,})\S$/u),
   phone: z
     .string()
-    .nullable()
-    .refine((value) => value === null || /^\+\d{1,3}\s\d{1,15}$/.test(value)),
+    .regex(/^\+\d{1,3}\s\d{1,15}$/)
+    .nullable(),
   address: AddressDtoSchema,
   Role: z.enum(["User", "Organizer"]),
 });

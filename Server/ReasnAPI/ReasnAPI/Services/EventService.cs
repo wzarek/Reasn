@@ -21,7 +21,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             newEvent.CreatedAt = createdTime;
             newEvent.UpdatedAt = createdTime;
             newEvent.Slug = CreateSlug(eventDto);
-            
+
 
             context.Events.Add(newEvent);
 

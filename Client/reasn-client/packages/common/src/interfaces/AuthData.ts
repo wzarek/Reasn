@@ -1,4 +1,4 @@
-import { UserRole } from "../enums/modelsEnums";
+import { UserRole } from "../enums/schemasEnums";
 
 /**
  * Represents the authentication data.

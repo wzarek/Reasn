@@ -1,5 +1,5 @@
 import { ImageDto, ImageDtoMapper } from "@reasn/common/src/schemas/ImageDto";
-import { ObjectType } from "@reasn/common/src/enums/modelsEnums";
+import { ObjectType } from "@reasn/common/src/enums/schemasEnums";
 import ModelMappingError from "@reasn/common/src/errors/ModelMappingError";
 
 describe("ImageDto", () => {

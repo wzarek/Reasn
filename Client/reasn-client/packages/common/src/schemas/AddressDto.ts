@@ -20,8 +20,8 @@ export const AddressDtoSchema = z.object({
     .regex(/^\p{Lu}\p{Ll}+(?:(\s|-)\p{L}+)*$/u),
   ZipCode: z
     .string()
-    .nullable()
-    .refine((value) => value === null || /^[\p{L}\d\s-]{3,}$/u.test(value)),
+    .regex(/^[\p{L}\d\s-]{3,}$/u)
+    .nullable(),
 });
 
 export type AddressDto = z.infer<typeof AddressDtoSchema>;

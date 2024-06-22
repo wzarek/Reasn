@@ -1,7 +1,7 @@
 import ModelMappingError from "../errors/ModelMappingError";
 import { UserInterestDtoSchema } from "../schemas/UserInterestDto";
 import { AddressDtoSchema } from "../schemas/AddressDto";
-import { UserRole } from "../enums/modelsEnums";
+import { UserRole } from "../enums/schemasEnums";
 import { z } from "zod";
 
 export const UserDtoSchema = z.object({

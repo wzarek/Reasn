@@ -3,7 +3,7 @@ import {
   ParticipantDto,
   ParticipantDtoMapper,
 } from "@reasn/common/src/schemas/ParticipantDto";
-import { ParticipantStatus } from "@reasn/common/src/enums/modelsEnums";
+import { ParticipantStatus } from "@reasn/common/src/enums/schemasEnums";
 
 describe("ParticipantDto", () => {
   const eventSlug = "event-slug";

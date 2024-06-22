@@ -1,5 +1,5 @@
 import ModelMappingError from "../errors/ModelMappingError";
-import { ObjectType } from "../enums/modelsEnums";
+import { ObjectType } from "../enums/schemasEnums";
 import { z } from "zod";
 
 export const ImageDtoSchema = z.object({

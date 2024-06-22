@@ -1,4 +1,4 @@
-import { UserRole } from "../enums/modelsEnums";
+import { UserRole } from "../enums/schemasEnums";
 import { AuthData } from "../interfaces/AuthData";
 
 const AUTH_DATA_KEY = "REASN_AUTH_DATA";

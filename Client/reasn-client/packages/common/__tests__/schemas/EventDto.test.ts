@@ -1,5 +1,5 @@
 import { EventDto, EventDtoMapper } from "@reasn/common/src/schemas/EventDto";
-import { EventStatus } from "@reasn/common/src/enums/modelsEnums";
+import { EventStatus } from "@reasn/common/src/enums/schemasEnums";
 import ModelMappingError from "@reasn/common/src/errors/ModelMappingError";
 import { TagDto } from "@reasn/common/src/schemas/TagDto";
 
