@@ -9,38 +9,7 @@ namespace ReasnAPI.Services;
 
 public class ParticipantService(ReasnContext context)
 {
-    public ParticipantDto CreateParticipant(ParticipantDto participantDto)
-    {
-        ArgumentNullException.ThrowIfNull(participantDto);
-
-        var eventDb = context.Events.FirstOrDefault(e => e.Slug == participantDto.EventSlug);
-
-        if (eventDb is null)
-        {
-            throw new NotFoundException("Event not found");
-        }
-
-        var userDb = context.Users.FirstOrDefault(u => u.Username == participantDto.Username);
-
-        if (userDb is null)
-        {
-            throw new NotFoundException("User not found");
-        }
-
-        var participantDb = context.Participants.FirstOrDefault(r => r.Event.Id == eventDb.Id && r.User.Id == userDb.Id);
-
-        if (participantDb is not null)
-        {
-            throw new BadRequestException("Participant already exists");
-        }
-
-        context.Participants.Add(new Participant { EventId = eventDb.Id, UserId = userDb.Id, Status = participantDto.Status });
-        context.SaveChanges();
-
-        return participantDto;
-    }
-
-    public ParticipantDto UpdateParticipant(ParticipantDto participantDto)
+    public ParticipantDto CreateUpdateParticipant(ParticipantDto participantDto)
     {
         ArgumentNullException.ThrowIfNull(participantDto);
 
@@ -62,12 +31,15 @@ public class ParticipantService(ReasnContext context)
 
         if (participant is null)
         {
-            throw new NotFoundException("Participant not found");
+            context.Participants.Add(new Participant { EventId = eventDb.Id, UserId = userDb.Id, Status = participantDto.Status });
         }
 
-        participant.Status = participantDto.Status;
+        else
+        {
+            participant.Status = participantDto.Status;
+            context.Participants.Update(participant);
+        }
 
-        context.Participants.Update(participant);
         context.SaveChanges();
 
         return participantDto;

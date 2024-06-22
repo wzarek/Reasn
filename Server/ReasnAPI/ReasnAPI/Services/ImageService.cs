@@ -174,20 +174,16 @@ public class ImageService(ReasnContext context)
         return imageDto;
     }
 
-    public IEnumerable<ImageDto> GetImagesByUserId(int userId)
+    public ImageDto GetImagesByUserId(int userId)
     {
-        var images = context.Images
-            .Where(image => image.ObjectId == userId && image.ObjectType == ObjectType.User)
-            .ToList();
+        var image = context.Images.FirstOrDefault(image => image.ObjectId == userId && image.ObjectType == ObjectType.User);
 
-        if (!images.Any())
+        if (image is null)
         {
-            throw new NotFoundException("Images not found");
+            throw new NotFoundException("Image not found");
         }
 
-        var imageDtos = images.ToDtoList().AsEnumerable();
-
-        return imageDtos;
+        return image.ToDto();
     }
 
     public IEnumerable<ImageDto> GetAllImages()

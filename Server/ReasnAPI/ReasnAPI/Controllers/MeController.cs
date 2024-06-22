@@ -61,7 +61,7 @@ public class MeController(UserService userService, EventService eventService, Pa
             return NotFound();
         }
 
-        return File(image.First().ImageData, "image/jpeg");
+        return File(image.ImageData, "image/jpeg");
     }
 
     [HttpPost]
@@ -151,7 +151,7 @@ public class MeController(UserService userService, EventService eventService, Pa
     {
         var user = _userService.GetCurrentUser();
 
-        var participant = _participantService.CreateParticipant(new ParticipantDto { EventSlug = slug, Username = user.Username, Status = ParticipantStatus.Interested });
+        var participant = _participantService.CreateUpdateParticipant(new ParticipantDto { EventSlug = slug, Username = user.Username, Status = ParticipantStatus.Interested });
 
         var location = Url.Action(
             action: nameof(GetCurrentUserEvents),
@@ -166,12 +166,12 @@ public class MeController(UserService userService, EventService eventService, Pa
     public IActionResult ConfirmCurrentUserEventAttendance([FromRoute] string slug)
     {
         var user = _userService.GetCurrentUser();
-        var participant = _participantService.UpdateParticipant(new ParticipantDto { EventSlug = slug, Username = user.Username, Status = ParticipantStatus.Participating });
+        var participant = _participantService.CreateUpdateParticipant(new ParticipantDto { EventSlug = slug, Username = user.Username, Status = ParticipantStatus.Participating });
 
         return Ok(participant);
     }
 
-    [HttpPost]
+    [HttpDelete]
     [Route("events/{slug}/cancel")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult CancelCurrentUserEventAttendance([FromRoute] string slug)
