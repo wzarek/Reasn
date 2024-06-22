@@ -94,7 +94,6 @@ public class UserService
             user.Email = userDto.Email;
             user.Phone = userDto.Phone;
             user.Role = userDto.Role;
-            user.AddressId = userDto.AddressId;
             user.UpdatedAt = DateTime.UtcNow;
 
             _context.Users.Update(user);

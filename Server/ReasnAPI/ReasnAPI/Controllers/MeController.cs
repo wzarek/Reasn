@@ -50,44 +50,59 @@ public class MeController(UserService userService, EventService eventService, Pa
     [HttpPost]
     [Route("image")]
     [ProducesResponseType<ImageDto>(StatusCodes.Status201Created)]
-    public async Task<IActionResult> AddCurrentUserImage([FromForm] IFormFile image)
+    public async Task<IActionResult> AddCurrentUserImage([FromForm] List<IFormFile> images)
     {
-        using var ms = new MemoryStream();
-        await image.CopyToAsync(ms);
-        var fileBytes = ms.ToArray();
+        var userId = _userService.GetCurrentUser().Id;
 
-        var imageDto = new ImageDto
+        var imageDtos = new List<ImageDto>();
+
+        foreach (var image in images.Where(image => image.Length > 0))
         {
-            ObjectId = _userService.GetCurrentUser().Id,
-            ObjectType = ObjectType.User,
-            ImageData = fileBytes
-        };
+            using var ms = new MemoryStream();
+            await image.CopyToAsync(ms);
+            var fileBytes = ms.ToArray();
 
-        var createdImage = _imageService.CreateImages([imageDto]);
-        return Ok(createdImage);
+            var imageDto = new ImageDto
+            {
+                ObjectId = userId,
+                ObjectType = ObjectType.User,
+                ImageData = fileBytes
+            };
+
+            _imageService.CreateImages([imageDto]);
+            imageDtos.Add(imageDto);
+        }
+
+        return Ok();
     }
 
     [HttpPut]
     [Route("image")]
     [ProducesResponseType<ImageDto>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateCurrentUserImage([FromForm] IFormFile image)
+    public async Task<IActionResult> UpdateCurrentUserImage([FromForm] List<IFormFile> images)
     {
         var userId = _userService.GetCurrentUser().Id;
 
-        using var ms = new MemoryStream();
-        await image.CopyToAsync(ms);
-        var fileBytes = ms.ToArray();
+        var imageDtos = new List<ImageDto>();
 
-        var imageDto = new ImageDto
+        foreach (var image in images.Where(image => image.Length > 0))
         {
-            ObjectId = userId,
-            ObjectType = ObjectType.User,
-            ImageData = fileBytes
-        };
+            using var ms = new MemoryStream();
+            await image.CopyToAsync(ms);
+            var fileBytes = ms.ToArray();
 
-        _imageService.UpdateImageForUser(userId, imageDto);
+            var imageDto = new ImageDto
+            {
+                ObjectId = userId,
+                ObjectType = ObjectType.User,
+                ImageData = fileBytes
+            };
 
-        return Ok(imageDto);
+            _imageService.UpdateImageForUser(userId, imageDto);
+            imageDtos.Add(imageDto);
+        }
+
+        return Ok();
     }
 
     [HttpDelete]
