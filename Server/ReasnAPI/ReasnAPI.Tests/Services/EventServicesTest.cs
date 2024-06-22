@@ -82,7 +82,7 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Parameters).ReturnsDbSet(new List<Parameter>());
             mockContext.Setup(c => c.Comments).ReturnsDbSet(new List<Comment>());
             mockContext.Setup(c => c.Participants).ReturnsDbSet(new List<Participant>());
-            var eventService = new EventService(mockContext.Object, new ParameterService(mockContext.Object), new TagService(mockContext.Object), new CommentService(mockContext.Object));
+            var eventService = new EventService(mockContext.Object, new ParameterService(mockContext.Object), new TagService(mockContext.Object), new CommentService(mockContext.Object), new AddressService(mockContext.Object));
 
             var result = eventService.UpdateEvent(1, eventDto);
             Assert.AreEqual("name1", result.Name);
@@ -144,7 +144,7 @@ namespace ReasnAPI.Tests.Services
                 UpdatedAt =DateTime.Now
             }});
 
-            var eventService = new EventService(mockContext.Object, new ParameterService(mockContext.Object), new TagService(mockContext.Object), new CommentService(mockContext.Object));
+            var eventService = new EventService(mockContext.Object, new ParameterService(mockContext.Object), new TagService(mockContext.Object), new CommentService(mockContext.Object), new AddressService(mockContext.Object));
 
             Assert.ThrowsException<NotFoundException>(() => eventService.UpdateEvent(1, eventDto));
         }
@@ -205,7 +205,7 @@ namespace ReasnAPI.Tests.Services
                 UpdatedAt =DateTime.Now }});
 
 
-            var eventService = new EventService(mockContext.Object, new ParameterService(mockContext.Object), new TagService(mockContext.Object), new CommentService(mockContext.Object));
+            var eventService = new EventService(mockContext.Object, new ParameterService(mockContext.Object), new TagService(mockContext.Object), new CommentService(mockContext.Object), new AddressService(mockContext.Object));
 
             var result = eventService.GetEventById(1);
             Assert.IsNotNull(result);
@@ -250,7 +250,7 @@ namespace ReasnAPI.Tests.Services
                 }});
 
 
-            var eventService = new EventService(mockContext.Object, new ParameterService(mockContext.Object), new TagService(mockContext.Object), new CommentService(mockContext.Object));
+            var eventService = new EventService(mockContext.Object, new ParameterService(mockContext.Object), new TagService(mockContext.Object), new CommentService(mockContext.Object), new AddressService(mockContext.Object));
 
             Assert.ThrowsException<NotFoundException>(() => eventService.GetEventById(1));
         }
@@ -320,7 +320,7 @@ namespace ReasnAPI.Tests.Services
             mockContext.Setup(c => c.Comments).ReturnsDbSet(new List<Comment>());
             mockContext.Setup(c => c.Participants).ReturnsDbSet(new List<Participant>());
 
-            var eventService = new EventService(mockContext.Object, new ParameterService(mockContext.Object), new TagService(mockContext.Object), new CommentService(mockContext.Object));
+            var eventService = new EventService(mockContext.Object, new ParameterService(mockContext.Object), new TagService(mockContext.Object), new CommentService(mockContext.Object), new AddressService(mockContext.Object));
 
             eventService.DeleteEvent(1);
 
