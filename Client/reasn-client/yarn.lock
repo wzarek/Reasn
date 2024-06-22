@@ -4144,13 +4144,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reasn/common@workspace:packages/common":
+"@reasn/common@npm:*, @reasn/common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@reasn/common@workspace:packages/common"
+  dependencies:
+    "@reasn/typescript-config": "workspace:*"
+    jest: "npm:^29.7.0"
+    jest-fetch-mock: "npm:^3.0.3"
+    typescript: "npm:^5.3.3"
+    zod: "npm:^3.23.7"
   languageName: unknown
   linkType: soft
 
-"@reasn/typescript-config@npm:*, @reasn/typescript-config@workspace:packages/typescript-config":
+"@reasn/typescript-config@npm:*, @reasn/typescript-config@workspace:*, @reasn/typescript-config@workspace:packages/typescript-config":
   version: 0.0.0-use.local
   resolution: "@reasn/typescript-config@workspace:packages/typescript-config"
   languageName: unknown
@@ -4761,6 +4767,13 @@ __metadata:
   version: 2.0.3
   resolution: "@types/stack-utils@npm:2.0.3"
   checksum: 10c0/1f4658385ae936330581bcb8aa3a066df03867d90281cdf89cc356d404bd6579be0f11902304e1f775d92df22c6dd761d4451c804b0a4fba973e06211e9bd77c
+  languageName: node
+  linkType: hard
+
+"@types/url-search-params@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@types/url-search-params@npm:1.1.2"
+  checksum: 10c0/3575548b8d94b7f4509fc1645d4c32d75c12a180ed86a67d3521f730fcdddba67de9e43d282ff22d00cddf2dbc1dbb91b3e3cda698fdf3acd697c5124ebecd3e
   languageName: node
   linkType: hard
 
@@ -11668,6 +11681,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jwt-decode@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "jwt-decode@npm:4.0.0"
+  checksum: 10c0/de75bbf89220746c388cf6a7b71e56080437b77d2edb29bae1c2155048b02c6b8c59a3e5e8d6ccdfd54f0b8bda25226e491a4f1b55ac5f8da04cfbadec4e546c
+  languageName: node
+  linkType: hard
+
 "keyv@npm:^4.5.3":
   version: 4.5.4
   resolution: "keyv@npm:4.5.4"
@@ -17452,15 +17472,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "web@workspace:apps/web"
   dependencies:
+    "@reasn/common": "npm:*"
     "@reasn/typescript-config": "npm:*"
     "@reasn/ui": "npm:*"
     "@types/node": "npm:^20.10.6"
     "@types/react": "npm:^18.2.46"
     "@types/react-dom": "npm:^18.2.18"
+    "@types/url-search-params": "npm:^1.1.2"
     babel-plugin-react-native-web: "npm:^0.19.10"
     eslint: "npm:^8.57.0"
     eslint-config-next: "npm:14.0.4"
     eslint-config-prettier: "npm:^9.1.0"
+    jwt-decode: "npm:^4.0.0"
     next: "npm:^14.1.1"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"

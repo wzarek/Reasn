@@ -1,14 +1,14 @@
-import { sendRequest } from "@reasn/common/services/apiServices";
-import { getAuthDataFromSessionStorage } from "@reasn/common/services/authorizationServices";
-import { AuthData } from "@reasn/common/interfaces/AuthData";
-import { HttpMethod } from "@reasn/common/enums/serviceEnums";
+import { sendRequest } from "@reasn/common/src/services/apiServices";
+import { getAuthDataFromSessionStorage } from "@reasn/common/src/services/authorizationServices";
+import { AuthData } from "@reasn/common/src/interfaces/AuthData";
+import { HttpMethod } from "@reasn/common/src/enums/serviceEnums";
 import { describe, expect, it, jest, beforeEach } from "@jest/globals";
 import fetch from "cross-fetch";
-import ApiConnectionError from "@reasn/common/errors/ApiConnectionError";
-import ApiAuthorizationError from "@reasn/common/errors/ApiAuthorizationError";
+import ApiConnectionError from "@reasn/common/src/errors/ApiConnectionError";
+import ApiAuthorizationError from "@reasn/common/src/errors/ApiAuthorizationError";
 
 jest.mock("cross-fetch");
-jest.mock("@reasn/common/services/authorizationServices");
+jest.mock("@reasn/common/src/services/authorizationServices");
 
 describe("sendRequest", () => {
   beforeEach(() => {

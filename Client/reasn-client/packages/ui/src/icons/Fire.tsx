@@ -1,4 +1,5 @@
 import React from "react";
+import { IconProps } from "./IconProps";
 
 export const Fire = (props: IconProps) => {
   const { className, colors, gradientTransform } = props;

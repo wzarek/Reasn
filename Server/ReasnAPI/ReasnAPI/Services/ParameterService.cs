@@ -35,7 +35,7 @@ public class ParameterService(ReasnContext context)
 
         var parameterCheck = parameters.FirstOrDefault(r => r.Parameters.Any(p => p.Id == parameterId));
 
-        if (parameterCheck is not null) 
+        if (parameterCheck is not null)
         {
             throw new BadRequestException("Parameter is associated with an event");
         }
