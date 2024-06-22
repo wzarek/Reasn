@@ -48,15 +48,16 @@ namespace ReasnAPI.Mappers
             };
         }
 
-        public static EventResponse ToResponse(this EventDto eventDto, int participating, int interested, string username, string photo)
+        public static EventResponse ToResponse(this EventDto eventDto, Participants participants, string username, string photo, AddressDto addressDto)
         {
-            return new EventResponse
+            var organizer = new Organizer(username, photo);
+            
+            return new EventResponse(participants)
             {
                 Name = eventDto.Name,
                 AddressId = eventDto.AddressId,
                 Description = eventDto.Description,
-                OrganizerUsername = username,
-                OrganizerPhoto = photo,
+                Organizer = organizer,
                 StartAt = eventDto.StartAt,
                 EndAt = eventDto.EndAt,
                 CreatedAt = eventDto.CreatedAt,
@@ -65,8 +66,8 @@ namespace ReasnAPI.Mappers
                 Status = eventDto.Status,
                 Tags = eventDto.Tags,
                 Parameters = eventDto.Parameters,
-                ParticipatingParticipantsCount = participating,
-                InterestedParticipantsCount = interested
+                AddressDto = addressDto,
+                Participants = participants
             };
         }
 

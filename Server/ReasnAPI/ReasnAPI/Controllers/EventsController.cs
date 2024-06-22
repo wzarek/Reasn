@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Models.Enums;
 using ReasnAPI.Services;
-using ReasnAPI.Exceptions;
 using FluentValidation;
+using Microsoft.AspNetCore.Http.Extensions;
 using ReasnAPI.Mappers;
 using ReasnAPI.Models.API;
 
@@ -19,6 +18,7 @@ public class EventsController(
     EventService eventService,
     UserService userService,
     ImageService imageService,
+    AddressService addressService,
     TagService tagService)
     : ControllerBase
 {
@@ -28,18 +28,21 @@ public class EventsController(
     public IActionResult GetEvents()
     {
         var events = eventService.GetAllEvents();
-        var eventsDtos = new List<EventResponse>();
+        var eventsResponses = new List<EventResponse>();
 
         foreach (var thisEvent in events)
         {
             var participating = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Participating);
             var interested = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Interested);
-            var username = userService.GetUserById(eventService.GetEventBySlug(thisEvent.Slug).OrganizerId).Username;
-            var eventResponse = thisEvent.ToResponse(participating, interested, username, $"image/{thisEvent.OrganizerId}");
-            eventsDtos.Add(eventResponse);
+            var relatedEvent = eventService.GetEventBySlug(thisEvent.Slug);
+            var username =  userService.GetUserUsernameById(relatedEvent.OrganizerId);
+            var relatedAddress = eventService.GetRelatedAddress(thisEvent.Slug);
+            var participants = new Participants(participating, interested);
+            var eventResponse = thisEvent.ToResponse(participants, username, $"/api/v1/Users/image/{username}", relatedAddress);
+            eventsResponses.Add(eventResponse);
         }
    
-        return Ok(eventsDtos);
+        return Ok(eventsResponses);
     }
 
     [HttpPost]
@@ -50,7 +53,7 @@ public class EventsController(
         var user = userService.GetCurrentUser();
         var eventDto = eventRequest.ToDto(user.Id);
         validator.ValidateAndThrow(eventDto);
-
+        addressService.CreateAddress(eventRequest.AddressDto);
         eventService.CreateEvent(eventDto);
         return Created();
     }
@@ -60,11 +63,13 @@ public class EventsController(
     [ProducesResponseType<EventResponse>(StatusCodes.Status200OK)]
     public IActionResult GetEventBySlug([FromRoute] string slug)
     {
-        var eventDto = eventService.GetEventBySlug(slug).ToDto();
+        var realatedEvent = eventService.GetEventBySlug(slug);
         var participating = eventService.GetEventParticipantsCountBySlugAndStatus(slug, ParticipantStatus.Participating);
         var interested = eventService.GetEventParticipantsCountBySlugAndStatus(slug, ParticipantStatus.Interested);
-        var username = userService.GetUserById(eventService.GetEventBySlug(slug).OrganizerId).Username;
-        var eventResponse = eventDto.ToResponse(participating, interested, username, $"image/{eventDto.OrganizerId}");
+        var username = userService.GetUserUsernameById(realatedEvent.OrganizerId);
+        var relatedAddress = addressService.GetAddressById(realatedEvent.AddressId);
+        var participants = new Participants(participating, interested);
+        var eventResponse = realatedEvent.ToDto().ToResponse(participants, username, $"/api/v1/Users/image/{username}", relatedAddress);
 
         return Ok(eventResponse);
     }
@@ -89,7 +94,7 @@ public class EventsController(
         {
             return Forbid();
         }
-
+        eventService.UpdateAddressForEvent(eventUpdateRequest.AddressDto, eventUpdateRequest.AddressId, slug);
         eventService.UpdateEvent(existingEvent.Id, eventDto);
 
         return Ok();
@@ -107,8 +112,11 @@ public class EventsController(
         {
             var participating = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Participating);
             var interested = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Interested);
-            var username = userService.GetUserById(eventService.GetEventBySlug(thisEvent.Slug).OrganizerId).Username;
-            var eventResponse = thisEvent.ToResponse(participating, interested, username, $"image/{thisEvent.OrganizerId}");
+            var realtedEvent = eventService.GetEventBySlug(thisEvent.Slug);
+            var username = userService.GetUserUsernameById(realtedEvent.OrganizerId);
+            var relatedAddress = addressService.GetAddressById(thisEvent.AddressId);
+            var participants = new Participants(participating, interested);
+            var eventResponse = thisEvent.ToResponse(participants, username, $"/api/v1/Users/image/{username}", relatedAddress);
             eventsDtos.Add(eventResponse);
         }
         return Ok(eventsDtos); 
@@ -211,7 +219,7 @@ public class EventsController(
         var stringList = new List<string>();
         for (int i = 0; i < count; i++)
         {
-            stringList.Add($"{slug}/image/{i}");
+            stringList.Add($"/api/v1/Events/{slug}/image/{i}");
         }
         return Ok(stringList);
     }

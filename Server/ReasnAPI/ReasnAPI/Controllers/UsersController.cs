@@ -42,9 +42,10 @@ public class UsersController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    [Route("image/{userid}")]
-    public IActionResult GetImageByUserId(int userId)
+    [Route("image/{username}")]
+    public IActionResult GetImageByUsername(string username)
     {
+        var userId = userService.GetUserIdByUsername(username);
         var image = imageService.GetImagesByUserId(userId);
       
         return File(image.ImageData, $"image/jpeg");

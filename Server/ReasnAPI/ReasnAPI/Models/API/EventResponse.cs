@@ -3,13 +3,13 @@ using ReasnAPI.Models.Enums;
 
 namespace ReasnAPI.Models.API
 {
-    public class EventResponse
+    public class EventResponse(Participants participants)
     {
         public string Name { get; set; } = null!;
         public int AddressId { get; set; }
+        public AddressDto AddressDto { get; set; } = null!;
         public string Description { get; set; } = null!;
-        public string OrganizerUsername { get; set; }
-        public string OrganizerPhoto { get; set; }
+        public Organizer Organizer { get; set; } = null!;
         public DateTime StartAt { get; set; }
         public DateTime EndAt { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -18,8 +18,7 @@ namespace ReasnAPI.Models.API
         public EventStatus Status { get; set; }
         public List<TagDto>? Tags { get; set; }
         public List<ParameterDto>? Parameters { get; set; }
-        public int ParticipatingParticipantsCount { get; set; }
-        public int InterestedParticipantsCount { get; set; }
+        public Participants Participants { get; set; } = participants;
     }
 
 }

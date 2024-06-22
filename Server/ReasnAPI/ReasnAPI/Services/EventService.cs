@@ -9,9 +9,8 @@ using ReasnAPI.Mappers;
 using ReasnAPI.Models.Enums;
 
 namespace ReasnAPI.Services;
-public class EventService(ReasnContext context, ParameterService parameterService, TagService tagService, CommentService commentService)
+public class EventService(ReasnContext context, ParameterService parameterService, TagService tagService, CommentService commentService, AddressService addressService)
 {
-
     public EventDto CreateEvent(EventDto eventDto)
     {
         using (var scope = new TransactionScope())
@@ -257,6 +256,33 @@ public class EventService(ReasnContext context, ParameterService parameterServic
 
         var userEvents = context.Participants.Include(p => p.Event).Where(p => p.UserId == user.Id).Select(p => p.Event);
         return userEvents.ToDtoList().AsEnumerable();
+    }
+
+    public void UpdateAddressForEvent(AddressDto addressDto, int addressId, string slug)
+    {
+        var relatedEvent = GetEventBySlug(slug);
+
+        if (relatedEvent.AddressId != addressId)
+        {
+            throw new NotFoundException("Address is not related with this event");
+        }
+
+        addressService.UpdateAddress(addressId, addressDto);
+
+        context.SaveChanges();
+    }
+
+    public AddressDto GetRelatedAddress(string slug)
+    {
+        var relatedEvent = GetEventBySlug(slug);
+        var address = context.Addresses.Find(relatedEvent.AddressId);
+
+        if (address is null)
+        {
+            throw new NotFoundException("Address not found");
+        }
+
+        return address.ToDto();
     }
 
     private string CreateSlug(EventDto eventDto)
