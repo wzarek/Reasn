@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using ReasnAPI.Exceptions;
 using ReasnAPI.Mappers;
 using ReasnAPI.Models.Database;
@@ -12,38 +13,53 @@ public class ParticipantService(ReasnContext context)
     {
         ArgumentNullException.ThrowIfNull(participantDto);
 
-        var participantDb = context.Participants.FirstOrDefault(r => r.Event.Id == participantDto.EventId && r.User.Id == participantDto.UserId);
+        var eventDb = context.Events.FirstOrDefault(e => e.Slug == participantDto.EventSlug);
+
+        if (eventDb is null)
+        {
+            throw new NotFoundException("Event not found");
+        }
+
+        var userDb = context.Users.FirstOrDefault(u => u.Username == participantDto.Username);
+
+        if (userDb is null)
+        {
+            throw new NotFoundException("User not found");
+        }
+
+        var participantDb = context.Participants.FirstOrDefault(r => r.Event.Id == eventDb.Id && r.User.Id == userDb.Id);
 
         if (participantDb is not null)
         {
             throw new BadRequestException("Participant already exists");
         }
 
-        var userInDb = context.Users.FirstOrDefault(r => r.Id == participantDto.UserId);
-
-        if (userInDb is null)
-        {
-            throw new NotFoundException("User not found");
-        }
-
-        var eventInDb = context.Events.FirstOrDefault(r => r.Id == participantDto.EventId);
-
-        if (eventInDb is null)
-        {
-            throw new NotFoundException("Event not found");
-        }
-
-        context.Participants.Add(participantDto.ToEntity());
+        context.Participants.Add(new Participant { EventId = eventDb.Id, UserId = userDb.Id, Status = participantDto.Status });
         context.SaveChanges();
 
         return participantDto;
     }
 
-    public ParticipantDto UpdateParticipant(int participantId, ParticipantDto participantDto)
+    public ParticipantDto UpdateParticipant(ParticipantDto participantDto)
     {
         ArgumentNullException.ThrowIfNull(participantDto);
 
-        var participant = context.Participants.FirstOrDefault(r => r.Id == participantId);
+        var eventDb = context.Events.FirstOrDefault(e => e.Slug == participantDto.EventSlug);
+
+        if (eventDb is null)
+        {
+            throw new NotFoundException("Event not found");
+        }
+
+        var userDb = context.Users.FirstOrDefault(u => u.Username == participantDto.Username);
+
+        if (userDb is null)
+        {
+            throw new NotFoundException("User not found");
+        }
+
+        var participant = context.Participants.FirstOrDefault(r => r.Event.Id == eventDb.Id && r.User.Id == userDb.Id);
+
         if (participant is null)
         {
             throw new NotFoundException("Participant not found");
@@ -54,12 +70,19 @@ public class ParticipantService(ReasnContext context)
         context.Participants.Update(participant);
         context.SaveChanges();
 
-        return participant.ToDto();
+        return participantDto;
     }
 
-    public void DeleteParticipant(int participantId)
+    public void DeleteParticipant(int userId, string eventSlug)
     {
-        var participant = context.Participants.FirstOrDefault(r => r.Id == participantId);
+        var eventDb = context.Events.FirstOrDefault(e => e.Slug == eventSlug);
+
+        if (eventDb is null)
+        {
+            throw new NotFoundException("Event not found");
+        }
+
+        var participant = context.Participants.FirstOrDefault(r => r.Event.Id == eventDb.Id && r.User.Id == userId);
 
         if (participant is null)
         {
@@ -70,22 +93,12 @@ public class ParticipantService(ReasnContext context)
         context.SaveChanges();
     }
 
-    public ParticipantDto GetParticipantById(int participantId)
-    {
-        var participant = context.Participants.Find(participantId);
-
-        if (participant is null)
-        {
-            throw new NotFoundException("Participant not found");
-        }
-
-        return participant.ToDto();
-    }
-
     public IEnumerable<ParticipantDto> GetParticipantsByFilter(Expression<Func<Participant, bool>> filter)
     {
         return context.Participants
                         .Where(filter)
+                        .Include(p => p.Event)
+                        .Include(p => p.User)
                         .ToDtoList()
                         .AsEnumerable();
     }
@@ -93,6 +106,8 @@ public class ParticipantService(ReasnContext context)
     public IEnumerable<ParticipantDto> GetAllParticipants()
     {
         return context.Participants
+                        .Include(p => p.Event)
+                        .Include(p => p.User)
                         .ToDtoList()
                         .AsEnumerable();
     }

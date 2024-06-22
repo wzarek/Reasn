@@ -8,8 +8,8 @@ public static class ParticipantMapper
     {
         return new ParticipantDto
         {
-            EventId = participant.EventId,
-            UserId = participant.UserId,
+            EventSlug = participant.Event.Slug,
+            Username = participant.User.Username,
             Status = participant.Status
         };
     }
@@ -17,15 +17,5 @@ public static class ParticipantMapper
     public static List<ParticipantDto> ToDtoList(this IEnumerable<Participant> participants)
     {
         return participants.Select(ToDto).ToList();
-    }
-
-    public static Participant ToEntity(this ParticipantDto participantDto)
-    {
-        return new Participant
-        {
-            EventId = participantDto.EventId,
-            UserId = participantDto.UserId,
-            Status = participantDto.Status
-        };
     }
 }

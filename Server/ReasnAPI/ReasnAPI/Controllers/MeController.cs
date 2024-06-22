@@ -36,8 +36,8 @@ public class MeController(UserService userService, EventService eventService, Pa
 
         var user = _userService.GetCurrentUser();
 
-        // Non-admin users can't update their role to admin
-        if (user.Role != UserRole.Admin && userDto.Role == UserRole.Admin)
+        // Users cant change their role in this endpoint
+        if (user.Role != userDto.Role)
         {
             return Forbid();
         }
@@ -47,14 +47,28 @@ public class MeController(UserService userService, EventService eventService, Pa
         return Ok(updatedUser);
     }
 
+    [HttpGet]
+    [Route("image")]
+    [ProducesResponseType<ImageDto>(StatusCodes.Status200OK)]
+    public IActionResult GetCurrentUserImage()
+    {
+        var user = _userService.GetCurrentUser();
+        var image = _imageService.GetImagesByUserId(user.Id);
+
+        if (image is null)
+        {
+            return NotFound();
+        }
+
+        return File(image.First().ImageData, "image/jpeg");
+    }
+
     [HttpPost]
     [Route("image")]
     [ProducesResponseType<ImageDto>(StatusCodes.Status201Created)]
     public async Task<IActionResult> AddCurrentUserImage([FromForm] List<IFormFile> images)
     {
         var userId = _userService.GetCurrentUser().Id;
-
-        var imageDtos = new List<ImageDto>();
 
         foreach (var image in images.Where(image => image.Length > 0))
         {
@@ -70,7 +84,6 @@ public class MeController(UserService userService, EventService eventService, Pa
             };
 
             _imageService.CreateImages([imageDto]);
-            imageDtos.Add(imageDto);
         }
 
         return Ok();
@@ -82,8 +95,6 @@ public class MeController(UserService userService, EventService eventService, Pa
     public async Task<IActionResult> UpdateCurrentUserImage([FromForm] List<IFormFile> images)
     {
         var userId = _userService.GetCurrentUser().Id;
-
-        var imageDtos = new List<ImageDto>();
 
         foreach (var image in images.Where(image => image.Length > 0))
         {
@@ -99,7 +110,6 @@ public class MeController(UserService userService, EventService eventService, Pa
             };
 
             _imageService.UpdateImageForUser(userId, imageDto);
-            imageDtos.Add(imageDto);
         }
 
         return Ok();
@@ -138,10 +148,9 @@ public class MeController(UserService userService, EventService eventService, Pa
     [ProducesResponseType<ParticipantDto>(StatusCodes.Status201Created)]
     public IActionResult EnrollCurrentUserInEvent([FromRoute] string slug)
     {
-        var eventId = _eventService.GetEventBySlug(slug).Id;
-        var userId = _userService.GetCurrentUser().Id;
+        var user = _userService.GetCurrentUser();
 
-        var participant = _participantService.CreateParticipant(new ParticipantDto { EventId = eventId, UserId = userId, Status = ParticipantStatus.Interested });
+        var participant = _participantService.CreateParticipant(new ParticipantDto { EventSlug = slug, Username = user.Username, Status = ParticipantStatus.Interested });
 
         var location = Url.Action(
             action: nameof(GetCurrentUserEvents),
@@ -155,11 +164,8 @@ public class MeController(UserService userService, EventService eventService, Pa
     [ProducesResponseType<ParticipantDto>(StatusCodes.Status200OK)]
     public IActionResult ConfirmCurrentUserEventAttendance([FromRoute] string slug)
     {
-        var eventId = _eventService.GetEventBySlug(slug).Id;
-        var userId = _userService.GetCurrentUser().Id;
-        var participant = _participantService.GetParticipantsByFilter(p => p.EventId == eventId && p.UserId == userId).First();
-
-        participant = _participantService.UpdateParticipant(participant.UserId, new ParticipantDto { Status = ParticipantStatus.Participating });
+        var user = _userService.GetCurrentUser();
+        var participant = _participantService.UpdateParticipant(new ParticipantDto { EventSlug = slug, Username = user.Username, Status = ParticipantStatus.Participating });
 
         return Ok(participant);
     }
@@ -169,11 +175,8 @@ public class MeController(UserService userService, EventService eventService, Pa
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult CancelCurrentUserEventAttendance([FromRoute] string slug)
     {
-        var eventId = _eventService.GetEventBySlug(slug).Id;
         var userId = _userService.GetCurrentUser().Id;
-        var participant = _participantService.GetParticipantsByFilter(p => p.EventId == eventId && p.UserId == userId).First();
-
-        _participantService.DeleteParticipant(participant.UserId);
+        _participantService.DeleteParticipant(userId, slug);
 
         return NoContent();
     }

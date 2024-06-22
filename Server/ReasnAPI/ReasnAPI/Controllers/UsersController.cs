@@ -50,21 +50,14 @@ public class UsersController(UserService userService, InterestService interestSe
         validator.ValidateAndThrow(userDto);
 
         var currentUser = _userService.GetCurrentUser();
-        var userToUpdate = _userService.GetUserByUsername(username);
 
-        // Users can only update their own profile, unless they are an admin
-        if (currentUser.Role != UserRole.Admin && currentUser.Username != userToUpdate.Username)
+        // Only admins can update other users from this endpoint
+        if (currentUser.Role != UserRole.Admin)
         {
             return Forbid();
         }
 
-        // Non-admin users can't update their role to admin
-        if (currentUser.Role != UserRole.Admin && userDto.Role == UserRole.Admin)
-        {
-            return Forbid();
-        }
-
-        var updatedUser = _userService.UpdateUser(userToUpdate.Username, userDto);
+        var updatedUser = _userService.UpdateUser(username, userDto);
 
         return Ok(updatedUser);
     }
