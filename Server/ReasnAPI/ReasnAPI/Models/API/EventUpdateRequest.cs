@@ -6,7 +6,6 @@ namespace ReasnAPI.Models.API
     public class EventUpdateRequest
     {
         public string Name { get; set; } = null!;
-        public int AddressId { get; set; }
         public AddressDto AddressDto { get; set; } = null!;
         public int OrganizerId { get; set; }
         public string Description { get; set; } = null!;

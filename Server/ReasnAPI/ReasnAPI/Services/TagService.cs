@@ -40,7 +40,6 @@ public class TagService(ReasnContext context)
 
     public void AttatchTagsToEvent(List<Tag> tagsToAdd, Event eventToUpdate)
     {
-
         var tagNamesToAdd = tagsToAdd.Select(t => t.Name).ToList();
 
         var tagsFromDb = context.Tags.Where(tag => tagNamesToAdd.Contains(tag.Name)).ToList();

@@ -61,7 +61,6 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             }
 
             eventToUpdate.Name = eventDto.Name;
-            eventToUpdate.AddressId = eventDto.AddressId;
             eventToUpdate.Description = eventDto.Description;
             eventToUpdate.OrganizerId = eventDto.OrganizerId;
             eventToUpdate.StartAt = eventDto.StartAt;
@@ -110,16 +109,12 @@ public class EventService(ReasnContext context, ParameterService parameterServic
     {
         tagsToRemove.ForEach(tag => eventToUpdate.Tags.Remove(tag));
         context.SaveChanges();
-
-        tagService.RemoveTagsNotInAnyEvent();
     }
 
     private void DetachParametersFromEvent(List<Parameter> parametersToRemove, Event eventToUpdate)
     {
         parametersToRemove.ForEach(param => eventToUpdate.Parameters.Remove(param));
         context.SaveChanges();
-
-        parameterService.RemoveParametersNotInAnyEvent();
     }
 
     public void DeleteEvent(int eventId)
@@ -173,7 +168,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
 
     public Event GetEventBySlug(string slug)
     {
-        var eventToReturn = context.Events.Include(e => e.Tags).Include(e => e.Parameters).FirstOrDefault(e => e.Slug == slug);
+        var eventToReturn = context.Events.Include(e => e.Tags).Include(e => e.Parameters).Include(e => e.Address).FirstOrDefault(e => e.Slug == slug);
         if (eventToReturn is null)
         {
             throw new NotFoundException("Event not found");
@@ -267,6 +262,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             throw new NotFoundException("Address is not related with this event");
         }
 
+        if (addressDto == addressService.GetAddressById(addressId)) return;
         addressService.UpdateAddress(addressId, addressDto);
 
         context.SaveChanges();

@@ -36,9 +36,8 @@ public class EventsController(
             var interested = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Interested);
             var relatedEvent = eventService.GetEventBySlug(thisEvent.Slug);
             var username =  userService.GetUserUsernameById(relatedEvent.OrganizerId);
-            var relatedAddress = eventService.GetRelatedAddress(thisEvent.Slug);
             var participants = new Participants(participating, interested);
-            var eventResponse = thisEvent.ToResponse(participants, username, $"/api/v1/Users/image/{username}", relatedAddress);
+            var eventResponse = thisEvent.ToResponse(participants, username, $"/api/v1/Users/image/{username}", relatedEvent.Address.ToDto(), relatedEvent.AddressId);
             eventsResponses.Add(eventResponse);
         }
    
@@ -51,9 +50,10 @@ public class EventsController(
     public IActionResult CreateEvent([FromBody] EventCreateRequest eventRequest, [FromServices] IValidator<EventDto> validator)
     {
         var user = userService.GetCurrentUser();
+        
+        var address = addressService.CreateAddress(eventRequest.AddressDto);
         var eventDto = eventRequest.ToDto(user.Id);
         validator.ValidateAndThrow(eventDto);
-        addressService.CreateAddress(eventRequest.AddressDto);
         eventService.CreateEvent(eventDto);
         return Created();
     }
@@ -67,9 +67,8 @@ public class EventsController(
         var participating = eventService.GetEventParticipantsCountBySlugAndStatus(slug, ParticipantStatus.Participating);
         var interested = eventService.GetEventParticipantsCountBySlugAndStatus(slug, ParticipantStatus.Interested);
         var username = userService.GetUserUsernameById(realatedEvent.OrganizerId);
-        var relatedAddress = addressService.GetAddressById(realatedEvent.AddressId);
         var participants = new Participants(participating, interested);
-        var eventResponse = realatedEvent.ToDto().ToResponse(participants, username, $"/api/v1/Users/image/{username}", relatedAddress);
+        var eventResponse = realatedEvent.ToDto().ToResponse(participants, username, $"/api/v1/Users/image/{username}", realatedEvent.Address.ToDto(), realatedEvent.AddressId);
 
         return Ok(eventResponse);
     }
@@ -80,11 +79,11 @@ public class EventsController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult UpdateEvent([FromRoute] string slug, [FromBody] EventUpdateRequest eventUpdateRequest, [FromServices] IValidator<EventDto> validator)
     {
-        var eventDto = eventUpdateRequest.ToDto();
-        validator.ValidateAndThrow(eventDto);
+        
         var existingEvent = eventService.GetEventBySlug(slug);
         var user = userService.GetCurrentUser();
-
+        var eventDto = eventUpdateRequest.ToDto();
+        validator.ValidateAndThrow(eventDto);
         if (existingEvent.OrganizerId != user.Id && user.Role != UserRole.Admin)
         {
             return Forbid();
@@ -94,7 +93,7 @@ public class EventsController(
         {
             return Forbid();
         }
-        eventService.UpdateAddressForEvent(eventUpdateRequest.AddressDto, eventUpdateRequest.AddressId, slug);
+        eventService.UpdateAddressForEvent(eventUpdateRequest.AddressDto, existingEvent.AddressId, slug);
         eventService.UpdateEvent(existingEvent.Id, eventDto);
 
         return Ok();
@@ -114,9 +113,8 @@ public class EventsController(
             var interested = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Interested);
             var realtedEvent = eventService.GetEventBySlug(thisEvent.Slug);
             var username = userService.GetUserUsernameById(realtedEvent.OrganizerId);
-            var relatedAddress = addressService.GetAddressById(thisEvent.AddressId);
             var participants = new Participants(participating, interested);
-            var eventResponse = thisEvent.ToResponse(participants, username, $"/api/v1/Users/image/{username}", relatedAddress);
+            var eventResponse = thisEvent.ToResponse(participants, username, $"/api/v1/Users/image/{username}", realtedEvent.Address.ToDto(),realtedEvent.AddressId);
             eventsDtos.Add(eventResponse);
         }
         return Ok(eventsDtos); 

@@ -16,7 +16,6 @@ namespace ReasnAPI.Mappers
             return new EventDto
             {
                 Name = eventToMap.Name,
-                AddressId = eventToMap.AddressId,
                 Description = eventToMap.Description,
                 OrganizerId = eventToMap.OrganizerId,
                 StartAt = eventToMap.StartAt,
@@ -39,7 +38,6 @@ namespace ReasnAPI.Mappers
             return new Event
             {
                 Name = eventDto.Name,
-                AddressId = eventDto.AddressId,
                 Description = eventDto.Description,
                 OrganizerId = eventDto.OrganizerId,
                 StartAt = eventDto.StartAt,
@@ -48,14 +46,14 @@ namespace ReasnAPI.Mappers
             };
         }
 
-        public static EventResponse ToResponse(this EventDto eventDto, Participants participants, string username, string image, AddressDto addressDto)
+        public static EventResponse ToResponse(this EventDto eventDto, Participants participants, string username, string image, AddressDto addressDto, int addressId)
         {
             var organizer = new Organizer(username, image);
             
-            return new EventResponse(participants)
+            return new EventResponse()
             {
                 Name = eventDto.Name,
-                AddressId = eventDto.AddressId,
+                AddressId = addressId,
                 Description = eventDto.Description,
                 Organizer = organizer,
                 StartAt = eventDto.StartAt,
@@ -76,7 +74,6 @@ namespace ReasnAPI.Mappers
             return new EventDto()
             {
                 Name = eventCreateRequest.Name,
-                AddressId = eventCreateRequest.AddressId,
                 OrganizerId = eventCreateRequest.OrganizerId,
                 Description = eventCreateRequest.Description,
                 StartAt = eventCreateRequest.StartAt,
@@ -91,7 +88,6 @@ namespace ReasnAPI.Mappers
             return new EventDto()
             {
                 Name = eventCreateRequest.Name,
-                AddressId = eventCreateRequest.AddressId,
                 Description = eventCreateRequest.Description,
                 StartAt = eventCreateRequest.StartAt,
                 EndAt = eventCreateRequest.EndAt,
