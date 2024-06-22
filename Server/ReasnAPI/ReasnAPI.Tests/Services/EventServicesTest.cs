@@ -24,7 +24,6 @@ namespace ReasnAPI.Tests.Services
             var eventDto = new EventDto()
             {
                 Name = "name1",
-                AddressId = 1,
                 Description = "description2",
                 OrganizerId = 1,
                 StartAt = DateTime.Now,
@@ -102,7 +101,6 @@ namespace ReasnAPI.Tests.Services
             var eventDto = new EventDto()
             {
                 Name = "name1",
-                AddressId = 1,
                 Description = "description2",
                 OrganizerId = 1,
                 StartAt = DateTime.Now,
