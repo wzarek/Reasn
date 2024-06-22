@@ -28,20 +28,8 @@ public class EventsController(
     public IActionResult GetEvents()
     {
         var events = eventService.GetAllEvents();
-        var eventsResponses = new List<EventResponse>();
-
-        foreach (var thisEvent in events)
-        {
-            var participating = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Participating);
-            var interested = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Interested);
-            var relatedEvent = eventService.GetEventBySlug(thisEvent.Slug);
-            var username =  userService.GetUserUsernameById(relatedEvent.OrganizerId);
-            var participants = new Participants(participating, interested);
-            var eventResponse = thisEvent.ToResponse(participants, username, $"/api/v1/Users/image/{username}", relatedEvent.Address.ToDto(), relatedEvent.AddressId);
-            eventsResponses.Add(eventResponse);
-        }
    
-        return Ok(eventsResponses);
+        return Ok(events);
     }
 
     [HttpPost]
@@ -51,10 +39,10 @@ public class EventsController(
     {
         var user = userService.GetCurrentUser();
         
-        var address = addressService.CreateAddress(eventRequest.AddressDto);
         var eventDto = eventRequest.ToDto(user.Id);
+        eventDto.Slug = "temp";
         validator.ValidateAndThrow(eventDto);
-        eventService.CreateEvent(eventDto);
+        eventService.CreateEvent(eventDto, eventRequest.AddressDto);
         return Created();
     }
 
@@ -63,12 +51,13 @@ public class EventsController(
     [ProducesResponseType<EventResponse>(StatusCodes.Status200OK)]
     public IActionResult GetEventBySlug([FromRoute] string slug)
     {
-        var realatedEvent = eventService.GetEventBySlug(slug);
+        var relatedEvent = eventService.GetEventBySlug(slug);
         var participating = eventService.GetEventParticipantsCountBySlugAndStatus(slug, ParticipantStatus.Participating);
         var interested = eventService.GetEventParticipantsCountBySlugAndStatus(slug, ParticipantStatus.Interested);
-        var username = userService.GetUserUsernameById(realatedEvent.OrganizerId);
+        var username = relatedEvent.Organizer.Username;
         var participants = new Participants(participating, interested);
-        var eventResponse = realatedEvent.ToDto().ToResponse(participants, username, $"/api/v1/Users/image/{username}", realatedEvent.Address.ToDto(), realatedEvent.AddressId);
+        var images = eventService.GetEventImages(slug);
+        var eventResponse = relatedEvent.ToDto().ToResponse(participants, username, $"/api/v1/Users/image/{username}", relatedEvent.Address.ToDto(), relatedEvent.AddressId, images);
 
         return Ok(eventResponse);
     }
@@ -82,7 +71,8 @@ public class EventsController(
         
         var existingEvent = eventService.GetEventBySlug(slug);
         var user = userService.GetCurrentUser();
-        var eventDto = eventUpdateRequest.ToDto();
+        var eventDto = eventUpdateRequest.ToDto(user.Id);
+        eventDto.Slug = slug;
         validator.ValidateAndThrow(eventDto);
         if (existingEvent.OrganizerId != user.Id && user.Role != UserRole.Admin)
         {
@@ -106,18 +96,8 @@ public class EventsController(
     public IActionResult GetEventsRequests()
     {
         var events = eventService.GetEventsByFilter(e => e.Status == EventStatus.PendingApproval);
-        var eventsDtos = new List<EventResponse>();
-        foreach (var thisEvent in events)
-        {
-            var participating = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Participating);
-            var interested = eventService.GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Interested);
-            var realtedEvent = eventService.GetEventBySlug(thisEvent.Slug);
-            var username = userService.GetUserUsernameById(realtedEvent.OrganizerId);
-            var participants = new Participants(participating, interested);
-            var eventResponse = thisEvent.ToResponse(participants, username, $"/api/v1/Users/image/{username}", realtedEvent.Address.ToDto(),realtedEvent.AddressId);
-            eventsDtos.Add(eventResponse);
-        }
-        return Ok(eventsDtos); 
+       
+        return Ok(events); 
     }
 
     [HttpPost]
@@ -272,27 +252,28 @@ public class EventsController(
     public IActionResult AddEventComment([FromRoute] string slug, [FromBody]CommentRequest commentRequest, [FromServices] IValidator<CommentDto> validator)
     {
         var user = userService.GetCurrentUser();
-
-        var commentDto = commentRequest.ToDtoFromRequest(user.Id);
+        var @event = eventService.GetEventBySlug(slug);
+        var commentDto = commentRequest.ToDtoFromRequest(user.Id, @event.Id);
         validator.ValidateAndThrow(commentDto);
         
-        eventService.AddEventComment(commentDto,slug);
+        eventService.AddEventComment(commentDto);
         return Ok();
     }
 
     [HttpGet]
     [Authorize(Roles = "Admin, Organizer")]
-    [Route("parameters")]
+    [Route("{slug}/parameters")]
     [ProducesResponseType<List<ParameterDto>>(StatusCodes.Status200OK)]
     public IActionResult GetEventsParameters([FromRoute] string slug)
     {
-        var eventDto = eventService.GetEventBySlug(slug).ToDto();
-        if (eventDto == null)
+        var @event = eventService.GetEventBySlug(slug);
+        var user = userService.GetCurrentUser();
+        if (user.Role != UserRole.Admin && @event.OrganizerId != user.Id)
         {
-            return NotFound();
+            Forbid();
         }
 
-        var parameters = eventDto.Parameters;
+        var parameters = @event.Parameters.ToDtoList();
         return Ok(parameters);
     }
 
@@ -310,7 +291,7 @@ public class EventsController(
             Forbid();
         }
 
-        var tags = @event.Tags;
+        var tags = @event.Tags.ToDtoList();
         return Ok(tags);
     }
 

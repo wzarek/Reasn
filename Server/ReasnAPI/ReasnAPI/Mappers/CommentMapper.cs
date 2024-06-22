@@ -33,11 +33,11 @@ public static class CommentMapper
         };
     }
 
-    public static CommentDto ToDtoFromRequest(this CommentRequest commentRequest, int userId)
+    public static CommentDto ToDtoFromRequest(this CommentRequest commentRequest, int userId, int eventId)
     {
         return new CommentDto()
         {
-            EventId = commentRequest.EventId,
+            EventId = eventId,
             Content = commentRequest.Content,
             CreatedAt = DateTime.Now,
             UserId = userId,

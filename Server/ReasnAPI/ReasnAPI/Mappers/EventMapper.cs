@@ -46,7 +46,7 @@ namespace ReasnAPI.Mappers
             };
         }
 
-        public static EventResponse ToResponse(this EventDto eventDto, Participants participants, string username, string image, AddressDto addressDto, int addressId)
+        public static EventResponse ToResponse(this EventDto eventDto, Participants participants, string username, string image, AddressDto addressDto, int addressId, List<string> images)
         {
             var organizer = new Organizer(username, image);
             
@@ -65,16 +65,17 @@ namespace ReasnAPI.Mappers
                 Tags = eventDto.Tags,
                 Parameters = eventDto.Parameters,
                 AddressDto = addressDto,
-                Participants = participants
+                Participants = participants,
+                Images = images
             };
         }
 
-        public static EventDto ToDto(this EventUpdateRequest eventCreateRequest)
+        public static EventDto ToDto(this EventUpdateRequest eventCreateRequest, int organizerId)
         {
             return new EventDto()
             {
                 Name = eventCreateRequest.Name,
-                OrganizerId = eventCreateRequest.OrganizerId,
+                OrganizerId = organizerId,
                 Description = eventCreateRequest.Description,
                 StartAt = eventCreateRequest.StartAt,
                 EndAt = eventCreateRequest.EndAt,

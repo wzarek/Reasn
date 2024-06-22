@@ -6,12 +6,14 @@ using System.Linq.Expressions;
 using System.Transactions;
 using System.Text.RegularExpressions;
 using ReasnAPI.Mappers;
+using ReasnAPI.Models.API;
 using ReasnAPI.Models.Enums;
 
 namespace ReasnAPI.Services;
-public class EventService(ReasnContext context, ParameterService parameterService, TagService tagService, CommentService commentService, AddressService addressService)
+public class EventService(ReasnContext context, ParameterService parameterService, TagService tagService, CommentService commentService, AddressService addressService, ImageService imageService)
 {
-    public EventDto CreateEvent(EventDto eventDto)
+
+    public EventDto CreateEvent(EventDto eventDto, AddressDto addressDto)
     {
         using (var scope = new TransactionScope())
         {
@@ -20,9 +22,12 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             newEvent.CreatedAt = createdTime;
             newEvent.UpdatedAt = createdTime;
             newEvent.Slug = CreateSlug(eventDto);
-            
 
+            addressService.CreateAddress(addressDto);
+            newEvent.Address = addressDto.ToEntity();
+            context.SaveChanges();
             context.Events.Add(newEvent);
+
 
             context.SaveChanges();
             if (eventDto.Tags != null)
@@ -36,7 +41,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
                 var newParameters = eventDto.Parameters.ToEntityList();
                 parameterService.AttachParametersToEvent(newParameters, newEvent);
             }
-
+            
             context.SaveChanges();
             scope.Complete();
             eventDto.Slug = newEvent.Slug;
@@ -62,7 +67,6 @@ public class EventService(ReasnContext context, ParameterService parameterServic
 
             eventToUpdate.Name = eventDto.Name;
             eventToUpdate.Description = eventDto.Description;
-            eventToUpdate.OrganizerId = eventDto.OrganizerId;
             eventToUpdate.StartAt = eventDto.StartAt;
             eventToUpdate.EndAt = eventDto.EndAt;
             eventToUpdate.UpdatedAt = DateTime.UtcNow;
@@ -168,7 +172,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
 
     public Event GetEventBySlug(string slug)
     {
-        var eventToReturn = context.Events.Include(e => e.Tags).Include(e => e.Parameters).Include(e => e.Address).FirstOrDefault(e => e.Slug == slug);
+        var eventToReturn = context.Events.Include(e => e.Tags).Include(e => e.Parameters).Include(e => e.Address).Include(e => e.Organizer).FirstOrDefault(e => e.Slug == slug);
         if (eventToReturn is null)
         {
             throw new NotFoundException("Event not found");
@@ -218,27 +222,66 @@ public class EventService(ReasnContext context, ParameterService parameterServic
         return commentDtos;
     }
 
-    public void AddEventComment(CommentDto commentDto, string slug)
+    public void AddEventComment(CommentDto commentDto)
     {
-        commentDto = commentService.CreateComment(commentDto);
-        var relatedEvent = GetEventBySlug(slug);
-        relatedEvent.Comments.Add(commentDto.ToEntity());
+        commentService.CreateComment(commentDto);
         context.SaveChanges();
     }
 
-    public IEnumerable<EventDto> GetEventsByFilter(Expression<Func<Event, bool>> filter)
+    public IEnumerable<EventResponse> GetEventsByFilter(Expression<Func<Event, bool>> filter)
     {
-        var events = context.Events.Include(e => e.Parameters).Include(e => e.Tags).Where(filter).ToList();
-        var eventDtos = events.ToDtoList();
-        return eventDtos;
+        var events = context.Events.Include(e => e.Parameters).Include(e => e.Tags).Include(e => e.Address).Include(e => e.Organizer).Where(filter).ToList();
+
+        var eventsResponses = new List<EventResponse>();
+        foreach (var thisEvent in events)
+        {
+            var participating = GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Participating);
+            var interested = GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Interested);
+            var participants = new Participants(participating, interested);
+            var username = thisEvent.Organizer.Username;
+            var addressDto = thisEvent.Address.ToDto();
+            var addressId = thisEvent.AddressId;
+
+            var eventDto = thisEvent.ToDto();
+            var eventResponse = eventDto.ToResponse(participants, username, $"/api/v1/Users/image/{username}", addressDto, addressId, GetEventImages(thisEvent.Slug));
+            eventsResponses.Add(eventResponse);
+        }
+
+        return eventsResponses.AsEnumerable();
     }
 
-    public IEnumerable<EventDto> GetAllEvents()
+    public List<string> GetEventImages(string slug)
     {
-        var events = context.Events.Include(e => e.Parameters).Include(e => e.Tags).ToList();
+        var @event = GetEventBySlug(slug);
+        var images = imageService.GetImagesByEventId(@event.Id);
+        var count = images.Count();
+        var stringList = new List<string>();
+        for (int i = 0; i < count; i++)
+        {
+            stringList.Add($"/api/v1/Events/{slug}/image/{i}");
+        }
+        return stringList;
+    }
 
-        var eventDtos = events.ToDtoList();
-        return eventDtos;
+    public IEnumerable<EventResponse> GetAllEvents()
+    {
+        var events = context.Events.Include(e => e.Parameters).Include(e => e.Tags).Include(e => e.Address).Include(e => e.Organizer).ToList();
+        var eventsResponses = new List<EventResponse>();
+        foreach (var thisEvent in events )
+        {
+            var participating = GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Participating);
+            var interested = GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Interested);
+            var participants = new Participants(participating, interested);
+            var username = thisEvent.Organizer.Username;
+            var addressDto = thisEvent.Address.ToDto();
+            var addressId = thisEvent.AddressId;
+
+            var eventDto = thisEvent.ToDto();
+            var eventResponse = eventDto.ToResponse(participants, username, $"/api/v1/Users/image/{username}", addressDto, addressId, GetEventImages(thisEvent.Slug));
+            eventsResponses.Add(eventResponse);
+        }
+
+        return eventsResponses.AsEnumerable();
     }
     public IEnumerable<EventDto> GetUserEvents(string username)
     {

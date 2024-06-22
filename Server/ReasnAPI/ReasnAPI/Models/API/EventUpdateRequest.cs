@@ -7,7 +7,6 @@ namespace ReasnAPI.Models.API
     {
         public string Name { get; set; } = null!;
         public AddressDto AddressDto { get; set; } = null!;
-        public int OrganizerId { get; set; }
         public string Description { get; set; } = null!;
         public DateTime StartAt { get; set; }
         public DateTime EndAt { get; set; }

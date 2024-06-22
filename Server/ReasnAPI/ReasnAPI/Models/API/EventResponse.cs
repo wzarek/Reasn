@@ -19,6 +19,7 @@ namespace ReasnAPI.Models.API
         public List<TagDto>? Tags { get; set; }
         public List<ParameterDto>? Parameters { get; set; }
         public Participants? Participants { get; set; }
+        public List<string>? Images { get; set; }
     }
 
 }
