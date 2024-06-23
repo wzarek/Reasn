@@ -39,7 +39,6 @@ public class EventsController(
         var user = userService.GetCurrentUser();
         
         var eventDto = eventRequest.ToDto(user.Id);
-        eventDto.Slug = "temp";
         validator.ValidateAndThrow(eventDto);
         eventService.CreateEvent(eventDto, eventRequest.AddressDto);
         return Created();
@@ -229,7 +228,7 @@ public class EventsController(
 
         var image = imageService.GetImageByEventIdAndIndex(relatedEvent.Id,id);
 
-        return File(image.ImageData, $"image/jpeg");
+        return File(image.ImageData, "image/jpeg");
     }
 
     [HttpGet]

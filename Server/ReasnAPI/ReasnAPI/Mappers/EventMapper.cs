@@ -94,6 +94,7 @@ namespace ReasnAPI.Mappers
                 EndAt = eventCreateRequest.EndAt,
                 Tags = eventCreateRequest.Tags,
                 Status = EventStatus.PendingApproval,
+                Slug = string.Empty,
                 Parameters = eventCreateRequest.Parameters,
                 OrganizerId = organizerId
             };
