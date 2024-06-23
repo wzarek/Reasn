@@ -9,9 +9,10 @@ namespace ReasnAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UsersController(UserService userService, InterestService interestService) : ControllerBase
+public class UsersController(UserService userService, InterestService interestService, ImageService imageService) : ControllerBase
 {
     private readonly UserService _userService = userService;
+    private readonly ImageService _imageService = imageService;
     private readonly InterestService _interestService = interestService;
 
     [HttpGet]
@@ -64,6 +65,17 @@ public class UsersController(UserService userService, InterestService interestSe
 
     [HttpGet]
     [Authorize]
+    [Route("image/{username}")]
+    public IActionResult GetImageByUsername(string username)
+    {
+        var userId = userService.GetUserIdByUsername(username);
+        var image = _imageService.GetImageByUserId(userId);
+      
+        return File(image.ImageData, $"image/jpeg");
+    }
+
+    [HttpGet]
+    [Authorize]
     [Route("interests")]
     [ProducesResponseType<IEnumerable<InterestDto>>(StatusCodes.Status200OK)]
     public IActionResult GetUsersInterests()
@@ -81,4 +93,5 @@ public class UsersController(UserService userService, InterestService interestSe
         _interestService.DeleteInterest(interestId);
         return NoContent();
     }
+
 }

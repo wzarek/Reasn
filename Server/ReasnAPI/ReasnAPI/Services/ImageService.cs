@@ -1,4 +1,4 @@
-﻿using ReasnAPI.Models.Database;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 using ReasnAPI.Exceptions;
@@ -200,7 +200,6 @@ public class ImageService(ReasnContext context)
             .ToDtoList()
             .AsEnumerable();
     }
-
     public IEnumerable<ImageDto> GetImagesByEventId(int eventId)
     {
         var images = context.Images
@@ -209,12 +208,36 @@ public class ImageService(ReasnContext context)
 
         if (!images.Any())
         {
-            throw new NotFoundException("Images not found");
+            return Enumerable.Empty<ImageDto>();
         }
 
         var imageDtos = images.ToDtoList().AsEnumerable();
 
         return imageDtos;
+    }
+
+    public ImageDto GetImageByEventIdAndIndex(int eventId, int index)
+    {
+
+        var image = context.Images
+            .Where(image => image.ObjectType == ObjectType.Event && image.ObjectId == eventId)
+            .Skip(index)
+            .FirstOrDefault();
+
+        if (image == null)
+        {
+            throw new NotFoundException($"Image at index {index} not found for eventId {eventId}");
+        }
+
+        var imageDto = image.ToDto();
+        
+        return imageDto;
+    }
+
+    public int GetImageCountByEventId(int eventId)
+    {
+        return context.Images
+            .Count(image => image.ObjectType == ObjectType.Event && image.ObjectId == eventId);
     }
 
 }

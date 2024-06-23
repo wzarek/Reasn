@@ -1,5 +1,7 @@
-﻿using ReasnAPI.Models.Database;
+﻿using ReasnAPI.Models.API;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
+using ReasnAPI.Models.Enums;
 
 namespace ReasnAPI.Mappers
 {
@@ -14,7 +16,6 @@ namespace ReasnAPI.Mappers
             return new EventDto
             {
                 Name = eventToMap.Name,
-                AddressId = eventToMap.AddressId,
                 Description = eventToMap.Description,
                 OrganizerId = eventToMap.OrganizerId,
                 StartAt = eventToMap.StartAt,
@@ -37,12 +38,65 @@ namespace ReasnAPI.Mappers
             return new Event
             {
                 Name = eventDto.Name,
-                AddressId = eventDto.AddressId,
                 Description = eventDto.Description,
                 OrganizerId = eventDto.OrganizerId,
                 StartAt = eventDto.StartAt,
                 EndAt = eventDto.EndAt,
                 Status = eventDto.Status
+            };
+        }
+
+        public static EventResponse ToResponse(this EventDto eventDto, Participants participants, string username, string image, AddressDto addressDto, int addressId, List<string> images)
+        {
+            var organizer = new Organizer(username, image);
+            
+            return new EventResponse()
+            {
+                Name = eventDto.Name,
+                AddressId = addressId,
+                Description = eventDto.Description,
+                Organizer = organizer,
+                StartAt = eventDto.StartAt,
+                EndAt = eventDto.EndAt,
+                CreatedAt = eventDto.CreatedAt,
+                UpdatedAt = eventDto.UpdatedAt,
+                Slug = eventDto.Slug,
+                Status = eventDto.Status,
+                Tags = eventDto.Tags,
+                Parameters = eventDto.Parameters,
+                AddressDto = addressDto,
+                Participants = participants,
+                Images = images
+            };
+        }
+
+        public static EventDto ToDto(this EventUpdateRequest eventCreateRequest, int organizerId)
+        {
+            return new EventDto()
+            {
+                Name = eventCreateRequest.Name,
+                OrganizerId = organizerId,
+                Description = eventCreateRequest.Description,
+                StartAt = eventCreateRequest.StartAt,
+                EndAt = eventCreateRequest.EndAt,
+                Tags = eventCreateRequest.Tags,
+                Status = eventCreateRequest.Status,
+                Parameters = eventCreateRequest.Parameters,
+            };
+        }
+        public static EventDto ToDto(this EventCreateRequest eventCreateRequest, int organizerId)
+        {
+            return new EventDto()
+            {
+                Name = eventCreateRequest.Name,
+                Description = eventCreateRequest.Description,
+                StartAt = eventCreateRequest.StartAt,
+                EndAt = eventCreateRequest.EndAt,
+                Tags = eventCreateRequest.Tags,
+                Status = EventStatus.PendingApproval,
+                Slug = string.Empty,
+                Parameters = eventCreateRequest.Parameters,
+                OrganizerId = organizerId
             };
         }
 

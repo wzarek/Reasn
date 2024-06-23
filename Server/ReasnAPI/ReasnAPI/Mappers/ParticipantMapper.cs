@@ -1,4 +1,5 @@
-﻿using ReasnAPI.Models.Database;
+using ReasnAPI.Models.API;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 
 namespace ReasnAPI.Mappers;
@@ -18,4 +19,15 @@ public static class ParticipantMapper
     {
         return participants.Select(ToDto).ToList();
     }
+
+    public static ParticipantsResponse ToResponse(this List<ParticipantDto> participating,
+        List<ParticipantDto> interested)
+    {
+        return new ParticipantsResponse
+        {
+            Participating = participating,
+            Interested = interested
+        };
+    }
+
 }

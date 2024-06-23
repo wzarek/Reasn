@@ -182,6 +182,34 @@ public class UserService
         return user.ToDto();
     }
 
+    public int GetUserIdByUsername(string username)
+    {
+        var user = _context.Users
+            .Include(u => u.UserInterests)
+            .FirstOrDefault(u => u.Username == username);
+
+        if (user is null)
+        {
+            throw new NotFoundException("User not found");
+        }
+
+        return user.Id;
+    }
+
+    public string GetUserUsernameById(int id)
+    {
+        var user = _context.Users
+            .FirstOrDefault(u => u.Id == id);
+
+        if (user is null)
+        {
+            throw new NotFoundException("User not found");
+        }
+
+        return user.Username;
+
+    }
+
     public IEnumerable<UserDto> GetUsersByFilter(Expression<Func<User, bool>> filter)
     {
         return _context.Users

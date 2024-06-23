@@ -1,4 +1,5 @@
-﻿using ReasnAPI.Models.Database;
+﻿using ReasnAPI.Models.API;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 
 namespace ReasnAPI.Mappers;
@@ -29,6 +30,17 @@ public static class CommentMapper
             Content = commentDto.Content,
             UserId = commentDto.UserId,
             CreatedAt = commentDto.CreatedAt
+        };
+    }
+
+    public static CommentDto ToDtoFromRequest(this CommentRequest commentRequest, int userId, int eventId)
+    {
+        return new CommentDto()
+        {
+            EventId = eventId,
+            Content = commentRequest.Content,
+            CreatedAt = DateTime.Now,
+            UserId = userId,
         };
     }
 }
