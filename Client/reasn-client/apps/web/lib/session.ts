@@ -1,5 +1,5 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { UserRole } from "@reasn/common/src/enums/modelsEnums";
+import { UserRole } from "@reasn/common/src/enums/schemasEnums";
 import { getToken } from "@/lib/token";
 
 export const SESSION_DEFAULT = {

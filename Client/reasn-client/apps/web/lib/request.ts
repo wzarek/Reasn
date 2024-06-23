@@ -74,6 +74,6 @@ export const sendRequest = async <T>(
     console.error(
       `Error while sending request to ${url} with method ${method}: ${error}`,
     );
-    throw Error;
+    throw Error(`Error while sending request to ${url}`);
   }
 };

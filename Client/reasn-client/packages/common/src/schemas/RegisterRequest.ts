@@ -24,7 +24,7 @@ export const RegisterRequestSchema = z.object({
     .regex(/^\+\d{1,3}\s\d{1,15}$/)
     .nullable(),
   address: AddressDtoSchema,
-  Role: z.enum(["User", "Organizer"]),
+  role: z.enum(["User", "Organizer"]),
 });
 
 export type RegisterRequest = z.infer<typeof RegisterRequestSchema>;

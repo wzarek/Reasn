@@ -5,16 +5,18 @@ import React from "react";
 
 interface ButtonProps {
   text: string;
+  type?: "button" | "submit" | "reset";
   className?: string;
   background?: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export const ButtonBase = (props: ButtonProps) => {
-  const { text, className, background, onClick } = props;
+  const { text, type, className, background, onClick } = props;
   return (
     <button
-      onClick={onClick}
+      onClick={() => onClick?.()}
+      type={type ?? "button"}
       className={clsx(
         className,
         "w-36 rounded-2xl px-4 py-2",

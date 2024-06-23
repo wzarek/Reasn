@@ -2,23 +2,23 @@ import ModelMappingError from "../errors/ModelMappingError";
 import { z } from "zod";
 
 export const AddressDtoSchema = z.object({
-  Country: z
+  country: z
     .string()
     .max(64)
     .regex(/^\p{Lu}[\p{L}\s'-]*(?<![\s-])$/u),
-  City: z
+  city: z
     .string()
     .max(64)
     .regex(/^\p{Lu}[\p{Ll}'.]+(?:[\s-][\p{L}'.]+)*$/u),
-  Street: z
+  street: z
     .string()
     .max(64)
     .regex(/^[\p{L}\d\s\-/.,#']+(?<![-\s#,])$/u),
-  State: z
+  state: z
     .string()
     .max(64)
     .regex(/^\p{Lu}\p{Ll}+(?:(\s|-)\p{L}+)*$/u),
-  ZipCode: z
+  zipCode: z
     .string()
     .regex(/^[\p{L}\d\s-]{3,}$/u)
     .nullable(),

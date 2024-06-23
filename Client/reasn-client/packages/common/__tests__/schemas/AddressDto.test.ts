@@ -14,21 +14,21 @@ describe("AddressDto", () => {
   describe("fromJson", () => {
     it("should create an instance of AddressDto from JSON string", () => {
       const json = `{
-                "Country": "${country}",
-                "City": "${city}",
-                "Street": "${street}",
-                "State": "${state}",
-                "ZipCode": "${zipCode}"
+                "country": "${country}",
+                "city": "${city}",
+                "street": "${street}",
+                "state": "${state}",
+                "zipCode": "${zipCode}"
             }`;
 
       let address = AddressDtoMapper.fromJSON(json);
       address = address as AddressDto;
 
-      expect(address.Country).toBe(country);
-      expect(address.City).toBe(city);
-      expect(address.Street).toBe(street);
-      expect(address.State).toBe(state);
-      expect(address.ZipCode).toBe(zipCode);
+      expect(address.country).toBe(country);
+      expect(address.city).toBe(city);
+      expect(address.street).toBe(street);
+      expect(address.state).toBe(state);
+      expect(address.zipCode).toBe(zipCode);
     });
 
     it("should throw error if the JSON string is empty", () => {
@@ -37,38 +37,38 @@ describe("AddressDto", () => {
 
     it("should throw an error when providing JSON without each property individually", () => {
       const jsonWithoutCountry = `{
-                "City": "${city}",
-                "Street": "${street}",
-                "State": "${state}",
-                "ZipCode": "${zipCode}"
+                "city": "${city}",
+                "street": "${street}",
+                "state": "${state}",
+                "zipCode": "${zipCode}"
             }`;
 
       const jsonWithoutCity = `{
-                "Country": "${country}",
-                "Street": "${street}",
-                "State": "${state}",
-                "ZipCode": "${zipCode}"
+                "country": "${country}",
+                "street": "${street}",
+                "state": "${state}",
+                "zipCode": "${zipCode}"
             }`;
 
       const jsonWithoutStreet = `{
-                "Country": "${country}",
-                "City": "${city}",
-                "State": "${state}",
-                "ZipCode": "${zipCode}"
+                "country": "${country}",
+                "city": "${city}",
+                "state": "${state}",
+                "zipCode": "${zipCode}"
             }`;
 
       const jsonWithoutState = `{
-                "Country": "${country}",
-                "City": "${city}",
-                "Street": "${street}",
-                "ZipCode": "${zipCode}"
+                "country": "${country}",
+                "city": "${city}",
+                "street": "${street}",
+                "zipCode": "${zipCode}"
             }`;
 
       const jsonWithoutZipCode = `{
-                "Country": "${country}",
-                "City": "${city}",
-                "Street": "${street}",
-                "State": "${state}"
+                "country": "${country}",
+                "city": "${city}",
+                "street": "${street}",
+                "state": "${state}"
             }`;
 
       expect(() => AddressDtoMapper.fromJSON(jsonWithoutCountry)).toThrow(
@@ -92,65 +92,65 @@ describe("AddressDto", () => {
   describe("fromObject", () => {
     it("should create an instance of AddressDto from an object", () => {
       const object = {
-        Country: country,
-        City: city,
-        Street: street,
-        State: state,
-        ZipCode: zipCode,
+        country: country,
+        city: city,
+        street: street,
+        state: state,
+        zipCode: zipCode,
       };
 
       let address = AddressDtoMapper.fromObject(object);
       address = address as AddressDto;
 
-      expect(address.Country).toBe(country);
-      expect(address.City).toBe(city);
-      expect(address.Street).toBe(street);
-      expect(address.State).toBe(state);
-      expect(address.ZipCode).toBe(zipCode);
+      expect(address.country).toBe(country);
+      expect(address.city).toBe(city);
+      expect(address.street).toBe(street);
+      expect(address.state).toBe(state);
+      expect(address.zipCode).toBe(zipCode);
     });
 
     it("should throw an error if the object is invalid", () => {
       const object = {
-        Country: country,
-        City: true,
-        Street: street,
-        State: state,
-        ZipCode: null,
+        country: country,
+        city: true,
+        street: street,
+        state: state,
+        zipCode: null,
       };
 
       const objectWithoutCountry = {
-        City: city,
-        Street: street,
-        State: state,
-        ZipCode: zipCode,
+        city: city,
+        street: street,
+        state: state,
+        zipCode: zipCode,
       };
 
       const objectWithoutCity = {
-        Country: country,
-        Street: street,
-        State: state,
-        ZipCode: zipCode,
+        country: country,
+        street: street,
+        state: state,
+        zipCode: zipCode,
       };
 
       const objectWithoutStreet = {
-        Country: country,
-        City: city,
-        State: state,
-        ZipCode: zipCode,
+        country: country,
+        city: city,
+        state: state,
+        zipCode: zipCode,
       };
 
       const objectWithoutState = {
-        Country: country,
-        City: city,
-        Street: street,
-        ZipCode: zipCode,
+        country: country,
+        city: city,
+        street: street,
+        zipCode: zipCode,
       };
 
       const objectWithoutZipCode = {
-        Country: country,
-        City: city,
-        Street: street,
-        State: state,
+        country: country,
+        city: city,
+        street: street,
+        state: state,
       };
 
       expect(() => AddressDtoMapper.fromObject(object)).toThrow(
