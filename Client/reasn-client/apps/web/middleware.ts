@@ -27,8 +27,8 @@ export const config = {
   matcher: [
     "/events/new",
     "/events/(.*)/(.*)",
-    "/me",
-    "/me/(.*)",
+    // "/me",
+    // "/me/(.*)",
     "/login",
     "/register",
     "/register/(.*)",

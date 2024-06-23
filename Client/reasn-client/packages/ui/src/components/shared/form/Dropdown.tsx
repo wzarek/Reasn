@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import { FloatingInput } from "./Input";
 import clsx from "clsx";
@@ -6,6 +8,7 @@ import { CaretDown, CaretUp } from "../../../icons";
 interface DropdownProps {
   label: string;
   options: string[];
+  className?: string;
 }
 
 interface SingleDropdownProps extends DropdownProps {
@@ -47,7 +50,7 @@ export const SearchMultiDropdown = (props: MultiDropdownProps) => {
         label={label}
         className="w-full rounded-b-none"
         defaultValue={search}
-        onChange={setSearch}
+        onChange={(e) => setSearch(e.target.value)}
       />
       <div className="flex h-16 flex-wrap justify-start gap-2 overflow-auto rounded-b-lg bg-[#232327] p-2 text-xs">
         {selectedOptions.concat(filteredOptions).map((option) => (
@@ -78,6 +81,7 @@ export const SingleDropdown = (props: SingleDropdownProps) => {
     options,
     selectedOption,
     selectedOptionClass,
+    className,
     setSelectedOption,
   } = props;
 
@@ -113,6 +117,7 @@ export const SingleDropdown = (props: SingleDropdownProps) => {
       className={clsx(
         "relative flex w-full cursor-pointer flex-col gap-2 rounded-lg bg-[#232327]",
         { "rounded-b-none": isExpanded },
+        className,
       )}
       onClick={toggleExpanded}
       ref={ref}
