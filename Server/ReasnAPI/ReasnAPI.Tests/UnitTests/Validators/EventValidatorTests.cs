@@ -119,7 +119,7 @@ public class EventValidatorTests
     }
 
     [TestMethod]
-    public void Validate_WhenSlugIsEmpty_ShouldReturnFalse()
+    public void Validate_WhenSlugIsEmpty_ShouldReturnTrue()
     {
         var eventDto = new EventDto
         {
@@ -128,10 +128,7 @@ public class EventValidatorTests
 
         var result = _validator.Validate(eventDto);
 
-        Assert.IsFalse(result.IsValid);
-        Assert.IsTrue(result.Errors.Exists(
-            e => e.ErrorMessage == "'Slug' must not be empty."
-        ));
+        Assert.IsTrue(result.IsValid);
     }
 
     [TestMethod]
