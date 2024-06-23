@@ -9,6 +9,10 @@ export const middleware = (req: NextRequest) => {
 
   const isAuthPath = path.startsWith("/login") || path.startsWith("/register");
 
+  if (path.startsWith("/user") && session.user?.role !== UserRole.ADMIN) {
+    return NextResponse.redirect(new URL(path.replace("/edit", ""), req.url));
+  }
+
   if (!session.isAuthenticated()) {
     if (isAuthPath) return NextResponse.next();
     return NextResponse.redirect(new URL("/login", req.url));
@@ -20,15 +24,16 @@ export const middleware = (req: NextRequest) => {
 
   if (path.startsWith("/events") && session.user?.role === UserRole.USER) {
     return NextResponse.redirect(new URL("/events", req.url));
-  }
+  }  
 };
 
 export const config = {
   matcher: [
     "/events/new",
     "/events/(.*)/(.*)",
-    // "/me",
-    // "/me/(.*)",
+    "/me",
+    "/me/(.*)",
+    "/user/(.*)/edit",
     "/login",
     "/register",
     "/register/(.*)",
