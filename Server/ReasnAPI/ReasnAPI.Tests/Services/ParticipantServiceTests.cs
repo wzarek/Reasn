@@ -188,7 +188,7 @@ public class ParticipantServiceTests
             Status = ParticipantStatus.Interested
         };
 
-        var result = participantService.CreateUpdateParticipant(participantDto);
+        var result = participantService.CreateOrUpdateParticipant(participantDto);
 
         Assert.IsNotNull(result);
         Assert.AreEqual("Event-Slug", result.EventSlug);
@@ -204,7 +204,7 @@ public class ParticipantServiceTests
 
         var participantService = new ParticipantService(mockContext.Object);
 
-        Assert.ThrowsException<ArgumentNullException>(() => participantService.CreateUpdateParticipant(null));
+        Assert.ThrowsException<ArgumentNullException>(() => participantService.CreateOrUpdateParticipant(null));
     }
 
     [TestMethod]
@@ -242,7 +242,7 @@ public class ParticipantServiceTests
 
         var participantService = new ParticipantService(mockContext.Object);
 
-        var result = participantService.CreateUpdateParticipant(new ParticipantDto
+        var result = participantService.CreateOrUpdateParticipant(new ParticipantDto
         {
             EventSlug = "Event-Slug",
             Username = "Username",
@@ -265,7 +265,7 @@ public class ParticipantServiceTests
 
         var participantService = new ParticipantService(mockContext.Object);
 
-        Assert.ThrowsException<NotFoundException>(() => participantService.CreateUpdateParticipant(new ParticipantDto
+        Assert.ThrowsException<NotFoundException>(() => participantService.CreateOrUpdateParticipant(new ParticipantDto
         {
             EventSlug = "Event-Slug",
             Username = "Username",
@@ -283,7 +283,7 @@ public class ParticipantServiceTests
 
         var participantService = new ParticipantService(mockContext.Object);
 
-        Assert.ThrowsException<ArgumentNullException>(() => participantService.CreateUpdateParticipant(null));
+        Assert.ThrowsException<ArgumentNullException>(() => participantService.CreateOrUpdateParticipant(null));
     }
 
     [TestMethod]

@@ -9,7 +9,7 @@ namespace ReasnAPI.Services;
 
 public class ParticipantService(ReasnContext context)
 {
-    public ParticipantDto CreateUpdateParticipant(ParticipantDto participantDto)
+    public ParticipantDto CreateOrUpdateParticipant(ParticipantDto participantDto)
     {
         ArgumentNullException.ThrowIfNull(participantDto);
 

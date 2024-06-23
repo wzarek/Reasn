@@ -54,7 +54,7 @@ public class MeController(UserService userService, EventService eventService, Pa
     public IActionResult GetCurrentUserImage()
     {
         var user = _userService.GetCurrentUser();
-        var image = _imageService.GetImagesByUserId(user.Id);
+        var image = _imageService.GetImageByUserId(user.Id);
 
         if (image is null)
         {
@@ -151,7 +151,7 @@ public class MeController(UserService userService, EventService eventService, Pa
     {
         var user = _userService.GetCurrentUser();
 
-        var participant = _participantService.CreateUpdateParticipant(new ParticipantDto { EventSlug = slug, Username = user.Username, Status = ParticipantStatus.Interested });
+        var participant = _participantService.CreateOrUpdateParticipant(new ParticipantDto { EventSlug = slug, Username = user.Username, Status = ParticipantStatus.Interested });
 
         var location = Url.Action(
             action: nameof(GetCurrentUserEvents),
@@ -166,7 +166,7 @@ public class MeController(UserService userService, EventService eventService, Pa
     public IActionResult ConfirmCurrentUserEventAttendance([FromRoute] string slug)
     {
         var user = _userService.GetCurrentUser();
-        var participant = _participantService.CreateUpdateParticipant(new ParticipantDto { EventSlug = slug, Username = user.Username, Status = ParticipantStatus.Participating });
+        var participant = _participantService.CreateOrUpdateParticipant(new ParticipantDto { EventSlug = slug, Username = user.Username, Status = ParticipantStatus.Participating });
 
         return Ok(participant);
     }

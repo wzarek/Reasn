@@ -174,7 +174,7 @@ public class ImageService(ReasnContext context)
         return imageDto;
     }
 
-    public ImageDto GetImagesByUserId(int userId)
+    public ImageDto GetImageByUserId(int userId)
     {
         var image = context.Images.FirstOrDefault(image => image.ObjectId == userId && image.ObjectType == ObjectType.User);
 
