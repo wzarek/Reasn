@@ -414,5 +414,76 @@ public class EventService(ReasnContext context, ParameterService parameterServic
         return finalSlug;
 
     }
+    public PagedResponse<EventDto> GetPagedEvents(PagedRequest request)
+    {
+        var query = context.Events
+            .Include(e => e.Parameters)
+            .Include(e => e.Tags)
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(request.FilterName))
+            query = query.Where(e => e.Name.Contains(request.FilterName));
+
+        if (request.FilterStatus.HasValue)
+            query = query.Where(e => e.Status == request.FilterStatus.Value);
+        if (request.FilterTags != null && request.FilterTags.Any())
+
+            query = query.Where(e => e.Tags.Any(t => request.FilterTags.Contains(t.Name)));
+
+        if (request.FilterStartAt.HasValue)
+            query = query.Where(e => e.StartAt >= request.FilterStartAt);
+
+        if (request.FilterEndAt.HasValue)
+            query = query.Where(e => e.EndAt <= request.FilterEndAt);
+
+
+        var totalCount = query.Count();
+
+        switch (request.SortBy)
+        {
+            case SortBy.StartAt:
+                query = request.SortOrder == SortOrder.Ascending ?
+                    query.OrderBy(e => e.StartAt) :
+                    query.OrderByDescending(e => e.StartAt);
+                break;
+            case SortBy.Name:
+                query = request.SortOrder == SortOrder.Ascending ?
+                    query.OrderBy(e => e.Name) :
+                    query.OrderByDescending(e => e.Name);
+                break;
+            case SortBy.CreatedAt:
+                query = request.SortOrder == SortOrder.Ascending ?
+                    query.OrderBy(e => e.CreatedAt) :
+                    query.OrderByDescending(e => e.CreatedAt);
+                break;
+            default:
+                query = query.OrderBy(e => e.StartAt);
+                break;
+        }
+
+        var events = query
+            .Skip((request.Offset))
+            .Take(request.Limit)
+            .ToList();
+
+        var response = new PagedResponse<EventDto>
+        {
+            Items = events.Select(e => e.ToDto()).ToList(),
+            TotalCount = totalCount,
+            FilterName = request.FilterName,
+            FilterStatus = request.FilterStatus,
+            FilterTags = request.FilterTags,
+            FilterStartAt = request.FilterStartAt,
+            FilterEndAt = request.FilterEndAt,
+            Offset = request.Offset,
+            Limit = request.Limit,
+            SortBy = (PagedResponse<EventDto>.SortByEnum)request.SortBy,
+            SortOrder = (PagedResponse<EventDto>.SortOrderEnum)request.SortOrder
+        };
+
+        return response;
+    }
 
 }
+
+

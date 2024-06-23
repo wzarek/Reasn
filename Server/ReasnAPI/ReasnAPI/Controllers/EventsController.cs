@@ -308,6 +308,42 @@ public class EventsController(
     public IActionResult DeleteEventsTag([FromRoute] int tagId)
     {
         tagService.DeleteTag(tagId);
-        return NoContent();
+        return NoContent(); 
+    }
+    [HttpGet]
+    [Route("api/EventsPaging")]
+    public async Task<ActionResult<PagedResponse<EventDto>>> GetPagedEvents(
+    [FromQuery] string? filterName,
+    [FromQuery] EventStatus? filterStatus,
+    [FromQuery] List<string>? filterTags,
+    [FromQuery] DateTime? filterStartAt,
+    [FromQuery] DateTime? filterEndAt,
+    [FromQuery] int offset = 0,
+    [FromQuery] int limit = 10,
+    [FromQuery] SortBy sortBy = SortBy.StartAt,
+    [FromQuery] SortOrder sortOrder = SortOrder.Ascending)
+    {
+        try
+        {
+            var request = new PagedRequest
+            {
+                FilterName = filterName,
+                FilterStatus = filterStatus,
+                FilterTags = filterTags,
+                FilterStartAt = filterStartAt,
+                FilterEndAt = filterEndAt,
+                Offset = offset,
+                Limit = limit,
+                SortBy = sortBy,
+                SortOrder = sortOrder
+            };
+
+            var eventsPaged = eventService.GetPagedEvents(request);
+            return Ok(eventsPaged);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
     }
 }
