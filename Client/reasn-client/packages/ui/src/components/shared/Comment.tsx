@@ -3,12 +3,13 @@ import {
   CommentDto,
   CommentDtoMapper,
 } from "@reasn/common/src/schemas/CommentDto";
+import { ButtonBase, FloatingTextarea } from "./form";
 
 interface CommentProps {
-  comment: CommentDto;
+  comment?: CommentDto;
 }
 
-export const Comment = () => {
+export const Comment = (props: CommentProps) => {
   const comment = CommentDtoMapper.fromObject({
     EventId: 1,
     Content:
@@ -33,6 +34,19 @@ export const Comment = () => {
           13 czerwca 2024r. 12:25
         </p>
       </div>
+    </div>
+  );
+};
+
+export const NewComment = () => {
+  return (
+    <div className="mb-8 flex flex-col gap-4 rounded-md bg-[#4b4e526d] p-2">
+      <FloatingTextarea
+        label="Treść komentarza"
+        name="newComment"
+        className="mt-8 h-32"
+      />
+      <ButtonBase className="ml-auto" text="Dodaj" />
     </div>
   );
 };

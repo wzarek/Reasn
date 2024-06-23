@@ -2,7 +2,7 @@
 
 import { MOCK_IMG_URL } from "@reasn/ui/src/components/shared/Card";
 import { ButtonBase } from "@reasn/ui/src/components/shared/form";
-import { Comment } from "@reasn/ui/src/components/shared/Comment";
+import { Comment, NewComment } from "@reasn/ui/src/components/shared/Comment";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -271,6 +271,7 @@ const EventPage = ({ params }: { params: { slug: string } }) => {
           <div className="relative">
             <h3 className="font-semibold">Komentarze:</h3>
             <div className="flex flex-col gap-2">
+              <NewComment />
               <Comment />
               <Comment />
               <Comment />
