@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import { FloatingInput } from "./Input";
 import clsx from "clsx";
@@ -47,7 +49,7 @@ export const SearchMultiDropdown = (props: MultiDropdownProps) => {
         label={label}
         className="w-full rounded-b-none"
         defaultValue={search}
-        onChange={setSearch}
+        onChange={(e) => setSearch(e.target.value)}
       />
       <div className="flex h-16 flex-wrap justify-start gap-2 overflow-auto rounded-b-lg bg-[#232327] p-2 text-xs">
         {selectedOptions.concat(filteredOptions).map((option) => (
