@@ -24,7 +24,7 @@ export const middleware = (req: NextRequest) => {
 
   if (path.startsWith("/events") && session.user?.role === UserRole.USER) {
     return NextResponse.redirect(new URL("/events", req.url));
-  }  
+  }
 };
 
 export const config = {
