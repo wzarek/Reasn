@@ -283,13 +283,12 @@ public class EventsController(
     }
 
     [HttpGet]
-    [Authorize(Roles = "Admin, Organizer\"")]
+    [Authorize(Roles = "Admin, Organizer")]
     [Route("/tags")]
-    [ProducesResponseType<List<TagDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<List<string>>(StatusCodes.Status200OK)]
     public IActionResult GetEventsTags()
     {
-       
-        var tags = tagService.GetAllTags().ToList();
+        var tags = tagService.GetAllTagsNames().ToList();
         return Ok(tags);
     }
 
