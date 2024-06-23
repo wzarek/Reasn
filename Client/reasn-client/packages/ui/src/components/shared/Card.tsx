@@ -10,6 +10,7 @@ export enum CardVariant {
   Big,
   Tile,
   List,
+  Swiping,
 }
 
 export interface CardProps {
@@ -31,6 +32,7 @@ export const Card = (props: Readonly<CardProps>) => {
       {variant === CardVariant.Big && <CardBig event={event} />}
       {variant === CardVariant.Tile && <CardTile event={event} />}
       {variant === CardVariant.List && <CardList event={event} />}
+      {variant === CardVariant.Swiping && <CardSwiping event={event} />}
     </div>
   );
 };
@@ -141,6 +143,34 @@ const CardList = ({ event }: { event: string }) => {
         >
           ?
         </span>
+      </div>
+    </div>
+  );
+};
+
+const CardSwiping = ({ event }: { event: string }) => {
+  return (
+    <div className="group relative h-[45vh] w-[20vw] min-w-[15em] cursor-pointer overflow-clip rounded-3xl md:h-[50vh] md:min-h-[10em] md:min-w-[20em] lg:min-h-[25em] lg:min-w-[25em]">
+      <img
+        src={MOCK_IMG_URL}
+        alt=""
+        className="absolute left-0 top-0 h-full object-cover"
+      />
+      <div className="relative flex h-2/3 w-full flex-col gap-2 bg-[#232326ee] p-4 text-[#F7F8F8]">
+        <div className="flex flex-wrap gap-1 text-xs text-[#cacaca]">
+          <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
+          <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
+          <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
+          <p className="rounded-md bg-[#4b4e52] px-[5px] py-[1px]">#abcd</p>
+        </div>
+        <h2 className="w-4/5 break-words text-3xl font-semibold">
+          Koncert fagaty na PWR w C-16
+        </h2>
+        <p className="hidden text-base text-[#cacaca] md:block">
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Unde
+          quisquam maiores doloremque molestiae ducimus, distinctio accusamus
+          sed voluptatem eius itaque.
+        </p>
       </div>
     </div>
   );

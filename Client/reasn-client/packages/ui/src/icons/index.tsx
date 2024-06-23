@@ -8,3 +8,6 @@ export { ArrowRight } from "./ArrowRight";
 export { Upload } from "./Upload";
 export { CaretDown } from "./CaretDown";
 export { CaretUp } from "./CaretUp";
+export { Add } from "./Add";
+export { Question } from "./Question";
+export { Dismiss } from "./Dismiss";

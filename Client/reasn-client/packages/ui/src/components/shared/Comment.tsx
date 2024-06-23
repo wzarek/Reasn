@@ -1,26 +1,15 @@
 import React from "react";
-import {
-  CommentDto,
-  CommentDtoMapper,
-} from "@reasn/common/src/schemas/CommentDto";
 import { ButtonBase, FloatingTextarea } from "./form";
 
 interface CommentProps {
-  comment?: CommentDto;
+  comment?: string;
 }
 
 export const Comment = (props: CommentProps) => {
-  const comment = CommentDtoMapper.fromObject({
-    EventId: 1,
-    Content:
-      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Soluta quidem sapiente odit maxime. Officiis, error laborum. Voluptatem quibusdam mollitia possimus?",
-    CreatedAt: new Date(),
-    UserId: 1,
-  });
-
+  const { comment } = props;
   return (
     <div className="flex flex-col gap-4 rounded-md bg-[#4b4e526d] p-2">
-      <p className="font-thin">{comment.Content}</p>
+      <p className="font-thin">{comment}</p>
       <div className="flex items-center gap-2">
         <div className="relative rounded-full bg-gradient-to-r from-[#32346A] to-[#4E4F75] p-[2px]">
           <img
