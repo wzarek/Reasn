@@ -40,12 +40,15 @@ export const EventRespsoneSchema = z.object({
     .regex(/^[\p{L}\d]+[\p{L}\d-]*$/u)
     .nullable(),
   status: z.nativeEnum(EventStatus),
-  tags: z.array(TagDtoSchema),
-  parameters: z.array(ParameterDtoSchema),
-  participants: z.object({
-    interested: z.number(),
-    participating: z.number(),
-  }),
+  tags: z.array(TagDtoSchema).nullable(),
+  parameters: z.array(ParameterDtoSchema).nullable(),
+  participants: z
+    .object({
+      interested: z.number(),
+      participating: z.number(),
+    })
+    .nullable(),
+  images: z.array(z.string()).nullable(),
 });
 
 export type EventResponse = z.infer<typeof EventRespsoneSchema>;

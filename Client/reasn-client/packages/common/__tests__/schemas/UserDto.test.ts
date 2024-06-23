@@ -20,8 +20,8 @@ describe("UserDto", () => {
     zipCode: "12345",
   };
   const interests: UserInterestDto[] = [
-    { Interest: { Name: "Programming" }, Level: 5 },
-    { Interest: { Name: "Music" }, Level: 3 },
+    { interest: { name: "Programming" }, level: 5 },
+    { interest: { name: "Music" }, level: 3 },
   ];
 
   describe("fromJson", () => {

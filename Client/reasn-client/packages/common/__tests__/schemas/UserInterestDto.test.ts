@@ -6,21 +6,21 @@ import {
 import ModelMappingError from "@reasn/common/src/errors/ModelMappingError";
 
 describe("UserInterestDto", () => {
-  const interest = { Name: "Interest" } as InterestDto;
+  const interest = { name: "Interest" } as InterestDto;
   const level = 1;
 
   describe("fromJson", () => {
     it("should create an instance of UserInterestDto from JSON string", () => {
       const json = `{
-                "Interest": { "Name": "${interest.Name}" },
-                "Level": ${level}
+                "interest": { "name": "${interest.name}" },
+                "level": ${level}
             }`;
 
       let userInterest = UserInterestDtoMapper.fromJSON(json);
       userInterest = userInterest as UserInterestDto;
 
-      expect(userInterest.Interest.Name).toBe(interest.Name);
-      expect(userInterest.Level).toBe(level);
+      expect(userInterest.interest.name).toBe(interest.name);
+      expect(userInterest.level).toBe(level);
     });
 
     it("should return null if the JSON string is empty", () => {
@@ -31,11 +31,11 @@ describe("UserInterestDto", () => {
 
     it("should throw an error when providing json without each property individaully", () => {
       const jsonWithoutInterest = `{
-                "Level": ${level}
+                "level": ${level}
             }`;
 
       const jsonWithoutLevel = `{
-                "Interest": { "Name": "${interest.Name}" }
+                "interest": { "Name": "${interest.name}" }
             }`;
 
       expect(() => UserInterestDtoMapper.fromJSON(jsonWithoutInterest)).toThrow(
@@ -50,29 +50,29 @@ describe("UserInterestDto", () => {
   describe("fromObject", () => {
     it("should create an instance of UserInterestDto from an object", () => {
       const object = {
-        Interest: interest,
-        Level: level,
+        interest: interest,
+        level: level,
       };
 
       let userInterest = UserInterestDtoMapper.fromObject(object);
       userInterest = userInterest as UserInterestDto;
 
-      expect(userInterest.Interest.Name).toBe(interest.Name);
-      expect(userInterest.Level).toBe(level);
+      expect(userInterest.interest.name).toBe(interest.name);
+      expect(userInterest.level).toBe(level);
     });
 
     it("should throw an error if the object is invalid", () => {
       const object = {
-        Interest: { Name: 1 },
-        Level: true,
+        interest: { name: 1 },
+        level: true,
       };
 
       const objectWithoutInterest = {
-        Level: level,
+        level: level,
       };
 
       const objectWithoutLevel = {
-        Interest: interest,
+        interest: interest,
       };
 
       expect(() => UserInterestDtoMapper.fromObject(object)).toThrow(

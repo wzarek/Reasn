@@ -5,27 +5,30 @@ import {
 } from "@reasn/common/src/schemas/CommentDto";
 
 describe("CommentDto", () => {
-  const eventId = 1;
+  const eventSlug = "event-slug";
   const content = "Test Content";
   const createdAt = new Date();
-  const userId = 2;
+  const username = "username";
+  const userImageUrl = "url";
 
   describe("fromJson", () => {
     it("should create an instance of CommentDto from JSON string", () => {
       const json = `{
-                "EventId": ${eventId},
-                "Content": "${content}",
-                "CreatedAt": "${createdAt.toISOString()}",
-                "UserId": ${userId}
+                "eventSlug": "${eventSlug}",
+                "content": "${content}",
+                "createdAt": "${createdAt.toISOString()}",
+                "username": "${username}",
+                "userImageUrl": "${userImageUrl}"
             }`;
 
       let comment = CommentDtoMapper.fromJSON(json);
       comment = comment as CommentDto;
 
-      expect(comment.EventId).toBe(eventId);
-      expect(comment.Content).toBe(content);
-      expect(comment.CreatedAt).toEqual(createdAt);
-      expect(comment.UserId).toBe(userId);
+      expect(comment.eventSlug).toBe(eventSlug);
+      expect(comment.content).toBe(content);
+      expect(comment.createdAt).toEqual(createdAt);
+      expect(comment.username).toBe(username);
+      expect(comment.userImageUrl).toBe(userImageUrl);
     });
 
     it("should throw an error if the JSON string is empty", () => {
@@ -33,31 +36,42 @@ describe("CommentDto", () => {
     });
 
     it("should throw an error when providing JSON without each property individually", () => {
-      const jsonWithoutEventId = `{
-                "Content": "${content}",
-                "CreatedAt": "${createdAt.toISOString()}",
-                "UserId": ${userId}
+      const jsonWithoutEventSlug = `{
+                "content": "${content}",
+                "createdAt": "${createdAt.toISOString()}",
+                "username": "${username}",
+                "userImageUrl": "${userImageUrl}"
             }`;
 
       const jsonWithoutContent = `{
-                "EventId": ${eventId},
-                "CreatedAt": "${createdAt.toISOString()}",
-                "UserId": ${userId}
+                "eventSlug": "${eventSlug}",
+                "createdAt": "${createdAt.toISOString()}",
+                "username": "${username}",
+                "userImageUrl": "${userImageUrl}"
             }`;
 
       const jsonWithoutCreatedAt = `{
-                "EventId": ${eventId},
-                "Content": "${content}",
-                "UserId": ${userId}
+                "eventSlug": "${eventSlug}",
+                "content": "${content}",
+                "username": "${username}",
+                "userImageUrl": "${userImageUrl}"
             }`;
 
-      const jsonWithoutUserId = `{
-                "EventId": ${eventId},
-                "Content": "${content}",
-                "CreatedAt": "${createdAt.toISOString()}"
+      const jsonWithoutUsername = `{
+                "eventSlug": "${eventSlug}",
+                "content": "${content}",
+                "createdAt": "${createdAt.toISOString()}",
+                "userImageUrl": "${userImageUrl}"
             }`;
 
-      expect(() => CommentDtoMapper.fromJSON(jsonWithoutEventId)).toThrow(
+      const jsonWithoutUserImageUrl = `{
+                "eventSlug": "${eventSlug}",
+                "content": "${content}",
+                "createdAt": "${createdAt.toISOString()}",
+                "username": "${username}"
+            }`;
+
+      expect(() => CommentDtoMapper.fromJSON(jsonWithoutEventSlug)).toThrow(
         ModelMappingError,
       );
       expect(() => CommentDtoMapper.fromJSON(jsonWithoutContent)).toThrow(
@@ -66,7 +80,10 @@ describe("CommentDto", () => {
       expect(() => CommentDtoMapper.fromJSON(jsonWithoutCreatedAt)).toThrow(
         ModelMappingError,
       );
-      expect(() => CommentDtoMapper.fromJSON(jsonWithoutUserId)).toThrow(
+      expect(() => CommentDtoMapper.fromJSON(jsonWithoutUsername)).toThrow(
+        ModelMappingError,
+      );
+      expect(() => CommentDtoMapper.fromJSON(jsonWithoutUserImageUrl)).toThrow(
         ModelMappingError,
       );
     });
@@ -75,57 +92,71 @@ describe("CommentDto", () => {
   describe("fromObject", () => {
     it("should create an instance of CommentDto from an object", () => {
       const object = {
-        EventId: eventId,
-        Content: content,
-        CreatedAt: createdAt,
-        UserId: userId,
+        eventSlug: eventSlug,
+        content: content,
+        createdAt: createdAt,
+        username: username,
+        userImageUrl: userImageUrl,
       };
 
       let comment = CommentDtoMapper.fromObject(object);
       comment = comment as CommentDto;
 
-      expect(comment.EventId).toBe(eventId);
-      expect(comment.Content).toBe(content);
-      expect(comment.CreatedAt).toEqual(createdAt);
-      expect(comment.UserId).toBe(userId);
+      expect(comment.eventSlug).toBe(eventSlug);
+      expect(comment.content).toBe(content);
+      expect(comment.createdAt).toEqual(createdAt);
+      expect(comment.username).toBe(username);
+      expect(comment.userImageUrl).toBe(userImageUrl);
     });
 
     it("should throw an error if the object is invalid", () => {
       const object = {
-        EventId: eventId,
-        Content: true,
-        CreatedAt: createdAt,
-        UserId: null,
+        eventSlug: eventSlug,
+        content: true,
+        createdAt: createdAt,
+        username: null,
+        userImageUrl: userImageUrl,
       };
 
-      const objectWithoutEventId = {
-        Content: content,
-        CreatedAt: createdAt,
-        UserId: userId,
+      const objectWithoutEventSlug = {
+        content: content,
+        createdAt: createdAt,
+        username: username,
+        userImageUrl: userImageUrl,
       };
 
       const objectWithoutContent = {
-        EventId: eventId,
-        CreatedAt: createdAt,
-        UserId: userId,
+        eventSlug: eventSlug,
+        createdAt: createdAt,
+        username: username,
+        userImageUrl: userImageUrl,
       };
 
       const objectWithoutCreatedAt = {
-        EventId: eventId,
-        Content: content,
-        UserId: userId,
+        eventSlug: eventSlug,
+        content: content,
+        username: username,
+        userImageUrl: userImageUrl,
       };
 
-      const objectWithoutUserId = {
-        EventId: eventId,
-        Content: content,
-        CreatedAt: createdAt,
+      const objectWithoutUsername = {
+        eventSlug: eventSlug,
+        content: content,
+        createdAt: createdAt,
+        userImageUrl: userImageUrl,
+      };
+
+      const objectWithoutUserImageUrl = {
+        eventSlug: eventSlug,
+        content: content,
+        createdAt: createdAt,
+        username: username,
       };
 
       expect(() => CommentDtoMapper.fromObject(object)).toThrow(
         ModelMappingError,
       );
-      expect(() => CommentDtoMapper.fromObject(objectWithoutEventId)).toThrow(
+      expect(() => CommentDtoMapper.fromObject(objectWithoutEventSlug)).toThrow(
         ModelMappingError,
       );
       expect(() => CommentDtoMapper.fromObject(objectWithoutContent)).toThrow(
@@ -134,24 +165,29 @@ describe("CommentDto", () => {
       expect(() => CommentDtoMapper.fromObject(objectWithoutCreatedAt)).toThrow(
         ModelMappingError,
       );
-      expect(() => CommentDtoMapper.fromObject(objectWithoutUserId)).toThrow(
+      expect(() => CommentDtoMapper.fromObject(objectWithoutUsername)).toThrow(
         ModelMappingError,
       );
+      expect(() =>
+        CommentDtoMapper.fromObject(objectWithoutUserImageUrl),
+      ).toThrow(ModelMappingError);
     });
 
     it("should throw an error if date is in incorrect format", () => {
       const object = {
-        EventId: eventId,
-        Content: content,
-        CreatedAt: "invalid date",
-        UserId: userId,
+        eventSlug: eventSlug,
+        content: content,
+        createdAt: "invalid date",
+        username: username,
+        userImageUrl: userImageUrl,
       };
 
       const objectMissingZ = {
-        EventId: eventId,
-        Content: content,
-        CreatedAt: "2009-06-15T13:45:30.0000000",
-        UserId: userId,
+        eventSlug: eventSlug,
+        content: content,
+        createdAt: "2009-06-15T13:45:30.0000000",
+        username: username,
+        userImageUrl: userImageUrl,
       };
 
       expect(() => CommentDtoMapper.fromObject(object)).toThrow(
@@ -164,44 +200,47 @@ describe("CommentDto", () => {
 
     it("should properly parse date string", () => {
       const object = {
-        EventId: eventId,
-        Content: content,
-        CreatedAt: "2009-06-15T13:45:30.0000000-07:00",
-        UserId: userId,
+        eventSlug: eventSlug,
+        content: content,
+        createdAt: "2009-06-15T13:45:30.0000000-07:00",
+        username: username,
+        userImageUrl: userImageUrl,
       };
 
       const objectWithoutOffset = {
-        EventId: eventId,
-        Content: content,
-        CreatedAt: "2009-06-15T13:45:30.0000000Z",
-        UserId: userId,
+        eventSlug: eventSlug,
+        content: content,
+        createdAt: "2009-06-15T13:45:30.0000000Z",
+        username: username,
+        userImageUrl: userImageUrl,
       };
 
       const objectWithoutMilliseconds = {
-        EventId: eventId,
-        Content: content,
-        CreatedAt: "2009-06-15T13:45:30Z",
-        UserId: userId,
+        eventSlug: eventSlug,
+        content: content,
+        createdAt: "2009-06-15T13:45:30Z",
+        username: username,
+        userImageUrl: userImageUrl,
       };
 
       let comment = CommentDtoMapper.fromObject(object);
       comment = comment as CommentDto;
 
-      expect(comment.CreatedAt).toEqual(
+      expect(comment.createdAt).toEqual(
         new Date("2009-06-15T13:45:30.0000000-07:00"),
       );
 
       comment = CommentDtoMapper.fromObject(objectWithoutOffset);
       comment = comment as CommentDto;
 
-      expect(comment.CreatedAt).toEqual(
+      expect(comment.createdAt).toEqual(
         new Date("2009-06-15T13:45:30.0000000Z"),
       );
 
       comment = CommentDtoMapper.fromObject(objectWithoutMilliseconds);
       comment = comment as CommentDto;
 
-      expect(comment.CreatedAt).toEqual(new Date("2009-06-15T13:45:30Z"));
+      expect(comment.createdAt).toEqual(new Date("2009-06-15T13:45:30Z"));
     });
   });
 });

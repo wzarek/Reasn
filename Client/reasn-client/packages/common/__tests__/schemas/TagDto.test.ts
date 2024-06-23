@@ -7,13 +7,13 @@ describe("TagDto", () => {
   describe("fromJson", () => {
     it("should create an instance of TagDto from JSON string", () => {
       const json = `{
-                "Name": "${name}"
+                "name": "${name}"
             }`;
 
       let tag = TagDtoMapper.fromJSON(json);
       tag = tag as TagDto;
 
-      expect(tag.Name).toBe(name);
+      expect(tag.name).toBe(name);
     });
 
     it("should return null if the JSON string is empty", () => {
@@ -32,18 +32,18 @@ describe("TagDto", () => {
   describe("fromObject", () => {
     it("should create an instance of TagDto from an object", () => {
       const object = {
-        Name: name,
+        name: name,
       };
 
       let tag = TagDtoMapper.fromObject(object);
       tag = tag as TagDto;
 
-      expect(tag.Name).toBe(name);
+      expect(tag.name).toBe(name);
     });
 
     it("should throw an error if the object is invalid", () => {
       const object = {
-        Name: null,
+        name: null,
       };
 
       const objectWithoutName = {};

@@ -2,7 +2,7 @@ import ModelMappingError from "../errors/ModelMappingError";
 import { z } from "zod";
 
 export const TagDtoSchema = z.object({
-  Name: z
+  name: z
     .string()
     .max(64)
     .regex(/^\p{L}+(?:\s\p{L}+)*$/u),

@@ -3,8 +3,8 @@ import { InterestDtoSchema } from "../schemas/InterestDto";
 import { z } from "zod";
 
 export const UserInterestDtoSchema = z.object({
-  Interest: InterestDtoSchema,
-  Level: z.number(),
+  interest: InterestDtoSchema,
+  level: z.number(),
 });
 
 export type UserInterestDto = z.infer<typeof UserInterestDtoSchema>;
