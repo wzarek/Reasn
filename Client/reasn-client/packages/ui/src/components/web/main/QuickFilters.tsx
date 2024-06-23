@@ -1,3 +1,5 @@
+"use client";
+
 import clsx from "clsx";
 import React, { useState } from "react";
 import { Card, CardVariant } from "@reasn/ui/src/components/shared";

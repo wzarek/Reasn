@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { ButtonBase } from "../../shared/form";
 import { Card, CardVariant, Interest } from "../../shared";
 import { QuickFilterButton } from "../main/QuickFilters";
+import { useRouter } from "next/navigation";
 
 interface SharedUserPageProps {
   username: string;
@@ -12,6 +13,11 @@ interface SharedUserPageProps {
 export const SharedUserPage = (props: SharedUserPageProps) => {
   const { username } = props;
   const isMePage = username === "memememe";
+  const router = useRouter();
+
+  const handleEditButtonClick = () => {
+    router.push("/me/edit");
+  };
 
   return (
     <div className="relative flex w-full flex-col gap-10">
@@ -38,7 +44,7 @@ export const SharedUserPage = (props: SharedUserPageProps) => {
         {isMePage && (
           <ButtonBase
             text="edytuj profil"
-            onClick={() => {}}
+            onClick={handleEditButtonClick}
             className="ml-auto"
           />
         )}

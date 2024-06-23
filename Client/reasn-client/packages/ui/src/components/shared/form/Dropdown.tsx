@@ -8,6 +8,7 @@ import { CaretDown, CaretUp } from "../../../icons";
 interface DropdownProps {
   label: string;
   options: string[];
+  className?: string;
 }
 
 interface SingleDropdownProps extends DropdownProps {
@@ -80,6 +81,7 @@ export const SingleDropdown = (props: SingleDropdownProps) => {
     options,
     selectedOption,
     selectedOptionClass,
+    className,
     setSelectedOption,
   } = props;
 
@@ -115,6 +117,7 @@ export const SingleDropdown = (props: SingleDropdownProps) => {
       className={clsx(
         "relative flex w-full cursor-pointer flex-col gap-2 rounded-lg bg-[#232327]",
         { "rounded-b-none": isExpanded },
+        className,
       )}
       onClick={toggleExpanded}
       ref={ref}
