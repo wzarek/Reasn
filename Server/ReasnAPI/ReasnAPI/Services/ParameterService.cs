@@ -144,6 +144,12 @@ public class ParameterService(ReasnContext context)
             .ToDtoList()
             .AsEnumerable();
     }
+    public IEnumerable<string> GetAllParameterKeys()
+    {
+        return context.Parameters
+            .Select(p => p.Key)
+            .AsEnumerable();
+    }
 
     public IEnumerable<ParameterDto> GetParametersByFilter(Expression<Func<Parameter, bool>> filter)
     {

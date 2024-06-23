@@ -220,4 +220,28 @@ public class ImageService(ReasnContext context)
         return imageDtos;
     }
 
+    public ImageDto GetImageByEventIdAndIndex(int eventId, int index)
+    {
+
+        var image = context.Images
+            .Where(image => image.ObjectType == ObjectType.Event && image.ObjectId == eventId)
+            .Skip(index)
+            .FirstOrDefault();
+
+        if (image == null)
+        {
+            throw new NotFoundException($"Image at index {index} not found for eventId {eventId}");
+        }
+
+        var imageDto = image.ToDto();
+        
+        return imageDto;
+    }
+
+    public int GetImageCountByEventId(int eventId)
+    {
+        return context.Images
+            .Count(image => image.ObjectType == ObjectType.Event && image.ObjectId == eventId);
+    }
+
 }

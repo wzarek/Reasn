@@ -14,11 +14,10 @@ namespace ReasnAPI.Controllers;
 [ApiController]
 [Route("[controller]")]
 public class EventsController(
-    ReasnContext context,
     EventService eventService,
     UserService userService,
     ImageService imageService,
-    AddressService addressService,
+    ParameterService parameterService,
     TagService tagService)
     : ControllerBase
 {
@@ -114,15 +113,28 @@ public class EventsController(
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
+    [Route("{slug}/reject")]
+    [ProducesResponseType<EventDto>(StatusCodes.Status200OK)]
+    public IActionResult RejectEventRequest([FromRoute] string slug)
+    {
+        var eventToApprove = eventService.GetEventBySlug(slug);
+
+        eventToApprove.Status = EventStatus.Rejected;
+        eventService.UpdateEvent(eventToApprove.Id, eventToApprove.ToDto());
+        return Ok();
+    }
+
+    [HttpPost]
     [Authorize(Roles = "Admin, Organizer")]
     [Route("{slug}/images")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> AddEventImage([FromRoute] string slug, [FromForm] List<IFormFile> images)
     {
-        var @event = eventService.GetEventBySlug(slug);
+        var relatedEvent = eventService.GetEventBySlug(slug);
         var user = userService.GetCurrentUser();
 
-        if (@event.OrganizerId != user.Id && user.Role != UserRole.Admin)
+        if (relatedEvent.OrganizerId != user.Id && user.Role != UserRole.Admin)
         {
             return Forbid();
         }
@@ -137,7 +149,7 @@ public class EventsController(
 
             imageDtos.Add(new ImageDto
             {
-                ObjectId = @event.Id,
+                ObjectId = relatedEvent.Id,
                 ObjectType = ObjectType.Event,
                 ImageData = fileBytes
             });
@@ -154,9 +166,9 @@ public class EventsController(
     public async Task<IActionResult> UpdateEventImage([FromRoute] string slug, [FromForm] List<IFormFile> images)
     {
         var user = userService.GetCurrentUser();
-        var @event = eventService.GetEventBySlug(slug);
+        var relatedEvent = eventService.GetEventBySlug(slug);
 
-        if (@event.OrganizerId != user.Id && user.Role != UserRole.Admin)
+        if (relatedEvent.OrganizerId != user.Id && user.Role != UserRole.Admin)
         {
             return Forbid();
         }
@@ -171,18 +183,18 @@ public class EventsController(
 
             imageDtos.Add(new ImageDto
             {
-                ObjectId = @event.Id,
+                ObjectId = relatedEvent.Id,
                 ObjectType = ObjectType.Event,
                 ImageData = fileBytes
             });
         }
 
-        if (@event.Id != imageDtos[0].ObjectId)
+        if (relatedEvent.Id != imageDtos[0].ObjectId)
         {
             return NotFound();
         }
 
-        imageService.UpdateImagesForEvent(@event.Id, imageDtos);
+        imageService.UpdateImagesForEvent(relatedEvent.Id, imageDtos);
         return Ok();
     }
 
@@ -191,8 +203,8 @@ public class EventsController(
     [ProducesResponseType<List<string>>(StatusCodes.Status200OK)]
     public IActionResult GetEventImages([FromRoute] string slug)
     {
-        var @event = eventService.GetEventBySlug(slug);
-        var images = imageService.GetImagesByEventId(@event.Id);
+        var relatedEvent = eventService.GetEventBySlug(slug);
+        var images = imageService.GetImagesByEventId(relatedEvent.Id);
         var count = images.Count();
         var stringList = new List<string>();
         for (int i = 0; i < count; i++)
@@ -207,15 +219,15 @@ public class EventsController(
     [ProducesResponseType<FileContentResult>(StatusCodes.Status200OK)]
     public IActionResult GetEventImage([FromRoute] string slug, [FromRoute] int id)
     {
-        var @event = eventService.GetEventBySlug(slug);
-        var images = imageService.GetImagesByEventId(@event.Id).ToList();
+        var relatedEvent = eventService.GetEventBySlug(slug);
+        var count = imageService.GetImageCountByEventId(relatedEvent.Id);
 
-        if (images.Count <= id)
+        if (count <= id)
         {
             return NotFound();
         }
 
-        var image = images[id];
+        var image = imageService.GetImageByEventIdAndIndex(relatedEvent.Id,id);
 
         return File(image.ImageData, $"image/jpeg");
     }
@@ -252,8 +264,8 @@ public class EventsController(
     public IActionResult AddEventComment([FromRoute] string slug, [FromBody]CommentRequest commentRequest, [FromServices] IValidator<CommentDto> validator)
     {
         var user = userService.GetCurrentUser();
-        var @event = eventService.GetEventBySlug(slug);
-        var commentDto = commentRequest.ToDtoFromRequest(user.Id, @event.Id);
+        var relatedEvent = eventService.GetEventBySlug(slug);
+        var commentDto = commentRequest.ToDtoFromRequest(user.Id, relatedEvent.Id);
         validator.ValidateAndThrow(commentDto);
         
         eventService.AddEventComment(commentDto);
@@ -262,36 +274,22 @@ public class EventsController(
 
     [HttpGet]
     [Authorize(Roles = "Admin, Organizer")]
-    [Route("{slug}/parameters")]
-    [ProducesResponseType<List<ParameterDto>>(StatusCodes.Status200OK)]
-    public IActionResult GetEventsParameters([FromRoute] string slug)
+    [Route("/parameters")]
+    [ProducesResponseType<List<string>>(StatusCodes.Status200OK)]
+    public IActionResult GetEventsParameters()
     {
-        var @event = eventService.GetEventBySlug(slug);
-        var user = userService.GetCurrentUser();
-        if (user.Role != UserRole.Admin && @event.OrganizerId != user.Id)
-        {
-            Forbid();
-        }
-
-        var parameters = @event.Parameters.ToDtoList();
+        var parameters = parameterService.GetAllParameterKeys().ToList();
         return Ok(parameters);
     }
 
     [HttpGet]
-    [Authorize(Roles = "Admin, Organizer")]
-    [Route("{slug}/tags")]
+    [Authorize(Roles = "Admin, Organizer\"")]
+    [Route("/tags")]
     [ProducesResponseType<List<TagDto>>(StatusCodes.Status200OK)]
-    public IActionResult GetEventsTags([FromRoute] string slug)
+    public IActionResult GetEventsTags()
     {
-        var user = userService.GetCurrentUser();
-        var @event = eventService.GetEventBySlug(slug);
-
-        if (user.Role != UserRole.Admin && @event.OrganizerId != user.Id)
-        {
-            Forbid();
-        }
-
-        var tags = @event.Tags.ToDtoList();
+       
+        var tags = tagService.GetAllTags().ToList();
         return Ok(tags);
     }
 
