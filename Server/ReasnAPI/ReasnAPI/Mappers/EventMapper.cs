@@ -100,5 +100,17 @@ namespace ReasnAPI.Mappers
             };
         }
 
+        public static EventSugestion ToSugestion(this EventDto eventDto, Participants participants, List<string> images)
+        {
+            return new EventSugestion()
+            {
+                Name = eventDto.Name,
+                Slug = eventDto.Slug,
+                Description = eventDto.Description,
+                Participants = participants,
+                Images = images
+            };
+        }
+
     }
 }

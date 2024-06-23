@@ -1,3 +1,4 @@
+using System.Diagnostics.Tracing;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,19 +13,14 @@ namespace ReasnAPI.Controllers;
 [ApiController]
 [Authorize]
 [Route("[controller]")]
-public class MeController(UserService userService, EventService eventService, ParticipantService participantService, ImageService imageService) : ControllerBase
+public class MeController(UserService userService, EventService eventService, ParticipantService participantService, ImageService imageService, RecomendationService recomendationService) : ControllerBase
 {
-    private readonly UserService _userService = userService;
-    private readonly EventService _eventService = eventService;
-    private readonly ParticipantService _participantService = participantService;
-    private readonly ImageService _imageService = imageService;
-
     [HttpGet]
     [ProducesResponseType<UserDto>(StatusCodes.Status200OK)]
     public IActionResult GetCurrentUser()
     {
-        var username = _userService.GetCurrentUser().Username;
-        var user = _userService.GetUserByUsername(username);
+        var username = userService.GetCurrentUser().Username;
+        var user = userService.GetUserByUsername(username);
 
         return Ok(user);
     }
@@ -37,7 +33,7 @@ public class MeController(UserService userService, EventService eventService, Pa
     {
         validator.ValidateAndThrow(userDto);
 
-        var user = _userService.GetCurrentUser();
+        var user = userService.GetCurrentUser();
 
         // Users cant change their role in this endpoint
         if (user.Role != userDto.Role)
@@ -45,7 +41,7 @@ public class MeController(UserService userService, EventService eventService, Pa
             return Forbid();
         }
 
-        var updatedUser = _userService.UpdateUser(user.Username, userDto);
+        var updatedUser = userService.UpdateUser(user.Username, userDto);
 
         return Ok(updatedUser);
     }
@@ -55,8 +51,8 @@ public class MeController(UserService userService, EventService eventService, Pa
     [ProducesResponseType<ImageDto>(StatusCodes.Status200OK)]
     public IActionResult GetCurrentUserImage()
     {
-        var user = _userService.GetCurrentUser();
-        var image = _imageService.GetImageByUserId(user.Id);
+        var user = userService.GetCurrentUser();
+        var image = imageService.GetImageByUserId(user.Id);
 
         if (image is null)
         {
@@ -71,7 +67,7 @@ public class MeController(UserService userService, EventService eventService, Pa
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> AddCurrentUserImage([FromForm] List<IFormFile> images)
     {
-        var userId = _userService.GetCurrentUser().Id;
+        var userId = userService.GetCurrentUser().Id;
 
         foreach (var image in images.Where(image => image.Length > 0))
         {
@@ -86,7 +82,7 @@ public class MeController(UserService userService, EventService eventService, Pa
                 ImageData = fileBytes
             };
 
-            _imageService.CreateImages([imageDto]);
+            imageService.CreateImages([imageDto]);
         }
 
         return Ok();
@@ -97,7 +93,7 @@ public class MeController(UserService userService, EventService eventService, Pa
     [ProducesResponseType<ImageDto>(StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateCurrentUserImage([FromForm] List<IFormFile> images)
     {
-        var userId = _userService.GetCurrentUser().Id;
+        var userId = userService.GetCurrentUser().Id;
 
         foreach (var image in images.Where(image => image.Length > 0))
         {
@@ -112,7 +108,7 @@ public class MeController(UserService userService, EventService eventService, Pa
                 ImageData = fileBytes
             };
 
-            _imageService.UpdateImageForUser(userId, imageDto);
+            imageService.UpdateImageForUser(userId, imageDto);
         }
 
         return Ok();
@@ -123,8 +119,8 @@ public class MeController(UserService userService, EventService eventService, Pa
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult DeleteCurrentUserImage()
     {
-        var userId = _userService.GetCurrentUser().Id;
-        _imageService.DeleteImageByObjectIdAndType(userId, ObjectType.User);
+        var userId = userService.GetCurrentUser().Id;
+        imageService.DeleteImageByObjectIdAndType(userId, ObjectType.User);
 
         return NoContent();
     }
@@ -134,12 +130,12 @@ public class MeController(UserService userService, EventService eventService, Pa
     [ProducesResponseType<IEnumerable<EventResponse>>(StatusCodes.Status200OK)]
     public IActionResult GetCurrentUserEvents()
     {
-        var user = _userService.GetCurrentUser();
-        var events = _eventService.GetUserEvents(user.Username);
+        var user = userService.GetCurrentUser();
+        var events = eventService.GetUserEvents(user.Username);
 
         if (user.Role == UserRole.Organizer)
         {
-            var organizerEvents = _eventService.GetEventsByFilter(e => e.OrganizerId == user.Id);
+            var organizerEvents = eventService.GetEventsByFilter(e => e.OrganizerId == user.Id);
             events = events.Concat(organizerEvents);
         }
 
@@ -151,9 +147,9 @@ public class MeController(UserService userService, EventService eventService, Pa
     [ProducesResponseType<ParticipantDto>(StatusCodes.Status201Created)]
     public IActionResult EnrollCurrentUserInEvent([FromRoute] string slug)
     {
-        var user = _userService.GetCurrentUser();
+        var user = userService.GetCurrentUser();
 
-        var participant = _participantService.CreateOrUpdateParticipant(new ParticipantDto { EventSlug = slug, Username = user.Username, Status = ParticipantStatus.Interested });
+        var participant = participantService.CreateOrUpdateParticipant(new ParticipantDto { EventSlug = slug, Username = user.Username, Status = ParticipantStatus.Interested });
 
         var location = Url.Action(
             action: nameof(GetCurrentUserEvents),
@@ -167,8 +163,8 @@ public class MeController(UserService userService, EventService eventService, Pa
     [ProducesResponseType<ParticipantDto>(StatusCodes.Status200OK)]
     public IActionResult ConfirmCurrentUserEventAttendance([FromRoute] string slug)
     {
-        var user = _userService.GetCurrentUser();
-        var participant = _participantService.CreateOrUpdateParticipant(new ParticipantDto { EventSlug = slug, Username = user.Username, Status = ParticipantStatus.Participating });
+        var user = userService.GetCurrentUser();
+        var participant = participantService.CreateOrUpdateParticipant(new ParticipantDto { EventSlug = slug, Username = user.Username, Status = ParticipantStatus.Participating });
 
         return Ok(participant);
     }
@@ -178,16 +174,36 @@ public class MeController(UserService userService, EventService eventService, Pa
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public IActionResult CancelCurrentUserEventAttendance([FromRoute] string slug)
     {
-        var userId = _userService.GetCurrentUser().Id;
-        _participantService.DeleteParticipant(userId, slug);
+        var userId = userService.GetCurrentUser().Id;
+        participantService.DeleteParticipant(userId, slug);
 
         return NoContent();
     }
 
     [HttpGet]
     [Route("events/recommendations")]
-    public IActionResult GetCurrentUserEventRecommendations()
+    [ProducesResponseType<List<EventSugestion>>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetCurrentUserEventRecommendations(
+        [FromQuery] int offset = 0,
+        [FromQuery] int limit = 10)
     {
-        throw new NotImplementedException();
+
+        var currentUser = userService.GetCurrentUser();
+        var username = currentUser.Username;
+        var currentUserInterest = userService.GetUserByUsername(username).Interests;
+        if (currentUserInterest == null || currentUserInterest.Count == 0)
+        {
+            return Ok(new List<EventSugestion>());
+        }
+
+        var request = new RecomendationPageRequest
+        {
+            Limit = limit,
+            Offset = offset
+        };
+
+        var events = await recomendationService.GetEventsByInterest(currentUserInterest, username, request);
+
+        return Ok(events);
     }
 }

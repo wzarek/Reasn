@@ -10,14 +10,16 @@ using System.Threading.Tasks;
 using ReasnAPI.Mappers;
 using ReasnAPI.Models.Recomendation;
 using Npgsql;
+using ReasnAPI.Models.API;
+using ReasnAPI.Models.Enums;
 
 namespace ReasnAPI.Services
 {
-    public class RecomendationService(ReasnContext context,EventService eventService, IConfiguration configuration)
+    public class RecomendationService(ReasnContext context,EventService eventService, ImageService imageService, IConfiguration configuration)
     {
         private readonly string? _connectionString = configuration.GetConnectionString("DefaultValue");
 
-        public async Task<List<EventDto>> GetEventsByInterest(List<UserInterestDto> interestsDto, string username)
+        public async Task<List<EventSugestion>> GetEventsByInterest(List<UserInterestDto> interestsDto, string username, RecomendationPageRequest pageRequest)
         {
             var interests = interestsDto.Select(i => i.Interest.Name).ToList();
             var interestsLevels = interestsDto.Select(i => i.Level).ToList();
@@ -50,7 +52,7 @@ namespace ReasnAPI.Services
                 var events = await context.Events
                     .Include(e => e.Tags)
                     .Include(e => e.Parameters)
-                    .Where(e => e.Tags.Any(t => tagNames.Contains(t.Name)) && !userEventSlugs.Contains(e.Slug))
+                    .Where(e => !userEventSlugs.Contains(e.Slug) && (e.Status == EventStatus.Approved || e.Status == EventStatus.Ongoing))
                     .Select(e => new
                     {
                         Event = e,
@@ -59,27 +61,23 @@ namespace ReasnAPI.Services
                     })
                     .OrderByDescending(e => e.TotalTagValue)
                     .Select(e => e.Event)
+                    .Skip((pageRequest.Offset))
+                    .Take(pageRequest.Limit)
                     .ToListAsync();
 
-
                 var eventDtos = events.Select(e => e.ToDto()).ToList();
-
-                if (eventDtos.Count < 10)
+                
+                var eventSugestions = new List<EventSugestion>();
+                foreach (var eventDto in eventDtos)
                 {
-                    int additionalEventsNeeded = 10 - eventDtos.Count;
-                    var randomEvents = await context.Events
-                        .Include(e => e.Tags)
-                        .Include(e => e.Parameters)
-                        .Where(e => !events.Contains(e)) 
-                        .OrderBy(r => r.StartAt) 
-                        .Take(additionalEventsNeeded)
-                        .ToListAsync();
-
-                    eventDtos.AddRange(randomEvents.Select(e => e.ToDto()));
-
+                    var participating = eventService.GetEventParticipantsCountBySlugAndStatus(eventDto.Slug, ParticipantStatus.Participating);
+                    var interested = eventService.GetEventParticipantsCountBySlugAndStatus(eventDto.Slug, ParticipantStatus.Interested);
+                    var participants = new Participants(participating, interested);
+                    var images = eventService.GetEventImages(eventDto.Slug);
+                    eventSugestions.Add(eventDto.ToSugestion(participants, images));
                 }
 
-                return eventDtos;
+                return eventSugestions;
             }
             catch (Exception ex)
             {

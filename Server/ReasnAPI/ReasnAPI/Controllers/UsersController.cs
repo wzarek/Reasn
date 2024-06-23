@@ -42,18 +42,6 @@ public class UsersController(UserService userService, InterestService interestSe
         return Ok(user);
     }
 
-    [HttpGet]
-    [Route("{username}/recomendetevents")]
-    public async Task<IActionResult> GetRecomendetEvents(string username)
-    {
-        var currentUser = _userService.GetUserByUsername(username);
-        var interests = currentUser.Interests;
-
-        var events = await _recomendationService.GetEventsByInterest(interests, username);
-
-        return Ok(events);
-    }
-
     [HttpPut]
     [Authorize]
     [Route("{username}")]
