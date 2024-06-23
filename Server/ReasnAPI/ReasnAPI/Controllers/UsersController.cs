@@ -49,7 +49,7 @@ public class UsersController(UserService userService, InterestService interestSe
         var currentUser = _userService.GetUserByUsername(username);
         var interests = currentUser.Interests;
 
-        var events = await _recomendationService.GetEventsByInterest(interests);
+        var events = await _recomendationService.GetEventsByInterest(interests, username);
 
         return Ok(events);
     }

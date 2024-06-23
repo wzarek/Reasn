@@ -15,14 +15,14 @@ def connect_to_db():
 def get_translated_tags_and_interests(conn):
     with conn.cursor() as cur:
         query_translated_tags = """
-        SELECT t.name, tr.name_ang
+        SELECT t.name, tr.ang
         FROM events.tag t
-        JOIN common.translated tr ON t.name = tr.name_pl
+        JOIN common.translation tr ON t.name = tr.pl
         """
         query_translated_interests = """
-        SELECT i.name, tr.name_ang
+        SELECT i.name, tr.ang
         FROM users.interest i
-        JOIN common.translated tr ON i.name = tr.name_pl
+        JOIN common.translation tr ON i.name = tr.pl
         """
         cur.execute(query_translated_tags)
         tags = cur.fetchall()
@@ -38,16 +38,16 @@ def get_missing_tags_and_interests(conn):
         SELECT name
         FROM events.tag
         WHERE name NOT IN (
-            SELECT tag_name
-            FROM common.related
+            SELECT tag
+            FROM common.tag_interest_simularity
         );
         """
         query_missing_interests = """
         SELECT name
         FROM users.interest
         WHERE name NOT IN (
-            SELECT interest_name
-            FROM common.related
+            SELECT interest
+            FROM common.tag_interest_simularity
         );
         """
         cur.execute(query_missing_tags)
@@ -71,9 +71,9 @@ def calculate_semantic_similarity_sbert(interests, tags):
 def save_similarities_to_db(conn, tags, interests, similarities):
     with conn.cursor() as cur:
         insert_query = """
-        INSERT INTO common.related (tag_name, interest_name, value)
+        INSERT INTO common.tag_interest_simularity (tag, interest, simularity)
         VALUES (%s, %s, %s)
-        ON CONFLICT (tag_name, interest_name) DO NOTHING
+        ON CONFLICT (tag, interest) DO NOTHING
         """
         for i, tag in enumerate(tags):
             for j, interest in enumerate(interests):

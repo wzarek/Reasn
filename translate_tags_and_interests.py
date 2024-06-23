@@ -18,16 +18,16 @@ def get_untranslated_tags_and_interests(conn):
         SELECT DISTINCT name AS name
         FROM events.tag
         WHERE name NOT IN (
-            SELECT name_pl
-            FROM common.translated
+            SELECT pl
+            FROM common.translation
         );
         """
         query_interests = """
         SELECT DISTINCT name AS name
         FROM users.interest
         WHERE name NOT IN (
-            SELECT name_pl
-            FROM common.translated
+            SELECT pl
+            FROM common.translation
         );
         """
         cur.execute(query_tags)
@@ -46,7 +46,7 @@ def translate_to_english(texts):
 def save_translations(conn, original_texts, translated_texts):
     with conn.cursor() as cur:
         insert_query = """
-        INSERT INTO common.translated (name_pl, name_ang)
+        INSERT INTO common.translation (pl, ang)
         VALUES (%s, %s)
         """
         for original, translated in zip(original_texts, translated_texts):

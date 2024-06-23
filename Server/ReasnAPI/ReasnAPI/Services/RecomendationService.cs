@@ -13,21 +13,11 @@ using Npgsql;
 
 namespace ReasnAPI.Services
 {
-    public class RecomendationService
+    public class RecomendationService(ReasnContext context,EventService eventService, IConfiguration configuration)
     {
-        private readonly HttpClient httpClient;
-        private readonly ReasnContext context;
-        private readonly string flaskApiUrl;
-        private readonly string _connectionString;
+        private readonly string? _connectionString = configuration.GetConnectionString("DefaultValue");
 
-        public RecomendationService(HttpClient httpClient, ReasnContext context, IConfiguration configuration)
-        {
-            this.httpClient = httpClient;
-            this.context = context;
-            _connectionString = configuration.GetConnectionString("DefaultValue");
-        }
-
-        public async Task<List<EventDto>> GetEventsByInterest(List<UserInterestDto> interestsDto)
+        public async Task<List<EventDto>> GetEventsByInterest(List<UserInterestDto> interestsDto, string username)
         {
             var interests = interestsDto.Select(i => i.Interest.Name).ToList();
             var interestsLevels = interestsDto.Select(i => i.Level).ToList();
@@ -36,11 +26,6 @@ namespace ReasnAPI.Services
             {
                 var similarTags = await GetSimilarTagsFromDb(interests);
 
-                if (similarTags == null || similarTags.Count == 0)
-                {
-                    return new List<EventDto>();
-                }
-
                 var tagNames = similarTags.Select(t => t.Tag_Name).ToList();
                 var interestNames = similarTags.Select(t => t.Interest_Name).ToList();
                 var values = similarTags.Select(t => t.Value).ToList();
@@ -48,6 +33,17 @@ namespace ReasnAPI.Services
                 for (int i = 0; i < values.Count; i++)
                 {
                     values[i] *= interestsLevels[interestNames.IndexOf(similarTags[i].Interest_Name)];
+                }
+
+                var userEvents = eventService.GetUserEvents(username);
+                var userEventTags = userEvents.SelectMany(e => e.Tags).Select(t => t.Name).Distinct().ToList();
+
+                for (int i = 0; i < values.Count; i++)
+                {
+                    if (userEventTags.Contains(tagNames[i]))
+                    {
+                        values[i] *= 1.25; 
+                    }
                 }
 
                 var events = await context.Events
@@ -64,7 +60,23 @@ namespace ReasnAPI.Services
                     .Select(e => e.Event)
                     .ToListAsync();
 
+
                 var eventDtos = events.Select(e => e.ToDto()).ToList();
+
+                if (eventDtos.Count < 10)
+                {
+                    int additionalEventsNeeded = 10 - eventDtos.Count;
+                    var randomEvents = await context.Events
+                        .Include(e => e.Tags)
+                        .Include(e => e.Parameters)
+                        .Where(e => !events.Contains(e)) 
+                        .OrderBy(r => r.StartAt) 
+                        .Take(additionalEventsNeeded)
+                        .ToListAsync();
+
+                    eventDtos.AddRange(randomEvents.Select(e => e.ToDto()));
+
+                }
 
                 return eventDtos;
             }
@@ -87,9 +99,9 @@ namespace ReasnAPI.Services
 
     
             var query = @"
-                            SELECT DISTINCT tag_name, interest_name, value
-                            FROM common.related
-                            WHERE interest_name = any(@interests) AND value > 0.3
+                            SELECT DISTINCT tag, interest, simularity
+                            FROM common.tag_interest_simularity
+                            WHERE interest = any(@interests) AND simularity > 0.3
                         ";
 
             cmd.CommandText = query;
@@ -98,14 +110,14 @@ namespace ReasnAPI.Services
             await using var reader = await cmd.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
-                var tag_name = reader.GetString(reader.GetOrdinal("tag_name"));
-                var interest_name = reader.GetString(reader.GetOrdinal("interest_name"));
-                var value = reader.GetDecimal(reader.GetOrdinal("value"));
+                var tagName = reader.GetString(reader.GetOrdinal("tag"));
+                var interestName = reader.GetString(reader.GetOrdinal("interest"));
+                var value = reader.GetDecimal(reader.GetOrdinal("simularity"));
 
                 similarTags.Add(new TagInfo
                 {
-                    Tag_Name = tag_name,
-                    Interest_Name = interest_name,
+                    Tag_Name = tagName,
+                    Interest_Name = interestName,
                     Value = (double)value
                 });
             }
