@@ -27,16 +27,28 @@ public class UserServiceTests
     {
         var mockContext = new Mock<ReasnContext>();
 
+        var address = new Address
+        {
+            Id = 1,
+            City = "City",
+            Country = "Country",
+            Street = "Street",
+            State = "State",
+            ZipCode = "ZipCode"
+        };
+
         var user = new User
         {
             Id = 1,
             Name = "John",
             Surname = "Doe",
             Username = "Username",
-            Email = "Email"
+            Email = "Email",
+            Address = address,
         };
 
         mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
+        mockContext.Setup(c => c.Addresses).ReturnsDbSet([address]);
 
         var userService = new UserService(mockContext.Object);
 
@@ -65,13 +77,24 @@ public class UserServiceTests
     {
         var mockContext = new Mock<ReasnContext>();
 
+        var address = new Address
+        {
+            Id = 1,
+            City = "City",
+            Country = "Country",
+            Street = "Street",
+            State = "State",
+            ZipCode = "ZipCode"
+        };
+
         var user = new User
         {
             Id = 1,
             Name = "John",
             Surname = "Doe",
             Username = "Username",
-            Email = "Email"
+            Email = "Email",
+            Address = address,
         };
 
         mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
@@ -143,6 +166,7 @@ public class UserServiceTests
 
         mockContext.Setup(c => c.Addresses).ReturnsDbSet([address]);
         mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
+        mockContext.Setup(c => c.UserInterests).ReturnsDbSet([]);
 
         var userService = new UserService(mockContext.Object);
 
@@ -157,7 +181,7 @@ public class UserServiceTests
             Role = UserRole.User
         };
 
-        var result = userService.UpdateUser(1, userDto);
+        var result = userService.UpdateUser("Username", userDto);
 
         Assert.IsNotNull(result);
         Assert.AreEqual("Jane", result.Name);
@@ -187,7 +211,7 @@ public class UserServiceTests
 
         var userService = new UserService(mockContext.Object);
 
-        Assert.ThrowsException<ArgumentNullException>(() => userService.UpdateUser(1, null));
+        Assert.ThrowsException<ArgumentNullException>(() => userService.UpdateUser("Username", null));
     }
 
     [TestMethod]
@@ -209,6 +233,6 @@ public class UserServiceTests
             AddressId = 1
         };
 
-        Assert.ThrowsException<NotFoundException>(() => userService.UpdateUser(1, userDto));
+        Assert.ThrowsException<NotFoundException>(() => userService.UpdateUser("Username", userDto));
     }
 }

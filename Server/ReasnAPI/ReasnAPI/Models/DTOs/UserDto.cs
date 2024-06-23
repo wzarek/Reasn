@@ -11,6 +11,7 @@ namespace ReasnAPI.Models.DTOs
         public string? Phone { get; set; }
         public UserRole Role { get; set; }
         public int AddressId { get; set; }
+        public AddressDto Address { get; set; } = null!;
         public List<UserInterestDto>? Interests { get; set; }
     }
 }
