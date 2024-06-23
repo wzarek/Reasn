@@ -16,7 +16,7 @@ export const CommentDtoSchema = z.object({
     .string()
     .max(64)
     .regex(/^[\p{L}\d._%+-]{4,}$/u),
-  userImageUrl: z.string(),
+  userImageUrl: z.string().nullable(),
 });
 
 export type CommentDto = z.infer<typeof CommentDtoSchema>;

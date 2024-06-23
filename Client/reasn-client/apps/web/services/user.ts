@@ -4,6 +4,7 @@ import {
   ParticipantDto,
   ParticipantDtoMapper,
 } from "@reasn/common/src/schemas/ParticipantDto";
+import { InterestDto } from "@reasn/common/src/schemas/InterestDto";
 
 const baseUrl = `${process.env.REASN_API_URL}/api/v1`;
 const baseUsersUrl = `${baseUrl}/users`;
@@ -45,11 +46,13 @@ export const updateUser = async (
 
 export const getUsersInterests = async (
   params: Record<string, string> = {},
-): Promise<any> => {
+): Promise<InterestDto[]> => {
   const url = new URL(`${baseUsersUrl}/interests`);
   url.search = new URLSearchParams(params).toString();
 
-  const response = await sendRequest<any>(url, { method: HttpMethod.GET });
+  const response = await sendRequest<InterestDto[]>(url, {
+    method: HttpMethod.GET,
+  });
   return response;
 };
 
