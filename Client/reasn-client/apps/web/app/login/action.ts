@@ -33,8 +33,9 @@ export const loginAction = async (
   try {
     const payload = await login(result.data);
     setToken(payload);
-    redirect("/");
   } catch (e) {
     return handleErrorMessage(e);
   }
+
+  redirect("/");
 };

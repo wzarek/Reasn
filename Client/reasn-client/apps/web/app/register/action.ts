@@ -55,8 +55,9 @@ export const registerAction = async (
 
   try {
     await register(RegisterRequestMapper.fromObject(result.data));
-    redirect("/login");
   } catch (e) {
     return handleErrorMessage(e);
   }
+
+  redirect("/login");
 };
