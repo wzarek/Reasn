@@ -1,4 +1,4 @@
-import { EventStatus } from "@reasn/common/enums/modelsEnums";
+import { EventStatus } from "@reasn/common/src/enums/schemasEnums";
 
 export const getStatusClass = (status: EventStatus) => {
   switch (status) {

@@ -51,7 +51,7 @@ export const QuickFilters = () => {
           selected={selectedFilter === "Remote"}
         />
       </div>
-      <div className="grid grid-cols-1 place-items-center gap-10 p-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+      <div className="xs:grid-cols-2 grid grid-cols-1 place-items-center gap-2 p-10 sm:gap-10 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         <Card variant={CardVariant.Tile} event="Abc" />
         <Card variant={CardVariant.Tile} event="Abc" />
         <Card variant={CardVariant.Tile} event="Abc" />

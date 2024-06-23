@@ -8,11 +8,10 @@ import {
 } from "@reasn/ui/src/components/shared/form";
 import { ChangeEvent, useState } from "react";
 import { Clock, Location, Upload } from "@reasn/ui/src/icons";
-import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import { EventStatus } from "@reasn/common/enums/modelsEnums";
+import { EventStatus } from "@reasn/common/src/enums/schemasEnums";
 import { BaseInput } from "@reasn/ui/src/components/shared/form/Input";
-import { getStatusClass } from "@reasn/common/helpers/uiHelpers";
+import { getStatusClass } from "@reasn/common/src/helpers/uiHelpers";
 
 const MOCK_TAGS = [
   "abcd",
@@ -94,7 +93,7 @@ const EventAddPage = () => {
           >
             {status}
           </p>
-          <div className="flex flex-wrap gap-2 overflow-clip text-xs text-[#cacaca]">
+          <div className="mt-8 flex flex-wrap gap-2 overflow-clip text-xs text-[#cacaca]">
             <SearchMultiDropdown
               label="Wyszukaj tagi"
               options={MOCK_TAGS}
@@ -184,12 +183,14 @@ const EventAddPage = () => {
             </div>
             <div>
               <h3 className="mb-1 font-semibold">Dodatkowe informacje:</h3>
-              <SearchMultiDropdown
-                label="Wyszukaj parametry"
-                options={Object.keys(MOCK_PARAMS)}
-                selectedOptions={paramsKeys}
-                setSelectedOptions={setParamsKeys}
-              />
+              <div className="mt-8">
+                <SearchMultiDropdown
+                  label="Wyszukaj parametry"
+                  options={Object.keys(MOCK_PARAMS)}
+                  selectedOptions={paramsKeys}
+                  setSelectedOptions={setParamsKeys}
+                />
+              </div>
               <div className="ml-5 mt-2 flex flex-col gap-1">
                 <h3 className="font-semibold">Wybrane parametry:</h3>
                 {!paramsKeys ||

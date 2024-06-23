@@ -1,5 +1,8 @@
 import React from "react";
-import { CommentDto, CommentDtoMapper } from "@reasn/common/models/CommentDto";
+import {
+  CommentDto,
+  CommentDtoMapper,
+} from "@reasn/common/src/schemas/CommentDto";
 
 interface CommentProps {
   comment: CommentDto;
