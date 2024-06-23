@@ -157,14 +157,12 @@ const RegisterUser = () => {
             : "gdzie powinniśmy cię szukać?"}
         </p>
         <div className="flex flex-row gap-5">
-          {
-            currentStep > 1 && (
-              <ButtonBase
-                text={"wróć"}
-                onClick={() => setCurrentStep(currentStep - 1)}
-              />
-            )
-          }
+          {currentStep > 1 && (
+            <ButtonBase
+              text={"wróć"}
+              onClick={() => setCurrentStep(currentStep - 1)}
+            />
+          )}
           <ButtonBase
             text={currentStep === 2 ? "zarejestruj" : "kontynuuj"}
             onClick={() =>
