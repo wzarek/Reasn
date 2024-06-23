@@ -25,11 +25,34 @@ public class EventsController(
 
     [HttpGet]
     [ProducesResponseType<IEnumerable<EventResponse>>(StatusCodes.Status200OK)]
-    public IActionResult GetEvents()
+    public async Task<ActionResult<PagedResponse<EventDto>>> GetEvents(
+    [FromQuery] string? filterName,
+    [FromQuery] EventStatus? filterStatus,
+    [FromQuery] List<string>? filterTags,
+    [FromQuery] DateTime? filterStartAt,
+    [FromQuery] DateTime? filterEndAt,
+    [FromQuery] int offset = 0,
+    [FromQuery] int limit = 10,
+    [FromQuery] SortBy sortBy = SortBy.StartAt,
+    [FromQuery] SortOrder sortOrder = SortOrder.Ascending)
     {
-        var events = eventService.GetAllEvents();
+        var request = new PagedRequest
+        {
+            FilterName = filterName,
+            FilterStatus = filterStatus,
+            FilterTags = filterTags,
+            FilterStartAt = filterStartAt,
+            FilterEndAt = filterEndAt,
+            Offset = offset,
+            Limit = limit,
+            SortBy = sortBy,
+            SortOrder = sortOrder
+        };
 
-        return Ok(events);
+        var eventsPaged = eventService.GetAllEvents(request);
+        return Ok(eventsPaged);
+
+
     }
 
     [HttpPost]
@@ -308,6 +331,7 @@ public class EventsController(
     public IActionResult DeleteEventsTag([FromRoute] int tagId)
     {
         tagService.DeleteTag(tagId);
-        return NoContent();
+        return NoContent(); 
     }
+
 }

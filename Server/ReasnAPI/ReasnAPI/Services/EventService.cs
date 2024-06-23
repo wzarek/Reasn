@@ -273,16 +273,62 @@ public class EventService(ReasnContext context, ParameterService parameterServic
         return stringList;
     }
 
-    public IEnumerable<EventResponse> GetAllEvents()
+    public PagedResponse<EventResponse> GetAllEvents(PagedRequest request)
     {
-        var events = context.Events.Include(e => e.Parameters)
+        var query = context.Events
+            .Include(e => e.Parameters)
             .Include(e => e.Tags)
-            .Include(e => e.Address)
             .Include(e => e.Organizer)
-            .Where(e => e.Status != EventStatus.PendingApproval &&
-                        e.Status != EventStatus.Cancelled &&
-                        e.Status != EventStatus.Rejected).ToList();
+            .Include(e => e.Address)
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(request.FilterName))
+            query = query.Where(e => e.Name.Contains(request.FilterName));
+
+        if (request.FilterStatus.HasValue)
+            query = query.Where(e => e.Status == request.FilterStatus.Value);
+        if (request.FilterTags != null && request.FilterTags.Any())
+
+            query = query.Where(e => e.Tags.Any(t => request.FilterTags.Contains(t.Name)));
+
+        if (request.FilterStartAt.HasValue)
+            query = query.Where(e => e.StartAt >= request.FilterStartAt);
+
+        if (request.FilterEndAt.HasValue)
+            query = query.Where(e => e.EndAt <= request.FilterEndAt);
+
+
+        var totalCount = query.Count();
+
+        switch (request.SortBy)
+        {
+            case SortBy.StartAt:
+                query = request.SortOrder == SortOrder.Ascending ?
+                    query.OrderBy(e => e.StartAt) :
+                    query.OrderByDescending(e => e.StartAt);
+                break;
+            case SortBy.Name:
+                query = request.SortOrder == SortOrder.Ascending ?
+                    query.OrderBy(e => e.Name) :
+                    query.OrderByDescending(e => e.Name);
+                break;
+            case SortBy.CreatedAt:
+                query = request.SortOrder == SortOrder.Ascending ?
+                    query.OrderBy(e => e.CreatedAt) :
+                    query.OrderByDescending(e => e.CreatedAt);
+                break;
+            default:
+                query = query.OrderBy(e => e.StartAt);
+                break;
+        }
+
+        var events = query
+            .Skip((request.Offset))
+            .Take(request.Limit)
+            .ToList();
+
         var eventsResponses = new List<EventResponse>();
+
         foreach (var thisEvent in events)
         {
             var participating = GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Participating);
@@ -303,7 +349,22 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             eventsResponses.Add(eventResponse);
         }
 
-        return eventsResponses.AsEnumerable();
+        var response = new PagedResponse<EventResponse>
+        {
+            Items = eventsResponses,
+            TotalCount = totalCount,
+            FilterName = request.FilterName,
+            FilterStatus = request.FilterStatus,
+            FilterTags = request.FilterTags,
+            FilterStartAt = request.FilterStartAt,
+            FilterEndAt = request.FilterEndAt,
+            Offset = request.Offset,
+            Limit = request.Limit,
+            SortBy = (PagedResponse<EventResponse>.SortByEnum)request.SortBy,
+            SortOrder = (PagedResponse<EventResponse>.SortOrderEnum)request.SortOrder
+        };
+
+        return response;
     }
     public IEnumerable<EventResponse> GetUserEvents(string username)
     {
@@ -414,5 +475,8 @@ public class EventService(ReasnContext context, ParameterService parameterServic
         return finalSlug;
 
     }
+    
 
 }
+
+
