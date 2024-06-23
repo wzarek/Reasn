@@ -36,7 +36,8 @@ namespace ReasnAPI.Services
                 }
 
                 var userEvents = eventService.GetUserEvents(username);
-                var userEventTags = userEvents.SelectMany(e => e.Tags).Select(t => t.Name).Distinct().ToList();
+                var userEventsList = userEvents.ToList();
+                var userEventTags = userEventsList.SelectMany(e => e.Tags!).Select(t => t.Name).Distinct().ToList();
 
                 for (int i = 0; i < values.Count; i++)
                 {
@@ -45,11 +46,11 @@ namespace ReasnAPI.Services
                         values[i] *= 1.25; 
                     }
                 }
-
+                var userEventSlugs = userEventsList.Select(e => e.Slug).ToList();
                 var events = await context.Events
                     .Include(e => e.Tags)
                     .Include(e => e.Parameters)
-                    .Where(e => e.Tags.Any(t => tagNames.Contains(t.Name)))
+                    .Where(e => e.Tags.Any(t => tagNames.Contains(t.Name)) && !userEventSlugs.Contains(e.Slug))
                     .Select(e => new
                     {
                         Event = e,
