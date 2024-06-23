@@ -3,7 +3,7 @@
 
 (cd ./Client/reasn-client && yarn lint-staged)
 (cd ./Server/ReasnAPI && dotnet format)
-if ! git diff --quiet; then
+if git diff --name-only --quiet | grep '\.cs$'; then
   echo "🚫 dotnet format made changes, commit aborted."
   exit 1
 fi

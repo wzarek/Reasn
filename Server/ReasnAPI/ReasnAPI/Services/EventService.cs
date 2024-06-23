@@ -27,6 +27,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             addressService.CreateAddress(addressDto);
             newEvent.Address = addressDto.ToEntity();
             context.SaveChanges();
+
             context.Events.Add(newEvent);
 
 

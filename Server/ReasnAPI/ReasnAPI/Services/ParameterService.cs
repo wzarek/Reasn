@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ReasnAPI.Exceptions;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
@@ -36,6 +36,7 @@ public class ParameterService(ReasnContext context)
         var parameterCheck = parameters.FirstOrDefault(r => r.Parameters.Any(p => p.Id == parameterId));
 
         if (parameterCheck is not null)
+
         {
             throw new BadRequestException("Parameter is associated with an event");
         }

@@ -11,7 +11,7 @@ const LoginLayout = ({
   };
 }) => {
   return (
-    <section className="relative mx-auto flex h-screen w-3/4 justify-between py-10">
+    <section className="relative mx-auto flex h-screen w-[90%] flex-wrap justify-between py-10 lg:w-3/4">
       {children}
     </section>
   );
