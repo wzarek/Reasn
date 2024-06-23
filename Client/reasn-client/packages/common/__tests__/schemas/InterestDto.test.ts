@@ -10,13 +10,13 @@ describe("InterestDto", () => {
   describe("fromJson", () => {
     it("should create an instance of InterestDto from JSON string", () => {
       const json = `{
-                "Name": "${name}"
+                "name": "${name}"
             }`;
 
       let interest = InterestDtoMapper.fromJSON(json);
       interest = interest as InterestDto;
 
-      expect(interest.Name).toBe(name);
+      expect(interest.name).toBe(name);
     });
 
     it("should return null if the JSON string is empty", () => {
@@ -35,13 +35,13 @@ describe("InterestDto", () => {
   describe("fromObject", () => {
     it("should create an instance of InterestDto from an object", () => {
       const object = {
-        Name: name,
+        name: name,
       };
 
       let interest = InterestDtoMapper.fromObject(object);
       interest = interest as InterestDto;
 
-      expect(interest.Name).toBe(name);
+      expect(interest.name).toBe(name);
     });
 
     it("should throw an error if the object is invalid", () => {

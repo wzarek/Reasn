@@ -6,6 +6,7 @@ import {
 } from "@reasn/common/src/schemas/EventResponse";
 import { ParameterDto } from "@reasn/common/src/schemas/ParameterDto";
 import { TagDto } from "@reasn/common/src/schemas/TagDto";
+import { CommentDto } from "@reasn/common/src/schemas/CommentDto";
 
 const baseUrl = `${process.env.REASN_API_URL}/api/v1/events`;
 
@@ -129,10 +130,12 @@ export const getEventParticipants = async (slug: string): Promise<any> => {
   return response;
 };
 
-export const getEventComments = async (slug: string): Promise<any> => {
+export const getEventComments = async (slug: string): Promise<CommentDto[]> => {
   const url = new URL(`${baseUrl}/${slug}/comments`);
 
-  const response = await sendRequest<any>(url, { method: HttpMethod.GET });
+  const response = await sendRequest<CommentDto[]>(url, {
+    method: HttpMethod.GET,
+  });
   return response;
 };
 

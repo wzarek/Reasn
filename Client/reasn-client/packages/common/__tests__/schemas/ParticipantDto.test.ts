@@ -13,17 +13,17 @@ describe("ParticipantDto", () => {
   describe("fromJson", () => {
     it("should create an instance of ParticipantDto from JSON string", () => {
       const json = `{
-                "EventSlug": "${eventSlug}",
-                "Username": "${username}",
-                "Status": "${status}"
+                "eventSlug": "${eventSlug}",
+                "username": "${username}",
+                "status": "${status}"
             }`;
 
       let participant = ParticipantDtoMapper.fromJSON(json);
       participant = participant as ParticipantDto;
 
-      expect(participant.EventSlug).toBe(eventSlug);
-      expect(participant.Username).toBe(username);
-      expect(participant.Status).toBe(status);
+      expect(participant.eventSlug).toBe(eventSlug);
+      expect(participant.username).toBe(username);
+      expect(participant.status).toBe(status);
     });
 
     it("should return null if the JSON string is empty", () => {
@@ -34,18 +34,18 @@ describe("ParticipantDto", () => {
 
     it("should throw an error when providing JSON without each property individually", () => {
       const jsonWithoutEventSlug = `{
-                "Username": "${username}",
-                "Status": "${status}"
+                "username": "${username}",
+                "status": "${status}"
             }`;
 
       const jsonWithoutUsername = `{
-                "EventSlug": "${eventSlug}",
-                "Status": "${status}"
+                "eventSlug": "${eventSlug}",
+                "status": "${status}"
             }`;
 
       const jsonWithoutStatus = `{
-                "EventSlug": "${eventSlug}",
-                "Username": "${username}"
+                "eventSlug": "${eventSlug}",
+                "username": "${username}"
             }`;
 
       expect(() => ParticipantDtoMapper.fromJSON(jsonWithoutEventSlug)).toThrow(
@@ -63,39 +63,39 @@ describe("ParticipantDto", () => {
   describe("fromObject", () => {
     it("should create an instance of ParticipantDto from an object", () => {
       const object = {
-        EventSlug: eventSlug,
-        Username: username,
-        Status: status,
+        eventSlug: eventSlug,
+        username: username,
+        status: status,
       };
 
       let participant = ParticipantDtoMapper.fromObject(object);
       participant = participant as ParticipantDto;
 
-      expect(participant.EventSlug).toBe(eventSlug);
-      expect(participant.Username).toBe(username);
-      expect(participant.Status).toBe(status);
+      expect(participant.eventSlug).toBe(eventSlug);
+      expect(participant.username).toBe(username);
+      expect(participant.status).toBe(status);
     });
 
     it("should throw an error if the object is invalid", () => {
       const object = {
-        EventStatus: true,
-        Username: null,
-        Status: "invalid",
+        eventStatus: true,
+        username: null,
+        status: "invalid",
       };
 
       const objectWithoutEventSlug = {
-        Username: username,
-        Status: status,
+        username: username,
+        status: status,
       };
 
       const objectWithoutUsername = {
-        EventSlug: eventSlug,
-        Status: status,
+        eventSlug: eventSlug,
+        status: status,
       };
 
       const objectWithoutStatus = {
-        EventSlug: eventSlug,
-        Username: username,
+        eventSlug: eventSlug,
+        username: username,
       };
 
       expect(() => ParticipantDtoMapper.fromObject(object)).toThrow(

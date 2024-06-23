@@ -2,14 +2,21 @@ import ModelMappingError from "../errors/ModelMappingError";
 import { z } from "zod";
 
 export const CommentDtoSchema = z.object({
-  EventId: z.number(),
-  Content: z.string().max(1024),
-  CreatedAt: z
+  eventSlug: z
+    .string()
+    .max(128)
+    .regex(/^[\p{L}\d]+[\p{L}\d-]*$/u),
+  content: z.string().max(1024),
+  createdAt: z
     .string()
     .datetime({ offset: true })
     .or(z.date())
     .transform((arg) => new Date(arg)),
-  UserId: z.number(),
+  username: z
+    .string()
+    .max(64)
+    .regex(/^[\p{L}\d._%+-]{4,}$/u),
+  userImageUrl: z.string().nullable(),
 });
 
 export type CommentDto = z.infer<typeof CommentDtoSchema>;

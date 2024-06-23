@@ -2,11 +2,11 @@ import ModelMappingError from "../errors/ModelMappingError";
 import { z } from "zod";
 
 export const ParameterDtoSchema = z.object({
-  Key: z
+  key: z
     .string()
     .max(32)
     .regex(/^\p{L}+(?:\s\p{L}+)*$/u),
-  Value: z
+  value: z
     .string()
     .max(64)
     .regex(/^[\p{L}\d]+(?:\s[\p{L}\d]+)*$/u),

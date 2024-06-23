@@ -2,7 +2,7 @@ import ModelMappingError from "../errors/ModelMappingError";
 import { z } from "zod";
 
 export const InterestDtoSchema = z.object({
-  Name: z
+  name: z
     .string()
     .max(32)
     .regex(/^\p{Lu}\p{Ll}+(?:\s\p{L}+)*$/u),

@@ -11,15 +11,15 @@ describe("ParameterDto", () => {
   describe("fromJson", () => {
     it("should create an instance of ParameterDto from JSON string", () => {
       const json = `{
-                "Key": "${key}",
-                "Value": "${value}"
+                "key": "${key}",
+                "value": "${value}"
             }`;
 
       let parameter = ParameterDtoMapper.fromJSON(json);
       parameter = parameter as ParameterDto;
 
-      expect(parameter.Key).toBe(key);
-      expect(parameter.Value).toBe(value);
+      expect(parameter.key).toBe(key);
+      expect(parameter.value).toBe(value);
     });
 
     it("should return null if the JSON string is empty", () => {
@@ -28,11 +28,11 @@ describe("ParameterDto", () => {
 
     it("should throw an error when providing json without each property individually", () => {
       const jsonWithoutKey = `{
-                "Value": "${value}"
+                "value": "${value}"
             }`;
 
       const jsonWithoutValue = `{
-                "Key": "${key}"
+                "key": "${key}"
             }`;
 
       expect(() => ParameterDtoMapper.fromJSON(jsonWithoutKey)).toThrow(
@@ -47,29 +47,29 @@ describe("ParameterDto", () => {
   describe("fromObject", () => {
     it("should create an instance of ParameterDto from an object", () => {
       const object = {
-        Key: key,
-        Value: value,
+        key: key,
+        value: value,
       };
 
       let parameter = ParameterDtoMapper.fromObject(object);
       parameter = parameter as ParameterDto;
 
-      expect(parameter.Key).toBe(key);
-      expect(parameter.Value).toBe(value);
+      expect(parameter.key).toBe(key);
+      expect(parameter.value).toBe(value);
     });
 
     it("should throw an error if the object is invalid", () => {
       const object = {
-        Key: true,
-        Value: null,
+        key: true,
+        value: null,
       };
 
       const objectWithoutKey = {
-        Value: value,
+        value: value,
       };
 
       const objectWithoutValue = {
-        Key: key,
+        key: key,
       };
 
       expect(() => ParameterDtoMapper.fromObject(object)).toThrow(
