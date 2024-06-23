@@ -6,12 +6,13 @@ using System.Text.Json.Serialization;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using ReasnAPI.Common;
 using ReasnAPI.Exceptions;
 using ReasnAPI.Middlewares;
 using ReasnAPI.Models.Database;
+using ReasnAPI.Services;
 using ReasnAPI.Services.Authentication;
 using ReasnAPI.Validators;
-using ReasnAPI.Services;
 using Npgsql;
 using ReasnAPI.Models.Enums;
 using Microsoft.Extensions.Configuration;
@@ -52,9 +53,19 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<AddressService>();
+builder.Services.AddScoped<CommentService>();
+builder.Services.AddScoped<EventService>();
+builder.Services.AddScoped<ImageService>();
+builder.Services.AddScoped<InterestService>();
+builder.Services.AddScoped<ParameterService>();
+builder.Services.AddScoped<ParticipantService>();
+builder.Services.AddScoped<TagService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
 
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(config.GetConnectionString("DefaultValue"));
@@ -67,13 +78,6 @@ var dataSource = dataSourceBuilder.Build();
 builder.Services.AddDbContext<ReasnContext>(options =>
     options.UseNpgsql(dataSource)
         .EnableDetailedErrors());
-
-builder.Services.AddScoped<InterestService>();
-builder.Services.AddScoped<TagService>();
-builder.Services.AddScoped<ParameterService>();
-builder.Services.AddScoped<EventService>();
-builder.Services.AddScoped<ParticipantService>();
-builder.Services.AddScoped<ImageService>();
 
 builder.Services.AddControllers();
 

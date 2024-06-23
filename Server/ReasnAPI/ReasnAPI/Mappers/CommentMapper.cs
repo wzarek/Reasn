@@ -1,34 +1,36 @@
-﻿using ReasnAPI.Models.Database;
+﻿using ReasnAPI.Models.API;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 
 namespace ReasnAPI.Mappers;
 
 public static class CommentMapper
 {
-    public static CommentDto ToDto(this Comment comment)
+    public static CommentDto ToDto(this Comment comment, string slug, string username, string imageUrl)
     {
         return new CommentDto
         {
-            EventId = comment.EventId,
+            EventSlug = slug,
             Content = comment.Content,
-            UserId = comment.UserId,
-            CreatedAt = comment.CreatedAt
+            Username = username,
+            CreatedAt = comment.CreatedAt,
+            UserImageUrl = imageUrl
         };
     }
 
     public static List<CommentDto> ToDtoList(this IEnumerable<Comment> comments)
     {
-        return comments.Select(ToDto).ToList();
+        return comments.Select(c => c.ToDto(c.Event.Slug, c.User.Username, $"api/v1/Users/image/{c.User.Username}")).ToList();
     }
 
-    public static Comment ToEntity(this CommentDto commentDto)
+    public static CommentDto ToDtoFromRequest(this CommentRequest commentRequest, string username, string slug)
     {
-        return new Comment
+        return new CommentDto()
         {
-            EventId = commentDto.EventId,
-            Content = commentDto.Content,
-            UserId = commentDto.UserId,
-            CreatedAt = commentDto.CreatedAt
+            EventSlug = slug,
+            Content = commentRequest.Content,
+            CreatedAt = DateTime.Now,
+            Username = username
         };
     }
 }

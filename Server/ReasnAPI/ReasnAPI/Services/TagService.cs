@@ -40,7 +40,6 @@ public class TagService(ReasnContext context)
 
     public void AttatchTagsToEvent(List<Tag> tagsToAdd, Event eventToUpdate)
     {
-
         var tagNamesToAdd = tagsToAdd.Select(t => t.Name).ToList();
 
         var tagsFromDb = context.Tags.Where(tag => tagNamesToAdd.Contains(tag.Name)).ToList();
@@ -131,6 +130,13 @@ public class TagService(ReasnContext context)
             .AsEnumerable();
     }
 
+    public IEnumerable<string> GetAllTagsNames()
+    {
+        return context.Tags
+            .Select(t => t.Name)
+            .AsEnumerable();
+
+    }
     public IEnumerable<TagDto> GetTagsByFilter(Expression<Func<Tag, bool>> filter)
     {
         return context.Tags

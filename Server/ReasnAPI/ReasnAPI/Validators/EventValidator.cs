@@ -26,9 +26,9 @@ public class EventValidator : AbstractValidator<EventDto>
             .WithMessage("'StartAt' must be before 'EndAt'.");
 
         RuleFor(e => e.Slug)
-            .NotEmpty()
             .MaximumLength(MaxSlugLength)
-            .Matches(SlugRegex);
+            .Matches(SlugRegex)
+            .When(e => !string.IsNullOrEmpty(e.Slug));
 
         RuleForEach(e => e.Tags)
             .SetValidator(new TagValidator())

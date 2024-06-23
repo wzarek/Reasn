@@ -4,8 +4,8 @@ namespace ReasnAPI.Models.DTOs
 {
     public class ParticipantDto
     {
-        public int EventId { get; set; }
-        public int UserId { get; set; }
+        public string EventSlug { get; set; } = null!;
+        public string Username { get; set; } = null!;
         public ParticipantStatus Status { get; set; }
     }
 }

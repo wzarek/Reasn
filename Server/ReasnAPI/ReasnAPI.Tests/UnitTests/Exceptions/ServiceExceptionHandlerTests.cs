@@ -90,4 +90,27 @@ public class ServiceExceptionHandlerTests
         Assert.AreEqual(exception, problemDetailsContext.Exception);
         Assert.AreEqual(exception.Message, problemDetailsContext.ProblemDetails.Detail);
     }
+
+    [TestMethod]
+    public async Task HandleException_WhenUnauthorizedAccessException_ShouldReturnProblemDetails()
+    {
+        var httpContext = new DefaultHttpContext();
+        var exception = new UnauthorizedAccessException("Unauthorized access");
+
+        ProblemDetailsContext? problemDetailsContext = null;
+        _mockProblemDetailsService.Setup(x =>
+                x.TryWriteAsync(It.IsAny<ProblemDetailsContext>()))
+            .Callback<ProblemDetailsContext>(context => problemDetailsContext = context)
+            .ReturnsAsync(true);
+
+        await _handler.TryHandleAsync(httpContext, exception, CancellationToken.None);
+
+        Assert.AreEqual((int)HttpStatusCode.Unauthorized, httpContext.Response.StatusCode);
+        Assert.IsNotNull(problemDetailsContext);
+        Assert.AreEqual("https://datatracker.ietf.org/doc/html/rfc7235#section-3.1",
+            problemDetailsContext.ProblemDetails.Type);
+        Assert.AreEqual("Unauthorized", problemDetailsContext.ProblemDetails.Title);
+        Assert.AreEqual(exception, problemDetailsContext.Exception);
+        Assert.AreEqual(exception.Message, problemDetailsContext.ProblemDetails.Detail);
+    }
 }

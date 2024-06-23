@@ -1,4 +1,5 @@
-﻿using ReasnAPI.Models.Database;
+using ReasnAPI.Models.API;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 
 namespace ReasnAPI.Mappers;
@@ -8,8 +9,8 @@ public static class ParticipantMapper
     {
         return new ParticipantDto
         {
-            EventId = participant.EventId,
-            UserId = participant.UserId,
+            EventSlug = participant.Event.Slug,
+            Username = participant.User.Username,
             Status = participant.Status
         };
     }
@@ -19,13 +20,14 @@ public static class ParticipantMapper
         return participants.Select(ToDto).ToList();
     }
 
-    public static Participant ToEntity(this ParticipantDto participantDto)
+    public static ParticipantsResponse ToResponse(this List<ParticipantDto> participating,
+        List<ParticipantDto> interested)
     {
-        return new Participant
+        return new ParticipantsResponse
         {
-            EventId = participantDto.EventId,
-            UserId = participantDto.UserId,
-            Status = participantDto.Status
+            Participating = participating,
+            Interested = interested
         };
     }
+
 }

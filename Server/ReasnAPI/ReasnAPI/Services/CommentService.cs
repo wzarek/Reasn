@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using ReasnAPI.Exceptions;
 using ReasnAPI.Mappers;
 using ReasnAPI.Models.Database;
@@ -8,42 +9,24 @@ namespace ReasnAPI.Services;
 
 public class CommentService(ReasnContext context)
 {
-    public CommentDto CreateComment(CommentDto commentDto)
+    public CommentDto CreateComment(CommentDto commentDto, int eventId, int userId)
     {
         ArgumentNullException.ThrowIfNull(commentDto);
 
         commentDto.CreatedAt = DateTime.UtcNow;
 
-        context.Comments.Add(commentDto.ToEntity());
+        var comment = new Comment
+        {
+            UserId = userId,
+            EventId = eventId,
+            Content = commentDto.Content,
+            CreatedAt = commentDto.CreatedAt
+        };
+
+        context.Comments.Add(comment);
         context.SaveChanges();
 
         return commentDto;
-    }
-
-    public CommentDto UpdateComment(int commentId, CommentDto commentDto)
-    {
-        ArgumentNullException.ThrowIfNull(commentDto);
-
-        var comment = context.Comments.FirstOrDefault(r => r.Id == commentId);
-
-        if (comment is null)
-        {
-            throw new NotFoundException("Comment not found");
-        }
-
-        var user = context.Users.FirstOrDefault(r => r.Id == commentDto.UserId);
-
-        if (user is null)
-        {
-            throw new NotFoundException("User not found");
-        }
-
-        comment.Content = commentDto.Content;
-
-        context.Comments.Update(comment);
-        context.SaveChanges();
-
-        return comment.ToDto();
     }
 
     public void DeleteComment(int commentId)
@@ -59,22 +42,12 @@ public class CommentService(ReasnContext context)
         context.SaveChanges();
     }
 
-    public CommentDto GetCommentById(int commentId)
-    {
-        var comment = context.Comments.Find(commentId);
-
-        if (comment is null)
-        {
-            throw new NotFoundException("Comment not found");
-        }
-
-        return comment.ToDto();
-    }
-
     public IEnumerable<CommentDto> GetCommentsByFilter(Expression<Func<Comment, bool>> filter)
     {
         return context.Comments
                         .Where(filter)
+                        .Include(c => c.User)
+                        .Include(c => c.Event)
                         .ToDtoList()
                         .AsEnumerable();
     }
@@ -82,6 +55,8 @@ public class CommentService(ReasnContext context)
     public IEnumerable<CommentDto> GetAllComments()
     {
         return context.Comments
+                        .Include(c => c.User)
+                        .Include(c => c.Event)
                         .ToDtoList()
                         .AsEnumerable();
     }

@@ -5,69 +5,13 @@ using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Models.Enums;
 using ReasnAPI.Services;
+using System.Runtime.Versioning;
 
 namespace ReasnAPI.Tests.Services;
 
 [TestClass]
 public class CommentServiceTests
 {
-    [TestMethod]
-    public void GetCommentById_CommentExist_CommentReturned()
-    {
-        var mockContext = new Mock<ReasnContext>();
-
-        var event1 = new Event
-        {
-            Id = 1,
-            Name = "Event",
-            Description = "Description",
-        };
-
-        var user = new User
-        {
-            Id = 1,
-            Username = "Username",
-            Email = "Email",
-            Password = "Password",
-        };
-
-        var comment = new Comment
-        {
-            Id = 1,
-            Content = "Content",
-            EventId = event1.Id,
-            UserId = user.Id
-        };
-
-        var fakeComment = new FakeDbSet<Comment> { comment };
-        var fakeEvent = new FakeDbSet<Event> { event1 };
-        var fakeUser = new FakeDbSet<User> { user };
-
-        mockContext.Setup(c => c.Users).Returns(fakeUser);
-        mockContext.Setup(c => c.Events).Returns(fakeEvent);
-        mockContext.Setup(c => c.Comments).Returns(fakeComment);
-
-        var commentService = new CommentService(mockContext.Object);
-
-        var result = commentService.GetCommentById(1);
-
-        Assert.IsNotNull(result);
-        Assert.AreEqual("Content", result.Content);
-        Assert.AreEqual(1, result.EventId);
-        Assert.AreEqual(1, result.UserId);
-    }
-
-    [TestMethod]
-    public void GetCommentById_CommentDoesNotExist_NullReturned()
-    {
-        var mockContext = new Mock<ReasnContext>();
-        mockContext.Setup(c => c.Comments).ReturnsDbSet([]);
-
-        var commentService = new CommentService(mockContext.Object);
-
-        Assert.ThrowsException<NotFoundException>(() => commentService.GetCommentById(1));
-    }
-
     [TestMethod]
     public void GetAllComments_CommentsExist_CommentsReturned()
     {
@@ -86,22 +30,23 @@ public class CommentServiceTests
             Id = 1,
             Name = "Event",
             Description = "Description",
+            Slug = "Slug"
         };
 
         var comment1 = new Comment
         {
             Id = 1,
             Content = "Content",
-            EventId = event1.Id,
-            UserId = user.Id
+            Event = event1,
+            User = user
         };
 
         var comment2 = new Comment
         {
             Id = 2,
             Content = "Content",
-            EventId = event1.Id,
-            UserId = user.Id
+            Event = event1,
+            User = user
         };
 
         mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
@@ -148,22 +93,25 @@ public class CommentServiceTests
             Id = 1,
             Name = "Event",
             Description = "Description",
+            Slug = "Slug"
         };
 
         var comment1 = new Comment
         {
             Id = 1,
             Content = "Content",
-            EventId = event1.Id,
-            UserId = user.Id
+            Event = event1,
+            EventId = 1,
+            User = user
         };
 
         var comment2 = new Comment
         {
             Id = 2,
             Content = "Content",
-            EventId = event1.Id,
-            UserId = user.Id
+            Event = event1,
+            EventId = 1,
+            User = user
         };
 
         mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
@@ -210,6 +158,7 @@ public class CommentServiceTests
             Id = 1,
             Name = "Event",
             Description = "Description",
+            Slug = "Slug",
         };
 
         mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
@@ -221,16 +170,16 @@ public class CommentServiceTests
         var commentDto = new CommentDto
         {
             Content = "Content",
-            UserId = 1,
-            EventId = 1
+            Username = user.Username,
+            EventSlug = event1.Slug,
         };
 
-        var result = commentService.CreateComment(commentDto);
+        var result = commentService.CreateComment(commentDto, event1.Id, user.Id);
 
         Assert.IsNotNull(result);
         Assert.AreEqual("Content", result.Content);
-        Assert.AreEqual(1, result.EventId);
-        Assert.AreEqual(1, result.UserId);
+        Assert.AreEqual("Slug", result.EventSlug);
+        Assert.AreEqual("Username", result.Username);
     }
 
     [TestMethod]
@@ -241,81 +190,7 @@ public class CommentServiceTests
 
         var commentService = new CommentService(mockContext.Object);
 
-        Assert.ThrowsException<ArgumentNullException>(() => commentService.CreateComment(null));
-    }
-
-    [TestMethod]
-    public void UpdateComment_CommentUpdated_CommentReturned()
-    {
-        var mockContext = new Mock<ReasnContext>();
-
-        var user = new User
-        {
-            Id = 1,
-            Username = "Username",
-            Email = "Email",
-            Password = "Password",
-        };
-
-        var event1 = new Event
-        {
-            Id = 1,
-            Name = "Event",
-            Description = "Description",
-        };
-
-        var comment = new Comment
-        {
-            Id = 1,
-            Content = "Content",
-            EventId = event1.Id,
-            UserId = user.Id
-        };
-
-        mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
-        mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
-        mockContext.Setup(c => c.Comments).ReturnsDbSet([comment]);
-
-        var commentService = new CommentService(mockContext.Object);
-
-        var result = commentService.UpdateComment(1, new CommentDto
-        {
-            Content = "UpdatedContent",
-            EventId = 2,
-            UserId = 1
-        });
-
-        Assert.IsNotNull(result);
-        Assert.AreEqual("UpdatedContent", result.Content);
-        Assert.AreEqual(1, result.EventId);
-        Assert.AreEqual(1, result.UserId);
-    }
-
-    [TestMethod]
-    public void UpdateComment_CommentDoesNotExist_NullReturned()
-    {
-        var mockContext = new Mock<ReasnContext>();
-        mockContext.Setup(c => c.Comments).ReturnsDbSet([]);
-
-        var commentService = new CommentService(mockContext.Object);
-
-        Assert.ThrowsException<NotFoundException>(() => commentService.UpdateComment(1, new CommentDto
-        {
-            Content = "UpdatedContent",
-            EventId = 2,
-            UserId = 1
-        }));
-    }
-
-    [TestMethod]
-    public void UpdateComment_CommentDtoIsNull_NullReturned()
-    {
-        var mockContext = new Mock<ReasnContext>();
-        mockContext.Setup(c => c.Comments).ReturnsDbSet([]);
-
-        var commentService = new CommentService(mockContext.Object);
-
-        Assert.ThrowsException<ArgumentNullException>(() => commentService.UpdateComment(1, null));
+        Assert.ThrowsException<ArgumentNullException>(() => commentService.CreateComment(null, 1, 1));
     }
 
     [TestMethod]

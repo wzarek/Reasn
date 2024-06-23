@@ -1,4 +1,4 @@
-﻿using ReasnAPI.Models.Database;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 using ReasnAPI.Exceptions;
@@ -114,6 +114,19 @@ public class ImageService(ReasnContext context)
 
     }
 
+    public bool DoesImageExistsForUser(string username)
+    {
+        var user = context.Users.FirstOrDefault(u => u.Username == username);
+
+        if (user is null)
+        {
+            throw new NotFoundException("User not found");
+        }
+
+        // returns if image exists for user
+        return context.Images.Any(i => i.ObjectType == ObjectType.User && i.ObjectId == user.Id);
+    }
+
     public void DeleteImageById(int id)
     {
         var image = context.Images.FirstOrDefault(r => r.Id == id);
@@ -174,20 +187,16 @@ public class ImageService(ReasnContext context)
         return imageDto;
     }
 
-    public IEnumerable<ImageDto> GetImagesByUserId(int userId)
+    public ImageDto GetImageByUserId(int userId)
     {
-        var images = context.Images
-            .Where(image => image.ObjectId == userId && image.ObjectType == ObjectType.User)
-            .ToList();
+        var image = context.Images.FirstOrDefault(image => image.ObjectId == userId && image.ObjectType == ObjectType.User);
 
-        if (!images.Any())
+        if (image is null)
         {
-            throw new NotFoundException("Images not found");
+            throw new NotFoundException("Image not found");
         }
 
-        var imageDtos = images.ToDtoList().AsEnumerable();
-
-        return imageDtos;
+        return image.ToDto();
     }
 
     public IEnumerable<ImageDto> GetAllImages()
@@ -204,7 +213,6 @@ public class ImageService(ReasnContext context)
             .ToDtoList()
             .AsEnumerable();
     }
-
     public IEnumerable<ImageDto> GetImagesByEventId(int eventId)
     {
         var images = context.Images
@@ -213,12 +221,36 @@ public class ImageService(ReasnContext context)
 
         if (!images.Any())
         {
-            throw new NotFoundException("Images not found");
+            return Enumerable.Empty<ImageDto>();
         }
 
         var imageDtos = images.ToDtoList().AsEnumerable();
 
         return imageDtos;
+    }
+
+    public ImageDto GetImageByEventIdAndIndex(int eventId, int index)
+    {
+
+        var image = context.Images
+            .Where(image => image.ObjectType == ObjectType.Event && image.ObjectId == eventId)
+            .Skip(index)
+            .FirstOrDefault();
+
+        if (image == null)
+        {
+            throw new NotFoundException($"Image at index {index} not found for eventId {eventId}");
+        }
+
+        var imageDto = image.ToDto();
+
+        return imageDto;
+    }
+
+    public int GetImageCountByEventId(int eventId)
+    {
+        return context.Images
+            .Count(image => image.ObjectType == ObjectType.Event && image.ObjectId == eventId);
     }
 
 }

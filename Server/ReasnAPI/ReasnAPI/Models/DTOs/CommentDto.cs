@@ -2,9 +2,10 @@ namespace ReasnAPI.Models.DTOs
 {
     public class CommentDto
     {
-        public int EventId { get; set; }
+        public string EventSlug { get; set; } = null!;
         public string Content { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
-        public int UserId { get; set; }
+        public string Username { get; set; } = null!;
+        public string? UserImageUrl { get; set; }
     }
 }
