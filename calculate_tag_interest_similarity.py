@@ -7,7 +7,7 @@ def connect_to_db():
         dbname="reasn",
         user="dba",
         password="sql",
-        host="localhost",
+        host="postgres",
         port="5432"
     )
     return conn
