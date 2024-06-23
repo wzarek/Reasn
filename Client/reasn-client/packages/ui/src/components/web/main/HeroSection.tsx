@@ -19,26 +19,28 @@ export const HeroSection = () => {
           to jest teraz <br /> na topie
         </h2>
       </div>
-      <div className="relative h-[30vh] w-[30vw] overflow-hidden">
+      <div className="relative h-[30vh] w-[30vw] ">
         <div className='absolute right-[-25%] top-[-50%] z-0 h-[200%] w-[150%] rounded-full bg-gradient-to-r from-[#FF6363] to-[#1E34FF] opacity-5 blur-3xl content-[""]'></div>
-        <div
-          className="flex h-full w-full gap-0 duration-300"
-          style={{ transform: `translateX(-${currentCardIdx * 100}%)` }}
-        >
-          {cards.map((card, idx) => (
-            <Card key={card} variant={CardVariant.Big} event={"edit"} />
-          ))}
+        <div className="w-full h-full overflow-hidden">
+          <div
+            className="flex h-full w-full gap-0 duration-300"
+            style={{ transform: `translateX(-${currentCardIdx * 100}%)` }}
+          >
+            {cards.map((card, idx) => (
+              <Card key={card} variant={CardVariant.Big} event={"edit"} />
+            ))}
+          </div>
         </div>
         {currentCardIdx > 0 && (
           <ArrowLeft
             onClick={() => setCurrentCardIdx(currentCardIdx - 1)}
-            className="absolute left-5 top-[50%] z-20 h-8 w-8 -translate-y-1/2 cursor-pointer rounded-lg bg-gradient-to-r from-[#32346A7d] to-[#4E4F757d] fill-white p-2"
+            className="absolute left-[-3rem] top-[50%] z-20 h-8 w-8 -translate-y-1/2 cursor-pointer rounded-lg bg-gradient-to-r from-[#32346A7d] to-[#4E4F757d] fill-white p-2"
           />
         )}
         {currentCardIdx < cards.length - 1 && (
           <ArrowRight
             onClick={() => setCurrentCardIdx((idx) => idx + 1)}
-            className="absolute right-5 top-[50%] z-20 h-8 w-8 -translate-y-1/2 cursor-pointer rounded-lg bg-gradient-to-r from-[#32346A7d] to-[#4E4F757d] fill-white p-2"
+            className="absolute right-[-3rem] top-[50%] z-20 h-8 w-8 -translate-y-1/2 cursor-pointer rounded-lg bg-gradient-to-r from-[#32346A7d] to-[#4E4F757d] fill-white p-2"
           />
         )}
       </div>
