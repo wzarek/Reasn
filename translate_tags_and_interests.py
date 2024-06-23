@@ -58,15 +58,10 @@ def main():
     try:
         untranslated = get_untranslated_tags_and_interests(conn)
         
-        print("Untranslated tags and interests:")
-        for item in untranslated:
-            print(item)
-        
         translated = translate_to_english(untranslated)
         
         save_translations(conn, untranslated, translated)
         
-        print("\nTranslations saved successfully.")
     finally:
         conn.close()
 

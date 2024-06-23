@@ -84,23 +84,13 @@ def save_similarities_to_db(conn, tags, interests, similarities):
 def main():
     conn = connect_to_db()
     try:
-        # Pobierz przetłumaczone tagi i zainteresowania
         translated_tags, translated_interests = get_translated_tags_and_interests(conn)
-        
-        # Rozdziel wyniki na oryginalne i przetłumaczone nazwy
+
         tags, tags_ang = zip(*translated_tags) if translated_tags else ([], [])
         interests, interests_ang = zip(*translated_interests) if translated_interests else ([], [])
         
-        # Pobierz brakujące tagi i zainteresowania
         missing_tags, missing_interests = get_missing_tags_and_interests(conn)
         
-        print("Missing tags:")
-        for tag in missing_tags:
-            print(tag)
-        
-        print("\nMissing interests:")
-        for interest in missing_interests:
-            print(interest)
 
         if interests_ang and missing_tags:
             similarities_missing_tags = calculate_semantic_similarity_sbert(interests_ang, missing_tags)
@@ -109,7 +99,6 @@ def main():
             similarities_missing_interests = calculate_semantic_similarity_sbert(missing_interests, tags_ang)
             save_similarities_to_db(conn, tags, missing_interests, similarities_missing_interests)
         
-        print("\nSimilarities saved successfully.")
     finally:
         conn.close()
 
