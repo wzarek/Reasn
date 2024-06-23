@@ -265,7 +265,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
 
     public IEnumerable<EventResponse> GetAllEvents()
     {
-        var events = context.Events.Include(e => e.Parameters).Include(e => e.Tags).Include(e => e.Address).Include(e => e.Organizer).ToList();
+        var events = context.Events.Include(e => e.Parameters).Include(e => e.Tags).Include(e => e.Address).Include(e => e.Organizer).Where(e => e.Status != EventStatus.PendingApproval).ToList();
         var eventsResponses = new List<EventResponse>();
         foreach (var thisEvent in events )
         {

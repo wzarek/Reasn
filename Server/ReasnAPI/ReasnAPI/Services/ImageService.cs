@@ -204,7 +204,6 @@ public class ImageService(ReasnContext context)
             .ToDtoList()
             .AsEnumerable();
     }
-
     public IEnumerable<ImageDto> GetImagesByEventId(int eventId)
     {
         var images = context.Images
@@ -213,7 +212,7 @@ public class ImageService(ReasnContext context)
 
         if (!images.Any())
         {
-            throw new NotFoundException("Images not found");
+            return Enumerable.Empty<ImageDto>();
         }
 
         var imageDtos = images.ToDtoList().AsEnumerable();
