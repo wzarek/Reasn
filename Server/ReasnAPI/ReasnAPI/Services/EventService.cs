@@ -302,14 +302,22 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             throw new NotFoundException("User not found");
         }
 
-        var userEvents = context.Participants
+        var userEventIds = context.Participants
             .Where(p => p.UserId == user.Id)
-            .Select(p => p.Event)
-                .Include(e => e.Parameters)
-                .Include(e => e.Tags)
-                .Include(e => e.Address)
-                .Include(e => e.Organizer);
-        
+            .Select(p => p.EventId)
+            .ToList();
+
+        var userEvents = context.Events
+            .Where(e => userEventIds.Contains(e.Id))
+            .Include(e => e.Parameters)
+            .Include(e => e.Tags)
+            .Include(e => e.Address)
+            .Include(e => e.Organizer)
+            .ToList();
+
+
+
+
         var eventsResponses = new List<EventResponse>();
 
         foreach (var thisEvent in userEvents)
@@ -325,6 +333,8 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             var eventResponse = eventDto.ToResponse(participants, organizerUsername, $"/api/v1/Users/image/{organizerUsername}", addressDto, addressId, GetEventImages(thisEvent.Slug));
             eventsResponses.Add(eventResponse);
         }
+
+        
 
         return eventsResponses.AsEnumerable();
     }
