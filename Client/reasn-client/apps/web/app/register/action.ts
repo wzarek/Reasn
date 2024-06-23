@@ -7,10 +7,14 @@ import {
 import { register } from "@/services/auth";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import {
+  formatZodError,
+  handleErrorMessage,
+} from "@reasn/common/src/helpers/errorHelpers";
 
 export type RegisterFormState = {
   message?: string | null;
-  errors?: Record<string, string[]>;
+  errors?: string | {};
 };
 
 const RegisterRequestExtendedSchema = RegisterRequestSchema.extend({
@@ -42,13 +46,17 @@ export const registerAction = async (
   });
 
   if (!result.success) {
-    console.log(result.error.flatten().fieldErrors);
+    console.log(result.error);
     return {
-      errors: result.error.flatten().fieldErrors,
+      errors: formatZodError(result.error),
       message: "Niepoprawne wartości formularza.",
     };
   }
 
-  await register(RegisterRequestMapper.fromObject(result.data));
-  redirect("/login");
+  try {
+    await register(RegisterRequestMapper.fromObject(result.data));
+    redirect("/login");
+  } catch (e) {
+    return handleErrorMessage(e);
+  }
 };

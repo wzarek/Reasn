@@ -4,10 +4,11 @@ import {
   ButtonBase,
   FloatingInput,
 } from "@reasn/ui/src/components/shared/form";
-import React, { useRef, useState, ChangeEvent } from "react";
+import React, { useRef, useState, ChangeEvent, useEffect } from "react";
 import { useFormState } from "react-dom";
-import { registerAction } from "@/app/register/action";
+import { RegisterFormState, registerAction } from "@/app/register/action";
 import { UserRole } from "@reasn/common/src/enums/schemasEnums";
+import { Toast } from "@reasn/ui/src/components/shared";
 
 const RegisterUser = () => {
   const initialState = { message: null, errors: {} };
@@ -28,6 +29,7 @@ const RegisterUser = () => {
     postcode: "",
     role: UserRole.USER,
   });
+  const [error, setError] = useState<RegisterFormState>({});
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -35,6 +37,21 @@ const RegisterUser = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  const handleFormAction = async (formData: FormData) => {
+    const res = await registerAction(state, formData);
+    if (res?.message) {
+      setError(res);
+    }
+  };
+
+  useEffect(() => {
+    if (error?.message) {
+      setTimeout(() => {
+        setError({});
+      }, 5000);
+    }
+  }, [error]);
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -44,7 +61,7 @@ const RegisterUser = () => {
         <form
           className="flex w-full flex-col gap-8"
           ref={formRef}
-          action={formAction}
+          action={handleFormAction}
         >
           <FloatingInput
             type={currentStep === 1 ? "text" : "hidden"}
@@ -139,16 +156,31 @@ const RegisterUser = () => {
             ? "znalazłeś już swój powód do spotkań?"
             : "gdzie powinniśmy cię szukać?"}
         </p>
-        <ButtonBase
-          text={currentStep === 2 ? "zarejestruj" : "kontynuuj"}
-          onClick={() =>
-            currentStep === 2
-              ? formRef.current?.requestSubmit()
-              : setCurrentStep(currentStep + 1)
+        <div className="flex flex-row gap-5">
+          {
+            currentStep > 1 && (
+              <ButtonBase
+                text={"wróć"}
+                onClick={() => setCurrentStep(currentStep - 1)}
+              />
+            )
           }
-        />
+          <ButtonBase
+            text={currentStep === 2 ? "zarejestruj" : "kontynuuj"}
+            onClick={() =>
+              currentStep === 2
+                ? formRef.current?.requestSubmit()
+                : setCurrentStep(currentStep + 1)
+            }
+          />
+        </div>
       </div>
       <div className="absolute right-[-50%] top-0 z-0 h-full w-4/5 rounded-full bg-[#000b6d] opacity-15 blur-3xl"></div>
+      <div className="absolute right-10 top-10">
+        {error?.message && (
+          <Toast message={error.message} errors={error.errors as string} />
+        )}
+      </div>
     </>
   );
 };

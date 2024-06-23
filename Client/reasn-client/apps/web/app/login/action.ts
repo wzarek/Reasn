@@ -4,10 +4,14 @@ import { LoginRequestSchema } from "@reasn/common/src/schemas/LoginRequest";
 import { login } from "@/services/auth";
 import { setToken } from "@/lib/token";
 import { redirect } from "next/navigation";
+import {
+  formatZodError,
+  handleErrorMessage,
+} from "@reasn/common/src/helpers/errorHelpers";
 
 export type LoginFormState = {
   message?: string | null;
-  errors?: Record<string, string[]>;
+  errors?: string | {};
 };
 
 export const loginAction = async (
@@ -21,12 +25,16 @@ export const loginAction = async (
 
   if (!result.success) {
     return {
-      errors: result.error.flatten().fieldErrors,
+      errors: formatZodError(result.error),
       message: "Niepoprawne wartości formularza.",
     };
   }
 
-  const payload = await login(result.data);
-  setToken(payload);
-  redirect("/");
+  try {
+    const payload = await login(result.data);
+    setToken(payload);
+    redirect("/");
+  } catch (e) {
+    return handleErrorMessage(e);
+  }
 };

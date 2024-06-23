@@ -12,9 +12,9 @@ import { ChangeEvent, useState } from "react";
 import { ArrowLeft, Clock, Location, Upload } from "@reasn/ui/src/icons";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import { EventStatus } from "@reasn/common/enums/modelsEnums";
+import { EventStatus } from "@reasn/common/src/enums/schemasEnums";
 import { BaseInput } from "@reasn/ui/src/components/shared/form/Input";
-import { getStatusClass } from "@reasn/common/helpers/uiHelpers";
+import { getStatusClass } from "@reasn/common/src/helpers/uiHelpers";
 
 const IMAGES = [
   "https://images.pexels.com/photos/19012544/pexels-photo-19012544/free-photo-of-storm.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",

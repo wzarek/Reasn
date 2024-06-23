@@ -48,6 +48,9 @@ export const FloatingInput = (props: InputProps) => {
         {
           "p-1": type !== "hidden",
         },
+        {
+          "hidden h-0 p-0": type === "hidden",
+        },
         className,
       )}
     >

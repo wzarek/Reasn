@@ -10,9 +10,9 @@ import { ChangeEvent, useState } from "react";
 import { Clock, Location, Upload } from "@reasn/ui/src/icons";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import { EventStatus } from "@reasn/common/enums/modelsEnums";
+import { EventStatus } from "@reasn/common/src/enums/schemasEnums";
 import { BaseInput } from "@reasn/ui/src/components/shared/form/Input";
-import { getStatusClass } from "@reasn/common/helpers/uiHelpers";
+import { getStatusClass } from "@reasn/common/src/helpers/uiHelpers";
 
 const MOCK_TAGS = [
   "abcd",
