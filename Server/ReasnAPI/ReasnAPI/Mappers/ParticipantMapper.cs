@@ -20,16 +20,6 @@ public static class ParticipantMapper
         return participants.Select(ToDto).ToList();
     }
 
-    public static Participant ToEntity(this ParticipantDto participantDto)
-    {
-        return new Participant
-        {
-            EventId = participantDto.EventId,
-            UserId = participantDto.UserId,
-            Status = participantDto.Status
-        };
-    }
-
     public static ParticipantsResponse ToResponse(this List<ParticipantDto> participating,
         List<ParticipantDto> interested)
     {

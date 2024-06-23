@@ -9,9 +9,10 @@ namespace ReasnAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UsersController(UserService userService, InterestService interestService) : ControllerBase
+public class UsersController(UserService userService, InterestService interestService, ImageService imageService) : ControllerBase
 {
     private readonly UserService _userService = userService;
+    private readonly ImageService _imageService = imageService;
     private readonly InterestService _interestService = interestService;
 
     [HttpGet]
@@ -51,22 +52,6 @@ public class UsersController(UserService userService, InterestService interestSe
 
         var currentUser = _userService.GetCurrentUser();
 
-    [HttpGet]
-    [Authorize]
-    [Route("image/{username}")]
-    public IActionResult GetImageByUsername(string username)
-    {
-        var userId = userService.GetUserIdByUsername(username);
-        var image = imageService.GetImagesByUserId(userId);
-      
-        return File(image.ImageData, $"image/jpeg");
-    }
-
-    [HttpDelete]
-    [Authorize(Roles = "Admin")]
-    [Route("interests/{interestId:int}")]
-    public IActionResult DeleteUserInterest(int interestId)
-
         // Only admins can update other users from this endpoint
         if (currentUser.Role != UserRole.Admin)
         {
@@ -76,6 +61,17 @@ public class UsersController(UserService userService, InterestService interestSe
         var updatedUser = _userService.UpdateUser(username, userDto);
 
         return Ok(updatedUser);
+    }
+
+    [HttpGet]
+    [Authorize]
+    [Route("image/{username}")]
+    public IActionResult GetImageByUsername(string username)
+    {
+        var userId = userService.GetUserIdByUsername(username);
+        var image = _imageService.GetImageByUserId(userId);
+      
+        return File(image.ImageData, $"image/jpeg");
     }
 
     [HttpGet]
@@ -97,4 +93,5 @@ public class UsersController(UserService userService, InterestService interestSe
         _interestService.DeleteInterest(interestId);
         return NoContent();
     }
+
 }

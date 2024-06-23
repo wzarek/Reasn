@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using ReasnAPI.Mappers;
 using ReasnAPI.Models.API;
 using ReasnAPI.Models.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace ReasnAPI.Services;
 public class EventService(ReasnContext context, ParameterService parameterService, TagService tagService, CommentService commentService, AddressService addressService, ImageService imageService)
@@ -230,7 +231,10 @@ public class EventService(ReasnContext context, ParameterService parameterServic
 
     public IEnumerable<EventResponse> GetEventsByFilter(Expression<Func<Event, bool>> filter)
     {
-        var events = context.Events.Include(e => e.Parameters).Include(e => e.Tags).Include(e => e.Address).Include(e => e.Organizer).Where(filter).ToList();
+        var events = context.Events.Include(e => e.Parameters)
+            .Include(e => e.Tags)
+            .Include(e => e.Address)
+            .Include(e => e.Organizer).Where(filter).ToList();
 
         var eventsResponses = new List<EventResponse>();
         foreach (var thisEvent in events)
@@ -289,7 +293,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
 
         return eventsResponses.AsEnumerable();
     }
-    public IEnumerable<EventDto> GetUserEvents(string username)
+    public IEnumerable<EventResponse> GetUserEvents(string username)
     {
         var user = context.Users.FirstOrDefault(u => u.Username == username);
 
@@ -298,8 +302,31 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             throw new NotFoundException("User not found");
         }
 
-        var userEvents = context.Participants.Include(p => p.Event).Where(p => p.UserId == user.Id).Select(p => p.Event);
-        return userEvents.ToDtoList().AsEnumerable();
+        var userEvents = context.Participants
+            .Where(p => p.UserId == user.Id)
+            .Select(p => p.Event)
+                .Include(e => e.Parameters)
+                .Include(e => e.Tags)
+                .Include(e => e.Address)
+                .Include(e => e.Organizer);
+        
+        var eventsResponses = new List<EventResponse>();
+
+        foreach (var thisEvent in userEvents)
+        {
+            var participating = GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Participating);
+            var interested = GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Interested);
+            var participants = new Participants(participating, interested);
+            var organizerUsername = thisEvent.Organizer.Username;
+            var addressDto = thisEvent.Address.ToDto();
+            var addressId = thisEvent.AddressId;
+
+            var eventDto = thisEvent.ToDto();
+            var eventResponse = eventDto.ToResponse(participants, organizerUsername, $"/api/v1/Users/image/{organizerUsername}", addressDto, addressId, GetEventImages(thisEvent.Slug));
+            eventsResponses.Add(eventResponse);
+        }
+
+        return eventsResponses.AsEnumerable();
     }
 
     public void UpdateAddressForEvent(AddressDto addressDto, int addressId, string slug)

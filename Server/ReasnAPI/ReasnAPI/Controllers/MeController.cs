@@ -1,6 +1,8 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ReasnAPI.Mappers;
+using ReasnAPI.Models.API;
 using ReasnAPI.Models.DTOs;
 using ReasnAPI.Models.Enums;
 using ReasnAPI.Services;
@@ -129,7 +131,7 @@ public class MeController(UserService userService, EventService eventService, Pa
 
     [HttpGet]
     [Route("events")]
-    [ProducesResponseType<IEnumerable<EventDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<IEnumerable<EventResponse>>(StatusCodes.Status200OK)]
     public IActionResult GetCurrentUserEvents()
     {
         var user = _userService.GetCurrentUser();
