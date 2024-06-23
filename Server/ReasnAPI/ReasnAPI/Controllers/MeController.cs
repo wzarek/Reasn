@@ -68,7 +68,7 @@ public class MeController(UserService userService, EventService eventService, Pa
 
     [HttpPost]
     [Route("image")]
-    [ProducesResponseType<ImageDto>(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> AddCurrentUserImage([FromForm] List<IFormFile> images)
     {
         var userId = _userService.GetCurrentUser().Id;

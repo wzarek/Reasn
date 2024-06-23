@@ -42,7 +42,7 @@ public class EventService(ReasnContext context, ParameterService parameterServic
                 var newParameters = eventDto.Parameters.ToEntityList();
                 parameterService.AttachParametersToEvent(newParameters, newEvent);
             }
-            
+
             context.SaveChanges();
             scope.Complete();
             eventDto.Slug = newEvent.Slug;
@@ -211,22 +211,21 @@ public class EventService(ReasnContext context, ParameterService parameterServic
 
     public IEnumerable<CommentDto> GetEventCommentsBySlug(string slug)
     {
-        var eventToReturn = context.Events.Include(e => e.Comments)
-            .FirstOrDefault(e => e.Slug == slug);
+        throw new NotImplementedException();
+
+        var eventToReturn = context.Events
+                                   .Include(e => e.Comments)
+                                   .ThenInclude(c => c.User)
+                                   .FirstOrDefault(e => e.Slug == slug);
+
         if (eventToReturn is null)
         {
             throw new NotFoundException("Event not found");
         }
 
-        var commentDtos = eventToReturn.Comments.Select(p => p.ToDto());
+        var commentDtos = eventToReturn.Comments.Select(p => p.ToDto(slug, p.User.Username, $"api/v1/Users/image/{p.User.Username}"));
 
         return commentDtos;
-    }
-
-    public void AddEventComment(CommentDto commentDto)
-    {
-        commentService.CreateComment(commentDto);
-        context.SaveChanges();
     }
 
     public IEnumerable<EventResponse> GetEventsByFilter(Expression<Func<Event, bool>> filter)
@@ -246,8 +245,14 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             var addressDto = thisEvent.Address.ToDto();
             var addressId = thisEvent.AddressId;
 
+            string? url = null;
+            if (imageService.DoesImageExistsForUser(username))
+            {
+                url = $"/api/v1/Users/image/{username}";
+            }
+
             var eventDto = thisEvent.ToDto();
-            var eventResponse = eventDto.ToResponse(participants, username, $"/api/v1/Users/image/{username}", addressDto, addressId, GetEventImages(thisEvent.Slug));
+            var eventResponse = eventDto.ToResponse(participants, username, url, addressDto, addressId, GetEventImages(thisEvent.Slug));
             eventsResponses.Add(eventResponse);
         }
 
@@ -273,11 +278,11 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             .Include(e => e.Tags)
             .Include(e => e.Address)
             .Include(e => e.Organizer)
-            .Where(e => e.Status != EventStatus.PendingApproval && 
-                        e.Status != EventStatus.Cancelled && 
+            .Where(e => e.Status != EventStatus.PendingApproval &&
+                        e.Status != EventStatus.Cancelled &&
                         e.Status != EventStatus.Rejected).ToList();
         var eventsResponses = new List<EventResponse>();
-        foreach (var thisEvent in events )
+        foreach (var thisEvent in events)
         {
             var participating = GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Participating);
             var interested = GetEventParticipantsCountBySlugAndStatus(thisEvent.Slug, ParticipantStatus.Interested);
@@ -286,8 +291,14 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             var addressDto = thisEvent.Address.ToDto();
             var addressId = thisEvent.AddressId;
 
+            string? url = null;
+            if (imageService.DoesImageExistsForUser(username))
+            {
+                url = $"/api/v1/Users/image/{username}";
+            }
+
             var eventDto = thisEvent.ToDto();
-            var eventResponse = eventDto.ToResponse(participants, username, $"/api/v1/Users/image/{username}", addressDto, addressId, GetEventImages(thisEvent.Slug));
+            var eventResponse = eventDto.ToResponse(participants, username, url, addressDto, addressId, GetEventImages(thisEvent.Slug));
             eventsResponses.Add(eventResponse);
         }
 
@@ -315,9 +326,6 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             .Include(e => e.Organizer)
             .ToList();
 
-
-
-
         var eventsResponses = new List<EventResponse>();
 
         foreach (var thisEvent in userEvents)
@@ -329,12 +337,18 @@ public class EventService(ReasnContext context, ParameterService parameterServic
             var addressDto = thisEvent.Address.ToDto();
             var addressId = thisEvent.AddressId;
 
+            string? url = null;
+            if (imageService.DoesImageExistsForUser(username))
+            {
+                url = $"/api/v1/Users/image/{username}";
+            }
+
             var eventDto = thisEvent.ToDto();
-            var eventResponse = eventDto.ToResponse(participants, organizerUsername, $"/api/v1/Users/image/{organizerUsername}", addressDto, addressId, GetEventImages(thisEvent.Slug));
+            var eventResponse = eventDto.ToResponse(participants, organizerUsername, url, addressDto, addressId, GetEventImages(thisEvent.Slug));
             eventsResponses.Add(eventResponse);
         }
 
-        
+
 
         return eventsResponses.AsEnumerable();
     }

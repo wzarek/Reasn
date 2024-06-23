@@ -64,13 +64,12 @@ public class UsersController(UserService userService, InterestService interestSe
     }
 
     [HttpGet]
-    [Authorize]
     [Route("image/{username}")]
     public IActionResult GetImageByUsername(string username)
     {
         var userId = userService.GetUserIdByUsername(username);
         var image = _imageService.GetImageByUserId(userId);
-      
+
         return File(image.ImageData, $"image/jpeg");
     }
 

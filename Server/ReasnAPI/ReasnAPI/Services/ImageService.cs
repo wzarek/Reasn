@@ -114,6 +114,19 @@ public class ImageService(ReasnContext context)
 
     }
 
+    public bool DoesImageExistsForUser(string username)
+    {
+        var user = context.Users.FirstOrDefault(u => u.Username == username);
+
+        if (user is null)
+        {
+            throw new NotFoundException("User not found");
+        }
+
+        // returns if image exists for user
+        return context.Images.Any(i => i.ObjectType == ObjectType.User && i.ObjectId == user.Id);
+    }
+
     public void DeleteImageById(int id)
     {
         var image = context.Images.FirstOrDefault(r => r.Id == id);
@@ -230,7 +243,7 @@ public class ImageService(ReasnContext context)
         }
 
         var imageDto = image.ToDto();
-        
+
         return imageDto;
     }
 

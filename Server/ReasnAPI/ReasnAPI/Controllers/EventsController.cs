@@ -18,7 +18,8 @@ public class EventsController(
     UserService userService,
     ImageService imageService,
     ParameterService parameterService,
-    TagService tagService)
+    TagService tagService,
+    CommentService commentService)
     : ControllerBase
 {
 
@@ -27,7 +28,7 @@ public class EventsController(
     public IActionResult GetEvents()
     {
         var events = eventService.GetAllEvents();
-   
+
         return Ok(events);
     }
 
@@ -37,7 +38,7 @@ public class EventsController(
     public IActionResult CreateEvent([FromBody] EventCreateRequest eventRequest, [FromServices] IValidator<EventDto> validator)
     {
         var user = userService.GetCurrentUser();
-        
+
         var eventDto = eventRequest.ToDto(user.Id);
         validator.ValidateAndThrow(eventDto);
         eventService.CreateEvent(eventDto, eventRequest.AddressDto);
@@ -55,7 +56,15 @@ public class EventsController(
         var username = relatedEvent.Organizer.Username;
         var participants = new Participants(participating, interested);
         var images = eventService.GetEventImages(slug);
-        var eventResponse = relatedEvent.ToDto().ToResponse(participants, username, $"/api/v1/Users/image/{username}", relatedEvent.Address.ToDto(), relatedEvent.AddressId, images);
+
+        var doesImageExist = imageService.DoesImageExistsForUser(username);
+        string? url = null;
+        if (doesImageExist)
+        {
+            url = $"/api/v1/Users/image/{username}";
+        }
+
+        var eventResponse = relatedEvent.ToDto().ToResponse(participants, username, url, relatedEvent.Address.ToDto(), relatedEvent.AddressId, images);
 
         return Ok(eventResponse);
     }
@@ -66,7 +75,7 @@ public class EventsController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult UpdateEvent([FromRoute] string slug, [FromBody] EventUpdateRequest eventUpdateRequest, [FromServices] IValidator<EventDto> validator)
     {
-        
+
         var existingEvent = eventService.GetEventBySlug(slug);
         var user = userService.GetCurrentUser();
         var eventDto = eventUpdateRequest.ToDto(user.Id);
@@ -94,8 +103,8 @@ public class EventsController(
     public IActionResult GetEventsRequests()
     {
         var events = eventService.GetEventsByFilter(e => e.Status == EventStatus.PendingApproval);
-       
-        return Ok(events); 
+
+        return Ok(events);
     }
 
     [HttpPost]
@@ -226,7 +235,7 @@ public class EventsController(
             return NotFound();
         }
 
-        var image = imageService.GetImageByEventIdAndIndex(relatedEvent.Id,id);
+        var image = imageService.GetImageByEventIdAndIndex(relatedEvent.Id, id);
 
         return File(image.ImageData, "image/jpeg");
     }
@@ -253,21 +262,22 @@ public class EventsController(
     [ProducesResponseType<List<CommentDto>>(StatusCodes.Status200OK)]
     public IActionResult GetEventComments([FromRoute] string slug)
     {
-        var commentsDto = eventService.GetEventCommentsBySlug(slug); 
+        var commentsDto = eventService.GetEventCommentsBySlug(slug);
         return Ok(commentsDto);
     }
 
     [HttpPost]
     [Authorize]
     [Route("{slug}/comments")]
-    public IActionResult AddEventComment([FromRoute] string slug, [FromBody]CommentRequest commentRequest, [FromServices] IValidator<CommentDto> validator)
+    public IActionResult AddEventComment([FromRoute] string slug, [FromBody] CommentRequest commentRequest, [FromServices] IValidator<CommentDto> validator)
     {
         var user = userService.GetCurrentUser();
         var relatedEvent = eventService.GetEventBySlug(slug);
-        var commentDto = commentRequest.ToDtoFromRequest(user.Id, relatedEvent.Id);
+
+        var commentDto = commentRequest.ToDtoFromRequest(user.Username, slug);
         validator.ValidateAndThrow(commentDto);
-        
-        eventService.AddEventComment(commentDto);
+
+        commentService.CreateComment(commentDto, user.Id, relatedEvent.Id);
         return Ok();
     }
 
@@ -298,6 +308,6 @@ public class EventsController(
     public IActionResult DeleteEventsTag([FromRoute] int tagId)
     {
         tagService.DeleteTag(tagId);
-        return NoContent(); 
+        return NoContent();
     }
 }
