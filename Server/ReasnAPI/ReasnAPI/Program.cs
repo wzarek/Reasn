@@ -57,6 +57,14 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<AddressService>();
+builder.Services.AddScoped<CommentService>();
+builder.Services.AddScoped<EventService>();
+builder.Services.AddScoped<ImageService>();
+builder.Services.AddScoped<InterestService>();
+builder.Services.AddScoped<ParameterService>();
+builder.Services.AddScoped<ParticipantService>();
+builder.Services.AddScoped<TagService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
 
@@ -70,15 +78,6 @@ var dataSource = dataSourceBuilder.Build();
 builder.Services.AddDbContext<ReasnContext>(options =>
     options.UseNpgsql(dataSource)
         .EnableDetailedErrors());
-
-builder.Services.AddScoped<InterestService>();
-builder.Services.AddScoped<TagService>();
-builder.Services.AddScoped<CommentService>();
-builder.Services.AddScoped<AddressService>();
-builder.Services.AddScoped<ParameterService>();
-builder.Services.AddScoped<EventService>();
-builder.Services.AddScoped<ParticipantService>();
-builder.Services.AddScoped<ImageService>();
 
 builder.Services.AddControllers();
 

@@ -3,6 +3,7 @@ using ReasnAPI.Exceptions;
 using ReasnAPI.Mappers;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
+using Serilog;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Transactions;
@@ -50,7 +51,7 @@ public class UserService
         return user;
     }
 
-    public UserDto UpdateUser(int userId, UserDto userDto)
+    public UserDto UpdateUser(string username, UserDto userDto)
     {
         using (var scope = new TransactionScope())
         {
@@ -59,45 +60,49 @@ public class UserService
             var user = _context.Users
                                 .Include(u => u.UserInterests)
                                 .ThenInclude(ui => ui.Interest)
-                                .FirstOrDefault(r => r.Id == userId);
+                                .FirstOrDefault(r => r.Username == username);
 
             if (user is null)
             {
                 throw new NotFoundException("User not found");
             }
 
-            var usernameExists = _context.Users.Any(r => r.Username == userDto.Username && r.Id != userId);
+            var usernameExists = _context.Users.Any(r => r.Username == userDto.Username && r.Id != user.Id);
 
             if (usernameExists)
             {
                 throw new BadRequestException("User with given username already exists");
             }
 
-            var emailExists = _context.Users.Any(r => r.Email == userDto.Email && r.Id != userId);
+            var emailExists = _context.Users.Any(r => r.Email == userDto.Email && r.Id != user.Id);
 
             if (emailExists)
             {
                 throw new BadRequestException("User with given email already exists");
             }
 
-            var phoneExists = _context.Users.Any(r => r.Phone == userDto.Phone && r.Id != userId);
+            var phoneExists = _context.Users.Any(r => r.Phone == userDto.Phone && r.Id != user.Id);
 
             if (phoneExists)
             {
                 throw new BadRequestException("User with given phone number already exists");
             }
 
-            user.Username = userDto.Username;
             user.Name = userDto.Name;
             user.Surname = userDto.Surname;
             user.Username = userDto.Username;
             user.Email = userDto.Email;
             user.Phone = userDto.Phone;
             user.Role = userDto.Role;
-            user.AddressId = userDto.AddressId;
             user.UpdatedAt = DateTime.UtcNow;
 
             _context.Users.Update(user);
+
+            // Get list of interests to remove
+            var interestsToRemove = user.UserInterests
+                                        .Where(ui => !userDto.Interests!.Exists(uid => uid.Interest.Name == ui.Interest.Name));
+
+            _context.UserInterests.RemoveRange(interestsToRemove);
 
             if (userDto.Interests is null || userDto.Interests.Count == 0)
             {
@@ -106,18 +111,7 @@ public class UserService
                 return userDto;
             }
 
-            var interestsToRemove = user.UserInterests
-                                        .Where(ui => !userDto.Interests.Exists(uid => uid.Interest.Name == ui.Interest.Name));
-
-            _context.UserInterests.RemoveRange(interestsToRemove);
-
-            var interestsToAdd = userDto.Interests
-                                        .Where(uid => !user.UserInterests.Any(ui => ui.Interest.Name == uid.Interest.Name))
-                                        .Select(uid => uid.ToEntity())
-                                        .ToList();
-
-            _context.UserInterests.AddRange(interestsToAdd);
-
+            // Get list of interests to update
             var interestsToUpdate = user.UserInterests
                                         .Where(ui => userDto.Interests.Exists(uid => uid.Interest.Name == ui.Interest.Name))
                                         .ToList();
@@ -135,6 +129,20 @@ public class UserService
                 _context.UserInterests.Update(interest);
             }
 
+            // Get list of existing interests in the database
+            var existingInterests = _context.Interests.ToList();
+
+            // Get list of interests to add
+            // Look for interests that are not already in the user's interests
+            var interestsToAdd = userDto.Interests
+                                        .Where(uid => !user.UserInterests.Any(ui => ui.Interest.Name == uid.Interest.Name))
+                                        .Select(uid => uid.ToEntity(user.Id, existingInterests.Find(ei => ei.Name == uid.Interest.Name)!.Id))
+                                        .ToList();
+
+            // Update interests for
+            interestsToAdd.ForEach(user.UserInterests.Add);
+            _context.Users.Update(user);
+
             _context.SaveChanges();
             scope.Complete();
         }
@@ -145,7 +153,9 @@ public class UserService
     public UserDto GetUserById(int userId)
     {
         var user = _context.Users
+                            .Include(a => a.Address)
                             .Include(u => u.UserInterests)
+                            .ThenInclude(ui => ui.Interest)
                             .FirstOrDefault(u => u.Id == userId);
 
         if (user is null)
@@ -159,7 +169,9 @@ public class UserService
     public UserDto GetUserByUsername(string username)
     {
         var user = _context.Users
+                            .Include(a => a.Address)
                             .Include(u => u.UserInterests)
+                            .ThenInclude(ui => ui.Interest)
                             .FirstOrDefault(u => u.Username == username);
 
         if (user is null)
@@ -201,6 +213,7 @@ public class UserService
     public IEnumerable<UserDto> GetUsersByFilter(Expression<Func<User, bool>> filter)
     {
         return _context.Users
+                        .Include(a => a.Address)
                         .Include(u => u.UserInterests)
                         .ThenInclude(ui => ui.Interest)
                         .Where(filter)
@@ -211,6 +224,7 @@ public class UserService
     public IEnumerable<UserDto> GetAllUsers()
     {
         var users = _context.Users
+                            .Include(a => a.Address)
                             .Include(u => u.UserInterests)
                             .ThenInclude(ui => ui.Interest)
                             .ToList();

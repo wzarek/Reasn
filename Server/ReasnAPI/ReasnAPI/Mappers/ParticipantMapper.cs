@@ -1,4 +1,4 @@
-﻿using ReasnAPI.Models.API;
+using ReasnAPI.Models.API;
 using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 
@@ -9,8 +9,8 @@ public static class ParticipantMapper
     {
         return new ParticipantDto
         {
-            EventId = participant.EventId,
-            UserId = participant.UserId,
+            EventSlug = participant.Event.Slug,
+            Username = participant.User.Username,
             Status = participant.Status
         };
     }

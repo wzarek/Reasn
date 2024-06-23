@@ -1,4 +1,4 @@
-﻿using ReasnAPI.Models.Database;
+using ReasnAPI.Models.Database;
 using ReasnAPI.Models.DTOs;
 using System.Linq.Expressions;
 using ReasnAPI.Exceptions;
@@ -174,20 +174,16 @@ public class ImageService(ReasnContext context)
         return imageDto;
     }
 
-    public ImageDto GetImagesByUserId(int userId)
+    public ImageDto GetImageByUserId(int userId)
     {
-        var images = context.Images
-            .Where(image => image.ObjectId == userId && image.ObjectType == ObjectType.User)
-            .ToList();
+        var image = context.Images.FirstOrDefault(image => image.ObjectId == userId && image.ObjectType == ObjectType.User);
 
-        if (!images.Any())
+        if (image is null)
         {
-            throw new NotFoundException("Images not found");
+            throw new NotFoundException("Image not found");
         }
 
-        var imageDtos = images.ToDtoList();
-
-        return imageDtos[0];
+        return image.ToDto();
     }
 
     public IEnumerable<ImageDto> GetAllImages()

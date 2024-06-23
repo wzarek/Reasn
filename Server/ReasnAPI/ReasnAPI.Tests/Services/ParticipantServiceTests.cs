@@ -11,62 +11,6 @@ namespace ReasnAPI.Tests.Services;
 [TestClass]
 public class ParticipantServiceTests
 {
-    [TestMethod]
-    public void GetParticipantById_ParticipantExists_ParticipantReturned()
-    {
-        var mockContext = new Mock<ReasnContext>();
-
-        var event1 = new Event
-        {
-            Id = 1,
-            Name = "Event",
-            Description = "Description"
-        };
-
-        var user = new User
-        {
-            Id = 1,
-            Username = "User",
-            Email = "Email",
-            Password = "Password"
-        };
-
-        var participant = new Participant
-        {
-            Id = 1,
-            EventId = event1.Id,
-            UserId = user.Id,
-            Status = ParticipantStatus.Interested
-        };
-
-        var fakeParticipant = new FakeDbSet<Participant> { participant };
-        var fakeEvent = new FakeDbSet<Event> { event1 };
-        var fakeUser = new FakeDbSet<User> { user };
-
-        mockContext.Setup(c => c.Events).Returns(fakeEvent);
-        mockContext.Setup(c => c.Users).Returns(fakeUser);
-        mockContext.Setup(c => c.Participants).Returns(fakeParticipant);
-
-        var participantService = new ParticipantService(mockContext.Object);
-
-        var result = participantService.GetParticipantById(1);
-
-        Assert.IsNotNull(result);
-        Assert.AreEqual(1, result.EventId);
-        Assert.AreEqual(1, result.UserId);
-        Assert.AreEqual(ParticipantStatus.Interested, result.Status);
-    }
-
-    [TestMethod]
-    public void GetParticipantById_ParticipantDoesNotExist_NullReturned()
-    {
-        var mockContext = new Mock<ReasnContext>();
-        mockContext.Setup(c => c.Participants).ReturnsDbSet([]);
-
-        var participantService = new ParticipantService(mockContext.Object);
-
-        Assert.ThrowsException<NotFoundException>(() => participantService.GetParticipantById(1));
-    }
 
     [TestMethod]
     public void GetAllParticipants_ParticipantsExist_ParticipantsReturned()
@@ -99,16 +43,16 @@ public class ParticipantServiceTests
         var participant1 = new Participant
         {
             Id = 1,
-            EventId = event1.Id,
-            UserId = user1.Id,
+            Event = event1,
+            User = user1,
             Status = ParticipantStatus.Interested
         };
 
         var participant2 = new Participant
         {
             Id = 2,
-            EventId = event1.Id,
-            UserId = user2.Id,
+            Event = event1,
+            User = user2,
             Status = ParticipantStatus.Participating
         };
 
@@ -169,16 +113,18 @@ public class ParticipantServiceTests
         var participant1 = new Participant
         {
             Id = 1,
+            Event = event1,
             EventId = event1.Id,
-            UserId = user1.Id,
+            User = user1,
             Status = ParticipantStatus.Interested
         };
 
         var participant2 = new Participant
         {
             Id = 2,
+            Event = event1,
             EventId = event1.Id,
-            UserId = user2.Id,
+            User = user2,
             Status = ParticipantStatus.Participating
         };
 
@@ -217,13 +163,14 @@ public class ParticipantServiceTests
         {
             Id = 1,
             Name = "Event",
-            Description = "Description"
+            Description = "Description",
+            Slug = "Event-Slug"
         };
 
         var user = new User
         {
             Id = 1,
-            Username = "User",
+            Username = "Username",
             Email = "Email",
             Password = "Password"
         };
@@ -236,16 +183,16 @@ public class ParticipantServiceTests
 
         var participantDto = new ParticipantDto
         {
-            EventId = 1,
-            UserId = 1,
+            EventSlug = "Event-Slug",
+            Username = "Username",
             Status = ParticipantStatus.Interested
         };
 
-        var result = participantService.CreateParticipant(participantDto);
+        var result = participantService.CreateOrUpdateParticipant(participantDto);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(1, result.EventId);
-        Assert.AreEqual(1, result.UserId);
+        Assert.AreEqual("Event-Slug", result.EventSlug);
+        Assert.AreEqual("Username", result.Username);
         Assert.AreEqual(ParticipantStatus.Interested, result.Status);
     }
 
@@ -257,7 +204,7 @@ public class ParticipantServiceTests
 
         var participantService = new ParticipantService(mockContext.Object);
 
-        Assert.ThrowsException<ArgumentNullException>(() => participantService.CreateParticipant(null));
+        Assert.ThrowsException<ArgumentNullException>(() => participantService.CreateOrUpdateParticipant(null));
     }
 
     [TestMethod]
@@ -269,13 +216,14 @@ public class ParticipantServiceTests
         {
             Id = 1,
             Name = "Event",
-            Description = "Description"
+            Description = "Description",
+            Slug = "Event-Slug"
         };
 
         var user = new User
         {
             Id = 1,
-            Username = "User",
+            Username = "Username",
             Email = "Email",
             Password = "Password"
         };
@@ -283,8 +231,8 @@ public class ParticipantServiceTests
         var participant = new Participant
         {
             Id = 1,
-            EventId = event1.Id,
-            UserId = user.Id,
+            Event = event1,
+            User = user,
             Status = ParticipantStatus.Interested
         };
 
@@ -294,16 +242,16 @@ public class ParticipantServiceTests
 
         var participantService = new ParticipantService(mockContext.Object);
 
-        var result = participantService.UpdateParticipant(1, new ParticipantDto
+        var result = participantService.CreateOrUpdateParticipant(new ParticipantDto
         {
-            EventId = 2,
-            UserId = 2,
+            EventSlug = "Event-Slug",
+            Username = "Username",
             Status = ParticipantStatus.Participating
         });
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(1, result.EventId);
-        Assert.AreEqual(1, result.UserId);
+        Assert.AreEqual("Event-Slug", result.EventSlug);
+        Assert.AreEqual("Username", result.Username);
         Assert.AreEqual(ParticipantStatus.Participating, result.Status);
     }
 
@@ -311,14 +259,16 @@ public class ParticipantServiceTests
     public void UpdateParticipant_ParticipantDoesNotExist_NullReturned()
     {
         var mockContext = new Mock<ReasnContext>();
+        mockContext.Setup(c => c.Events).ReturnsDbSet([]);
+        mockContext.Setup(c => c.Users).ReturnsDbSet([]);
         mockContext.Setup(c => c.Participants).ReturnsDbSet([]);
 
         var participantService = new ParticipantService(mockContext.Object);
 
-        Assert.ThrowsException<NotFoundException>(() => participantService.UpdateParticipant(1, new ParticipantDto
+        Assert.ThrowsException<NotFoundException>(() => participantService.CreateOrUpdateParticipant(new ParticipantDto
         {
-            EventId = 2,
-            UserId = 2,
+            EventSlug = "Event-Slug",
+            Username = "Username",
             Status = ParticipantStatus.Participating
         }));
     }
@@ -333,20 +283,45 @@ public class ParticipantServiceTests
 
         var participantService = new ParticipantService(mockContext.Object);
 
-        Assert.ThrowsException<ArgumentNullException>(() => participantService.UpdateParticipant(1, null));
+        Assert.ThrowsException<ArgumentNullException>(() => participantService.CreateOrUpdateParticipant(null));
     }
 
     [TestMethod]
     public void DeleteParticipant_ParticipantExists_ParticipantDeleted()
     {
         var mockContext = new Mock<ReasnContext>();
-        mockContext.Setup(c => c.Participants).ReturnsDbSet([
-            new() { Id = 1, EventId = 1, UserId = 1, Status = ParticipantStatus.Participating }
-        ]);
+
+        var event1 = new Event
+        {
+            Id = 1,
+            Name = "Event",
+            Description = "Description",
+            Slug = "Event-Slug"
+        };
+
+        var user = new User
+        {
+            Id = 1,
+            Username = "Username",
+            Email = "Email",
+            Password = "Password"
+        };
+
+        var participant = new Participant
+        {
+            Id = 1,
+            Event = event1,
+            User = user,
+            Status = ParticipantStatus.Participating
+        };
+
+        mockContext.Setup(c => c.Participants).ReturnsDbSet([participant]);
+        mockContext.Setup(c => c.Events).ReturnsDbSet([event1]);
+        mockContext.Setup(c => c.Users).ReturnsDbSet([user]);
 
         var participantService = new ParticipantService(mockContext.Object);
 
-        participantService.DeleteParticipant(1);
+        participantService.DeleteParticipant(user.Id, event1.Slug);
 
         mockContext.Verify(c => c.SaveChanges(), Times.Once);
     }
@@ -356,10 +331,12 @@ public class ParticipantServiceTests
     {
         var mockContext = new Mock<ReasnContext>();
         mockContext.Setup(c => c.Participants).ReturnsDbSet([]);
+        mockContext.Setup(c => c.Events).ReturnsDbSet([]);
+        mockContext.Setup(c => c.Users).ReturnsDbSet([]);
 
         var participantService = new ParticipantService(mockContext.Object);
 
-        Assert.ThrowsException<NotFoundException>(() => participantService.DeleteParticipant(1));
+        Assert.ThrowsException<NotFoundException>(() => participantService.DeleteParticipant(1, "Event-Slug"));
         mockContext.Verify(c => c.SaveChanges(), Times.Never);
     }
 }

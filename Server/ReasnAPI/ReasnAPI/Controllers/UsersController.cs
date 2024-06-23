@@ -1,44 +1,55 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ReasnAPI.Models.DTOs;
+using ReasnAPI.Models.Enums;
 using ReasnAPI.Services;
 
 namespace ReasnAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UsersController : ControllerBase
+public class UsersController(UserService userService, InterestService interestService) : ControllerBase
 {
-    private readonly UserService userService;
-    private readonly ImageService imageService;
+    private readonly UserService _userService = userService;
+    private readonly InterestService _interestService = interestService;
+
     [HttpGet]
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType<IEnumerable<UserDto>>(StatusCodes.Status200OK)]
     public IActionResult GetUsers()
     {
-        throw new NotImplementedException();
+        var users = _userService.GetUsersByFilter(u => u.IsActive && u.Role != UserRole.Admin);
+        return Ok(users);
     }
 
     [HttpGet]
     [Route("{username}")]
-    public IActionResult GetUserByUsername(string username)
+    [ProducesResponseType<UserDto>(StatusCodes.Status200OK)]
+    public IActionResult GetUserByUsername([FromRoute] string username)
     {
-        throw new NotImplementedException();
+        var user = _userService.GetUserByUsername(username);
+
+        if (user.Role == UserRole.Admin)
+        {
+            return Forbid();
+        }
+
+        return Ok(user);
     }
 
     [HttpPut]
     [Authorize]
     [Route("{username}")]
-    public IActionResult UpdateUser(string username)
+    [ProducesResponseType<UserDto>(StatusCodes.Status200OK)]
+    public IActionResult UpdateUser(
+        [FromBody] UserDto userDto,
+        [FromRoute] string username,
+        [FromServices] IValidator<UserDto> validator)
     {
-        throw new NotImplementedException();
-    }
+        validator.ValidateAndThrow(userDto);
 
-    [HttpGet]
-    [Authorize]
-    [Route("interests")]
-    public IActionResult GetUsersInterests(string username)
-    {
-        throw new NotImplementedException();
-    }
+        var currentUser = _userService.GetCurrentUser();
 
     [HttpGet]
     [Authorize]
@@ -55,7 +66,35 @@ public class UsersController : ControllerBase
     [Authorize(Roles = "Admin")]
     [Route("interests/{interestId:int}")]
     public IActionResult DeleteUserInterest(int interestId)
+
+        // Only admins can update other users from this endpoint
+        if (currentUser.Role != UserRole.Admin)
+        {
+            return Forbid();
+        }
+
+        var updatedUser = _userService.UpdateUser(username, userDto);
+
+        return Ok(updatedUser);
+    }
+
+    [HttpGet]
+    [Authorize]
+    [Route("interests")]
+    [ProducesResponseType<IEnumerable<InterestDto>>(StatusCodes.Status200OK)]
+    public IActionResult GetUsersInterests()
     {
-        throw new NotImplementedException();
+        var interests = _interestService.GetAllInterests();
+        return Ok(interests);
+    }
+
+    [HttpDelete]
+    [Authorize(Roles = "Admin")]
+    [Route("interests/{interestId:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public IActionResult DeleteUserInterest([FromRoute] int interestId)
+    {
+        _interestService.DeleteInterest(interestId);
+        return NoContent();
     }
 }
