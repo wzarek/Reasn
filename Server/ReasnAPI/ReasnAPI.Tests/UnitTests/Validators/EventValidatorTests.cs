@@ -123,6 +123,13 @@ public class EventValidatorTests
     {
         var eventDto = new EventDto
         {
+            Name = "Event",
+            Description = "Description",
+            StartAt = DateTime.UtcNow,
+            EndAt = DateTime.UtcNow.AddDays(1),
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            Status = EventStatus.Approved,
             Slug = ""
         };
 
