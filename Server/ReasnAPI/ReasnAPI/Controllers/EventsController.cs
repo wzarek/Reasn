@@ -25,11 +25,34 @@ public class EventsController(
 
     [HttpGet]
     [ProducesResponseType<IEnumerable<EventResponse>>(StatusCodes.Status200OK)]
-    public IActionResult GetEvents()
+    public async Task<ActionResult<PagedResponse<EventDto>>> GetEvents(
+    [FromQuery] string? filterName,
+    [FromQuery] EventStatus? filterStatus,
+    [FromQuery] List<string>? filterTags,
+    [FromQuery] DateTime? filterStartAt,
+    [FromQuery] DateTime? filterEndAt,
+    [FromQuery] int offset = 0,
+    [FromQuery] int limit = 10,
+    [FromQuery] SortBy sortBy = SortBy.StartAt,
+    [FromQuery] SortOrder sortOrder = SortOrder.Ascending)
     {
-        var events = eventService.GetAllEvents();
+        var request = new PagedRequest
+        {
+            FilterName = filterName,
+            FilterStatus = filterStatus,
+            FilterTags = filterTags,
+            FilterStartAt = filterStartAt,
+            FilterEndAt = filterEndAt,
+            Offset = offset,
+            Limit = limit,
+            SortBy = sortBy,
+            SortOrder = sortOrder
+        };
 
-        return Ok(events);
+        var eventsPaged = eventService.GetAllEvents(request);
+        return Ok(eventsPaged);
+
+
     }
 
     [HttpPost]
@@ -310,40 +333,5 @@ public class EventsController(
         tagService.DeleteTag(tagId);
         return NoContent(); 
     }
-    [HttpGet]
-    [Route("api/EventsPaging")]
-    public async Task<ActionResult<PagedResponse<EventDto>>> GetPagedEvents(
-    [FromQuery] string? filterName,
-    [FromQuery] EventStatus? filterStatus,
-    [FromQuery] List<string>? filterTags,
-    [FromQuery] DateTime? filterStartAt,
-    [FromQuery] DateTime? filterEndAt,
-    [FromQuery] int offset = 0,
-    [FromQuery] int limit = 10,
-    [FromQuery] SortBy sortBy = SortBy.StartAt,
-    [FromQuery] SortOrder sortOrder = SortOrder.Ascending)
-    {
-        try
-        {
-            var request = new PagedRequest
-            {
-                FilterName = filterName,
-                FilterStatus = filterStatus,
-                FilterTags = filterTags,
-                FilterStartAt = filterStartAt,
-                FilterEndAt = filterEndAt,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                SortOrder = sortOrder
-            };
 
-            var eventsPaged = eventService.GetPagedEvents(request);
-            return Ok(eventsPaged);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
-    }
 }

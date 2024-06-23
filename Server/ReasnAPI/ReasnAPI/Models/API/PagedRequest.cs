@@ -17,9 +17,9 @@ namespace ReasnAPI.Models.API
 
     public class PagedRequest
     {
-        public string FilterName { get; set; }
+        public string? FilterName { get; set; }
         public EventStatus? FilterStatus { get; set; }
-        public List<string> FilterTags { get; set; }
+        public List<string>? FilterTags { get; set; }
         public DateTime? FilterStartAt { get; set; }
         public DateTime? FilterEndAt { get; set; }
         public int Offset { get; set; }
