@@ -5,27 +5,27 @@ import { UserRole } from "../enums/schemasEnums";
 import { z } from "zod";
 
 export const UserDtoSchema = z.object({
-  Username: z
+  username: z
     .string()
     .max(64)
     .regex(/^[\p{L}\d._%+-]{4,}$/u),
-  Name: z
+  name: z
     .string()
     .max(64)
     .regex(/^\p{Lu}[\p{Ll}\s'-]+$/u),
-  Surname: z
+  surname: z
     .string()
     .max(64)
     .regex(/^\p{L}+(?:[\s'-]\p{L}+)*$/u),
-  Email: z.string().email(),
-  Phone: z
+  email: z.string().email(),
+  phone: z
     .string()
     .nullable()
     .refine((value) => value === null || /^\+\d{1,3}\s\d{1,15}$/.test(value)),
-  Role: z.nativeEnum(UserRole),
-  AddressId: z.number(),
-  Address: AddressDtoSchema,
-  Intrests: z.array(UserInterestDtoSchema),
+  role: z.nativeEnum(UserRole),
+  addressId: z.number(),
+  address: AddressDtoSchema,
+  intrests: z.array(UserInterestDtoSchema),
 });
 
 export type UserDto = z.infer<typeof UserDtoSchema>;
